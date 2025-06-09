@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.domain.entity;
 
 
+import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestReview;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -40,4 +41,15 @@ public class Review {
 
     @Column(nullable = false)
     private long bookId;
+    //아마 bookId를 받지 말고 bookId가 들어있는 주문 내역을 받아서 거기서 참조해서 할 수 있게끔? 그러면 구매한 책에 대해서만 리뷰를 작성할 수 있게끔 할 수 있을 것 같음
+
+    public Review(SignUpRequestReview review){
+        this.evaluationScore = review.getEvaluationScore();
+        this.reviewContent = review.getReviewContent();
+        this.reviewPhoto = review.getReviewPhoto();
+        this.reviewedAt = ZonedDateTime.now();
+        this.updatedAt = null;
+        this.userId = review.getUserId();
+        this.bookId = review.getBookId();
+    }
 }

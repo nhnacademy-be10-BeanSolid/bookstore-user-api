@@ -1,0 +1,12 @@
+### 리뷰등록
+
+POST http://localhost:8080/reviews
+Content-Type: application/json
+
+{
+  "evaluationScore": 5,
+  "reviewContent": "정말 재밌어요!",
+  "reviewPhoto": "",
+  "userId": "user123",
+  "bookId": 1
+}

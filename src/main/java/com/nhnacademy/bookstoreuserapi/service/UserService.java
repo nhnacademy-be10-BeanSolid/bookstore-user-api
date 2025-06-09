@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.Service;
+package com.nhnacademy.bookstoreuserapi.service;
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 

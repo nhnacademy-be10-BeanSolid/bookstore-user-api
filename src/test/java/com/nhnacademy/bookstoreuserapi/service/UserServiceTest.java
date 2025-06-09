@@ -1,6 +1,5 @@
 package com.nhnacademy.bookstoreuserapi.service;
 
-import com.nhnacademy.bookstoreuserapi.Service.UserService;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.exception.UserAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.UserNotFoundException;

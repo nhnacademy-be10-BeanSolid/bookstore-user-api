@@ -24,7 +24,7 @@ import java.util.List;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
-@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc
 public class AddressControllerTest {
     @Autowired
     private MockMvc mockMvc;

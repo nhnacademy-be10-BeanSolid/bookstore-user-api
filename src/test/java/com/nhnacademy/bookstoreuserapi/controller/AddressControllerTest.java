@@ -23,7 +23,7 @@ import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
+@WebMvcTest(AddressController.class)
 @AutoConfigureMockMvc
 public class AddressControllerTest {
     @Autowired
@@ -39,7 +39,7 @@ public class AddressControllerTest {
         SignUpRequestAddress address = new SignUpRequestAddress("별칭", "광주광역시 도로명주소 123", "userId123");
         Mockito.when(addressService.save(address)).thenReturn(null);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/user/address")
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/address")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(address)))
                 .andExpect(status().is2xxSuccessful());
@@ -52,7 +52,7 @@ public class AddressControllerTest {
         SignUpRequestAddress address = new SignUpRequestAddress("별칭", "광주광역시 도로명주소 123", "userId123");
         Mockito.when(addressService.save(address)).thenThrow(AddressAlreadyExistException.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/user/address")
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/address")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(address)))
                 .andExpect(status().is4xxClientError());
@@ -62,7 +62,7 @@ public class AddressControllerTest {
     void deleteAddress() throws Exception{
 
         Mockito.doNothing().when(addressService).deleteAddress( 1L);
-        mockMvc.perform(MockMvcRequestBuilders.delete("/user/address/{addressId}", 1L))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/users/address/{addressId}", 1L))
                 .andExpect(status().isNoContent());
     }
 
@@ -70,14 +70,14 @@ public class AddressControllerTest {
     void deleteAddressFail() throws Exception{
 
         Mockito.doThrow(AddressNotFoundException.class).when(addressService).deleteAddress( 1L);
-        mockMvc.perform(MockMvcRequestBuilders.delete("/user/address/{addressId}", 1L))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/users/address/{addressId}", 1L))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
     void getAddress() throws Exception{
         Mockito.when(addressService.getAddress(1L)).thenReturn(null);
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/address/{addressId}", 1L))
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/address/{addressId}", 1L))
                 .andExpect(status().is2xxSuccessful());
 
         Mockito.verify(addressService, Mockito.times(1)).getAddress(1L);
@@ -90,7 +90,7 @@ public class AddressControllerTest {
         Mockito.when(addressService.getAllAddresses("userId123"))
                 .thenReturn(List.of(responseAddress, responseAddress2));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/user/address/user/{userId}", "userId123"))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/users/address/user/{userId}", "userId123"))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
 

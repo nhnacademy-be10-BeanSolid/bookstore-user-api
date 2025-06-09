@@ -50,7 +50,7 @@ public class User {
     @Column(name = "last_login_at", nullable = false)
     private LocalDateTime lastLoginAt;
 
-    // 다대일 매핑 필요
+//    @ManyToOne(optional = false)
 //    @Column(name = "usergrade_id", nullable = false)
 //    private Long userGradeId;
 

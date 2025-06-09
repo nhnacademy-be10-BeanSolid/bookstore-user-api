@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.domain;
+package com.nhnacademy.bookstoreuserapi.domain.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

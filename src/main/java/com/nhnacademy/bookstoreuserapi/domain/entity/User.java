@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.domain;
+package com.nhnacademy.bookstoreuserapi.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
+@AllArgsConstructor
 public class User {
 
     public enum Status {
@@ -20,6 +21,7 @@ public class User {
     }
 
     @Id
+    @Column(name = "user_id")
     private String userId;
 
     @Column(name = "user_password", nullable = false)
@@ -28,7 +30,7 @@ public class User {
     @Column(name = "user_name", nullable = false)
     private String userName;
 
-    @Column(name = "user_phoneNumber", nullable = false)
+    @Column(name = "user_phone_number", nullable = false)
     private String userPhoneNumber;
 
     @Column(name = "user_email", nullable = false)

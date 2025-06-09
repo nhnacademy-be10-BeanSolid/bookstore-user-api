@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.Service;
 
-import com.nhnacademy.bookstoreuserapi.domain.User;
+import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 
 import java.util.Optional;
 

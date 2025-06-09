@@ -1,0 +1,163 @@
+package com.nhnacademy.bookstoreuserapi.service;
+
+import com.nhnacademy.bookstoreuserapi.Service.UserService;
+import com.nhnacademy.bookstoreuserapi.domain.entity.User;
+import com.nhnacademy.bookstoreuserapi.exception.UserAlreadyExistException;
+import com.nhnacademy.bookstoreuserapi.exception.UserNotFoundException;
+import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
+import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
+@SpringBootTest
+@Sql(scripts = "/user-test.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+class UserServiceTest {
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @MockitoBean
+    private PasswordEncoder passwordEncoder;
+
+    private final String userId = "test";
+
+    @BeforeEach
+    void setup() {
+        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+    }
+
+    @Test
+    @DisplayName("사용자 저장 성공")
+    @Transactional
+    void saveUser_success() {
+        User user = new User(
+                "newUser",
+                "plainPassword",
+                "김철수",
+                "01098765432",
+                "kim@test.com",
+                LocalDate.of(1995, 6, 15),
+                0,
+                false,
+                User.Status.ACTIVE,
+                LocalDateTime.now()
+        );
+
+        userService.saveUser(user);
+
+        Optional<User> savedUser = userRepository.findById("newUser");
+        assertThat(savedUser).isPresent();
+        assertThat(savedUser.get().getUserPassword()).isEqualTo("encodedPassword");
+    }
+
+    @Test
+    @DisplayName("중복 사용자 저장 실패")
+    @Transactional
+    void saveUser_alreadyExists() {
+        User user = new User(
+                userId,
+                "plainPassword",
+                "김철수",
+                "01098765432",
+                "kim@test.com",
+                LocalDate.of(1995, 6, 15),
+                0,
+                false,
+                User.Status.ACTIVE,
+                LocalDateTime.now()
+        );
+
+        assertThatThrownBy(() -> userService.saveUser(user))
+                .isInstanceOf(UserAlreadyExistException.class);
+    }
+
+    @Test
+    @DisplayName("사용자 조회 성공")
+    void findById_success() {
+        Optional<User> user = userService.findById(userId);
+        assertThat(user).isPresent();
+        assertThat(user.get().getUserId()).isEqualTo(userId);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 사용자 조회 실패")
+    void findById_notFound() {
+        assertThatThrownBy(() -> userService.findById("notExists"))
+                .isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("개인정보 수정")
+    @Transactional
+    void updatePersonalInformation() {
+        User user = userRepository.findById(userId).orElseThrow();
+        user.setUserName("수정된이름");
+
+        userService.updatePersonalInformation(user);
+
+        User updated = userRepository.findById(userId).orElseThrow();
+        assertThat(updated.getUserName()).isEqualTo("수정된이름");
+    }
+
+    @Test
+    @DisplayName("로그인 시간 업데이트")
+    @Transactional
+    void updateLastLoginAt() {
+        userService.updateLastLoginAt(userId);
+
+        User updated = userRepository.findById(userId).orElseThrow();
+        assertThat(updated.getLastLoginAt()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("포인트 업데이트")
+    @Transactional
+    void updatePoint() {
+        userService.updatePoint(userId, 1000);
+
+        User updated = userRepository.findById(userId).orElseThrow();
+        assertThat(updated.getUserPoint()).isEqualTo(1500);
+    }
+
+    @Test
+    @DisplayName("상태 업데이트")
+    @Transactional
+    void updateUserStatus() {
+        userService.updateUserStatus(userId, User.Status.WITHDRAWN);
+
+        User updated = userRepository.findById(userId).orElseThrow();
+        assertThat(updated.getUserStatus()).isEqualTo(User.Status.WITHDRAWN);
+    }
+
+    @Test
+    @DisplayName("사용자 삭제")
+    @Transactional
+    void deleteUser() {
+        userService.deleteUser(userId);
+        assertThat(userRepository.findById(userId)).isNotPresent();
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 사용자 삭제 실패")
+    void deleteUser_notFound() {
+        assertThatThrownBy(() -> userService.deleteUser("unknown"))
+                .isInstanceOf(UserNotFoundException.class);
+    }
+}

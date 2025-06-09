@@ -1,7 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.Service.impl;
 
 import com.nhnacademy.bookstoreuserapi.Service.UserService;
-import com.nhnacademy.bookstoreuserapi.domain.User;
+import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.exception.UserAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.UserNotFoundException;
 import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void saveUser(User user) {
 
         if(userRepository.existsById(user.getUserId())){
@@ -39,6 +40,7 @@ public class UserServiceImpl implements UserService {
         }
 
         String encodedPassword = passwordEncoder.encode(user.getUserPassword());
+
         user.setUserPassword(encodedPassword);
         user.setLastLoginAt(LocalDateTime.now());
         user.setUserPoint(0);
@@ -49,6 +51,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void updatePersonalInformation(User user) {
 
         if(!userRepository.existsById(user.getUserId())){
@@ -59,6 +62,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void updateLastLoginAt(String userId) {
 
         if(!userRepository.existsById(userId)){
@@ -69,6 +73,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void updatePoint(String userId, int point) {
 
         if(!userRepository.existsById(userId)){
@@ -79,6 +84,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void updateUserStatus(String userId, User.Status status) {
 
         if(!userRepository.existsById(userId)){
@@ -89,6 +95,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(String userId) {
 
         if(!userRepository.existsById(userId)){

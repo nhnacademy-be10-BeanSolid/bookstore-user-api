@@ -1,9 +1,9 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
 import com.nhnacademy.bookstoreuserapi.Service.UserService;
-import com.nhnacademy.bookstoreuserapi.domain.User;
-import com.nhnacademy.bookstoreuserapi.domain.UserCreateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.UserUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.domain.entity.User;
+import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
+import com.nhnacademy.bookstoreuserapi.domain.request.UserUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

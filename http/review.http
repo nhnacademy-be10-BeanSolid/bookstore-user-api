@@ -1,0 +1,89 @@
+### 리뷰등록
+
+POST http://localhost:8080/reviews
+Content-Type: application/json
+
+{
+  "evaluationScore": 5,
+  "reviewContent": "정말 재밌어요!",
+  "reviewPhoto": "",
+  "userId": "user123",
+  "bookId": 1
+}
+
+
+### 리뷰등록2
+
+POST http://localhost:8080/reviews
+Content-Type: application/json
+
+{
+  "evaluationScore": 3,
+  "reviewContent": "정말 슴슴해요!",
+  "reviewPhoto": "",
+  "userId": "user1234",
+  "bookId": 1
+}
+
+### 리뷰등록3
+
+POST http://localhost:8080/reviews
+Content-Type: application/json
+
+{
+  "evaluationScore": 1,
+  "reviewContent": "정말 재밌없어요!",
+  "reviewPhoto": "",
+  "userId": "user12345",
+  "bookId": 1
+}
+
+### 리뷰등록4
+
+POST http://localhost:8080/reviews
+Content-Type: application/json
+
+{
+  "evaluationScore": 5,
+  "reviewContent": "이거 정말 재밌어요!",
+  "reviewPhoto": "",
+  "userId": "user123",
+  "bookId": 2
+}
+
+
+### 리뷰등록5
+
+POST http://localhost:8080/reviews
+Content-Type: application/json
+
+{
+  "evaluationScore": 3,
+  "reviewContent": "정말 보통이에요!",
+  "reviewPhoto": "",
+  "userId": "user1234",
+  "bookId": 2
+}
+
+
+### 리뷰수정
+PUT http://localhost:8080/reviews/1
+Content-Type: application/json
+
+{
+  "evaluationScore": 4,
+  "reviewContent": "조금 아쉬웠어요.",
+  "reviewPhoto": ""
+}
+
+### 리뷰조회(단건)
+GET http://localhost:8080/reviews/1
+Content-Type: application/json
+
+### 리뷰조회(유저별)
+GET http://localhost:8080/reviews/user/user123
+Content-Type: application/json
+
+### 리뷰조회(책별)
+GET http://localhost:8080/reviews/book/1
+Content-Type: application/json

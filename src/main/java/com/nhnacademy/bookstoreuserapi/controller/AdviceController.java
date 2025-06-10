@@ -25,15 +25,17 @@ public class AdviceController {
     @ExceptionHandler({ReviewNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorMessage handleReviewNotFoundException(Exception e) {
+        return new ErrorMessage(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
     @ExceptionHandler({AddressAlreadyExistException.class, AddressLimitExceededException.class, AddressLengthExceededException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorMessage handleAddressExceptions(Exception e) {
+    public ErrorMessage handleAddressException(Exception e) {
         return new ErrorMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({AddressNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorMessage handleAddressNotFoundExceptions(Exception e) {
+    public ErrorMessage handleAddressNotFoundException(Exception e) {
         return new ErrorMessage(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

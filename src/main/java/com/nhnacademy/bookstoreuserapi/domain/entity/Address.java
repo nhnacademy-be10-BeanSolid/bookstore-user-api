@@ -26,9 +26,7 @@ import lombok.NoArgsConstructor;
     @Column(nullable = false)
     private String addressDetail;
 
-//외래키 설정
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id", nullable = false)
-//    private User user;
-    private String userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }

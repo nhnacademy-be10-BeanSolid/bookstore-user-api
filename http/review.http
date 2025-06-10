@@ -7,7 +7,7 @@ Content-Type: application/json
   "evaluationScore": 5,
   "reviewContent": "정말 재밌어요!",
   "reviewPhoto": "",
-  "userId": "user123",
+  "userId": "test",
   "bookId": 1
 }
 
@@ -21,7 +21,7 @@ Content-Type: application/json
   "evaluationScore": 3,
   "reviewContent": "정말 슴슴해요!",
   "reviewPhoto": "",
-  "userId": "user1234",
+  "userId": "test",
   "bookId": 1
 }
 
@@ -32,9 +32,9 @@ Content-Type: application/json
 
 {
   "evaluationScore": 1,
-  "reviewContent": "정말 재밌없어요!",
+  "reviewContent": "정말 재미없어요!",
   "reviewPhoto": "",
-  "userId": "user12345",
+  "userId": "test1",
   "bookId": 1
 }
 
@@ -47,7 +47,7 @@ Content-Type: application/json
   "evaluationScore": 5,
   "reviewContent": "이거 정말 재밌어요!",
   "reviewPhoto": "",
-  "userId": "user123",
+  "userId": "test",
   "bookId": 2
 }
 
@@ -61,7 +61,7 @@ Content-Type: application/json
   "evaluationScore": 3,
   "reviewContent": "정말 보통이에요!",
   "reviewPhoto": "",
-  "userId": "user1234",
+  "userId": "test1",
   "bookId": 2
 }
 
@@ -81,7 +81,7 @@ GET http://localhost:8080/reviews/1
 Content-Type: application/json
 
 ### 리뷰조회(유저별)
-GET http://localhost:8080/reviews/user/user123
+GET http://localhost:8080/reviews/user/test
 Content-Type: application/json
 
 ### 리뷰조회(책별)

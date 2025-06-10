@@ -1,10 +1,12 @@
 package com.nhnacademy.bookstoreuserapi.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -13,6 +15,19 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 public class User {
+
+    public User(String userId, String userPassword, String userName, String userPhoneNumber, String userEmail, LocalDate userBirth, int userPoint, boolean isAuth, Status userStatus, LocalDateTime lastLogin) {
+        this.userId = userId;
+        this.userPassword = userPassword;
+        this.userName = userName;
+        this.userPhoneNumber = userPhoneNumber;
+        this.userEmail = userEmail;
+        this.userBirth = userBirth;
+        this.userPoint = userPoint;
+        this.isAuth = isAuth;
+        this.userStatus = userStatus;
+        this.lastLoginAt = lastLogin;
+    }
 
     public enum Status {
         ACTIVE,
@@ -51,6 +66,14 @@ public class User {
 
     @Column(name = "last_login_at", nullable = false)
     private LocalDateTime lastLoginAt;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Address> address;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Review> reviews;
 
 //    @ManyToOne(optional = false)
 //    @Column(name = "usergrade_id", nullable = false)

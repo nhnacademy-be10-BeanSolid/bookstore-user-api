@@ -1,15 +1,9 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
-import com.nhnacademy.bookstoreuserapi.exception.InvalidDataException;
-import com.nhnacademy.bookstoreuserapi.exception.InvalidReviewDataException;
-import com.nhnacademy.bookstoreuserapi.exception.ReviewAlreadyExistsBookException;
-import com.nhnacademy.bookstoreuserapi.exception.ReviewNotFoundException;
-import com.nhnacademy.bookstoreuserapi.exception.AddressAlreadyExistException;
-import com.nhnacademy.bookstoreuserapi.exception.AddressLengthExceededException;
-import com.nhnacademy.bookstoreuserapi.exception.AddressLimitExceededException;
-import com.nhnacademy.bookstoreuserapi.exception.AddressNotFoundException;
+import com.nhnacademy.bookstoreuserapi.exception.*;
 import com.nhnacademy.bookstoreuserapi.util.ErrorMessage;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -38,4 +32,23 @@ public class AdviceController {
     public ErrorMessage handleAddressNotFoundException(Exception e) {
         return new ErrorMessage(e.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorMessage handleUserNotFoundException(Exception e) {
+        return new ErrorMessage(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserAlreadyExistException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleUserAlreadyExistException(Exception e) {
+        return new ErrorMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ValidationFailedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleValidationFailedException(ValidationFailedException e) {
+        return new ErrorMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
 }

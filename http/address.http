@@ -1,20 +1,20 @@
 ### 주소등록
-POST http://localhost:8080/user/address
+POST http://localhost:8080/users/address
 Content-Type: application/json
 
 {
   "addressNickName": "주소1",
   "addressDetail": "광주광역시 상무대로 123",
-  "userId": "yooncy123"
+  "userId": "test"
 }
 
 ### 주소 조회
-GET http://localhost:8080/user/address/1
+GET http://localhost:8080/users/address/1
 Content-Type: application/json
 
 ### 주소 조회(회원별)
-GET http://localhost:8080/user/address/user/yooncy123
+GET http://localhost:8080/users/address/user/test
 Content-Type: application/json
 
 ### 주소 삭제
-DELETE http://localhost:8080/user/address/1
+DELETE http://localhost:8080/users/address/1

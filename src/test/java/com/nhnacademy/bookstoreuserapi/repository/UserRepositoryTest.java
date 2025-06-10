@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,7 +43,7 @@ class UserRepositoryTest {
     @Test
     @DisplayName("마지막 로그인 시간 갱신")
     void testUpdateLastLoginByUserId() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MICROS);
         userRepository.updateLastLoginByUserId(userId, now);
 
         Optional<User> updated = userRepository.findById(userId);

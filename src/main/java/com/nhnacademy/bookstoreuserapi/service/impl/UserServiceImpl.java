@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     public Optional<User> findById(String userId) {
 
         if(!userRepository.existsById(userId)){
-            throw new UserNotFoundException(userId + " : 해당 유저를 찾을 수 없습니다.");
+            throw new UserNotFoundException(userId);
         }
 
         return userRepository.findById(userId);
@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     public void saveUser(User user) {
 
         if(userRepository.existsById(user.getUserId())){
-            throw new UserAlreadyExistException(user.getUserId() + " : 해당 아이디를 가진 유저가 이미 존재합니다.");
+            throw new UserAlreadyExistException(user.getUserId());
         }
 
         String encodedPassword = passwordEncoder.encode(user.getUserPassword());
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
     public void updatePersonalInformation(User user) {
 
         if(!userRepository.existsById(user.getUserId())){
-            throw new UserNotFoundException(user.getUserId() + " : 해당 유저를 찾을 수 없습니다.");
+            throw new UserNotFoundException(user.getUserId());
         }
 
         userRepository.save(user);
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
     public void updateLastLoginAt(String userId) {
 
         if(!userRepository.existsById(userId)){
-            throw new UserNotFoundException(userId + " : 해당 유저를 찾을 수 없습니다.");
+            throw new UserNotFoundException(userId);
         }
 
         userRepository.updateLastLoginByUserId(userId, LocalDateTime.now());
@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
     public void updatePoint(String userId, int point) {
 
         if(!userRepository.existsById(userId)){
-            throw new UserNotFoundException(userId + " : 해당 유저를 찾을 수 없습니다.");
+            throw new UserNotFoundException(userId);
         }
 
         userRepository.updatePointByUserId(userId, point);
@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
     public void updateUserStatus(String userId, User.Status status) {
 
         if(!userRepository.existsById(userId)){
-            throw new UserNotFoundException(userId + " : 해당 유저를 찾을 수 없습니다.");
+            throw new UserNotFoundException(userId);
         }
 
         userRepository.updateStatusByUserId(userId, status);
@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(String userId) {
 
         if(!userRepository.existsById(userId)){
-            throw new UserNotFoundException(userId + " : 해당 유저를 찾을 수 없습니다.");
+            throw new UserNotFoundException(userId);
         }
 
         userRepository.deleteById(userId);

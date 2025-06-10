@@ -2,6 +2,7 @@ package com.nhnacademy.bookstoreuserapi.service.impl;
 
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.Review;
+import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.request.EditRequestReview;
 import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestReview;
 import com.nhnacademy.bookstoreuserapi.exception.InvalidDataException;
@@ -9,6 +10,7 @@ import com.nhnacademy.bookstoreuserapi.exception.InvalidReviewDataException;
 import com.nhnacademy.bookstoreuserapi.exception.ReviewAlreadyExistsBookException;
 import com.nhnacademy.bookstoreuserapi.exception.ReviewNotFoundException;
 import com.nhnacademy.bookstoreuserapi.repository.ReviewRepository;
+import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,13 +19,20 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Optional;
+
+import static java.time.LocalDateTime.now;
 
 @ExtendWith(MockitoExtension.class)
 public class ReviewServiceImplTest {
     @Mock
     ReviewRepository reviewRepository;
+
+
+    @Mock
+    UserRepository userRepository;
 
     @InjectMocks
     ReviewServiceImpl reviewService;
@@ -31,24 +40,35 @@ public class ReviewServiceImplTest {
     @Test
     void addReview() {
         SignUpRequestReview signUpRequestReview = new SignUpRequestReview(5, "Great book!", "", "user123", 1L);
-        Review review = new Review(signUpRequestReview);
-        Mockito.when(reviewRepository.findByUserIdAndBookId(review.getUserId(), review.getBookId())).thenReturn(null);
+        User user = new User(
+                "user123", "pass", "김철수", "010-1111-2222", "kim@test.com",
+                LocalDate.of(1990, 1, 1), 0, false,
+                User.Status.ACTIVE,
+                now());
+        Review review = new Review(signUpRequestReview, user);
+        Mockito.when(userRepository.findById(signUpRequestReview.getUserId())).thenReturn(Optional.of(user));
+        Mockito.when(reviewRepository.findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId())).thenReturn(null);
         Mockito.when(reviewRepository.save(Mockito.any(Review.class))).thenReturn(review);
 
         reviewService.addReview(signUpRequestReview);
-        Mockito.verify(reviewRepository, Mockito.times(1)).findByUserIdAndBookId(review.getUserId(), review.getBookId());
+        Mockito.verify(reviewRepository, Mockito.times(1)).findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId());
         Mockito.verify(reviewRepository, Mockito.times(1)).save(Mockito.any(Review.class));
     }
 
     @Test
     void addReviewFail() {
         SignUpRequestReview signUpRequestReview = new SignUpRequestReview(5, "Great book!", "", "user123", 1L);
-        Review review = new Review(signUpRequestReview);
-        Mockito.when(reviewRepository.findByUserIdAndBookId(review.getUserId(), review.getBookId())).thenReturn(review);
+        User user = new User(
+                "user123", "pass", "김철수", "010-1111-2222", "kim@test.com",
+                LocalDate.of(1990, 1, 1), 0, false,
+                User.Status.ACTIVE,
+                now());
+        Review review = new Review(signUpRequestReview, user);
+        Mockito.when(reviewRepository.findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId())).thenReturn(review);
 
         Assertions.assertThrows(ReviewAlreadyExistsBookException.class, () -> reviewService.addReview(signUpRequestReview));
 
-        Mockito.verify(reviewRepository, Mockito.times(1)).findByUserIdAndBookId(review.getUserId(), review.getBookId());
+        Mockito.verify(reviewRepository, Mockito.times(1)).findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId());
     }
 
     @Test
@@ -56,14 +76,14 @@ public class ReviewServiceImplTest {
         SignUpRequestReview signUpRequestReview = new SignUpRequestReview(0, "", "", null, 0L);
 
         Assertions.assertThrows(InvalidReviewDataException.class, () -> reviewService.addReview(signUpRequestReview));
-        Mockito.verify(reviewRepository, Mockito.never()).findByUserIdAndBookId(Mockito.anyString(), Mockito.anyLong());
+        Mockito.verify(reviewRepository, Mockito.never()).findByUser_UserIdAndBookId(Mockito.anyString(), Mockito.anyLong());
         Mockito.verify(reviewRepository, Mockito.never()).save(Mockito.any(Review.class));
     }
 
     @Test
     void addReviewInvalidDataNull() {
         Assertions.assertThrows(InvalidReviewDataException.class, () -> reviewService.addReview(null));
-        Mockito.verify(reviewRepository, Mockito.never()).findByUserIdAndBookId(Mockito.anyString(), Mockito.anyLong());
+        Mockito.verify(reviewRepository, Mockito.never()).findByUser_UserIdAndBookId(Mockito.anyString(), Mockito.anyLong());
         Mockito.verify(reviewRepository, Mockito.never()).save(Mockito.any(Review.class));
     }
 
@@ -72,14 +92,18 @@ public class ReviewServiceImplTest {
         SignUpRequestReview signUpRequestReview = new SignUpRequestReview(0, "", "", "", 0L);
 
         Assertions.assertThrows(InvalidReviewDataException.class, () -> reviewService.addReview(signUpRequestReview));
-        Mockito.verify(reviewRepository, Mockito.never()).findByUserIdAndBookId(Mockito.anyString(), Mockito.anyLong());
+        Mockito.verify(reviewRepository, Mockito.never()).findByUser_UserIdAndBookId(Mockito.anyString(), Mockito.anyLong());
         Mockito.verify(reviewRepository, Mockito.never()).save(Mockito.any(Review.class));
     }
 
     @Test
     void editReview() {
         long reviewId = 1L;
-        Review existingReview = new Review(new SignUpRequestReview(5, "Great book!", "", "user123", 1L));
+        Review existingReview = new Review(new SignUpRequestReview(5, "Great book!", "", "user123", 1L),new User(
+                "user123", "pass", "김철수", "010-1111-2222", "kim@test.com",
+                LocalDate.of(1990, 1, 1), 0, false,
+                User.Status.ACTIVE,
+                now()));
         existingReview.setReviewId(reviewId);
 
         Mockito.when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(existingReview));
@@ -103,7 +127,12 @@ public class ReviewServiceImplTest {
     @Test
     void getReview() {
         long reviewId = 1L;
-        Review existingReview = new Review(new SignUpRequestReview(5, "Great book!", "", "user123", 1L));
+        Review existingReview = new Review(new SignUpRequestReview(5, "Great book!", "", "user123", 1L),
+                new User(
+                        "user123", "pass", "김철수", "010-1111-2222", "kim@test.com",
+                        LocalDate.of(1990, 1, 1), 0, false,
+                        User.Status.ACTIVE,
+                        now()));
         existingReview.setReviewId(reviewId);
 
         Mockito.when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(existingReview));
@@ -123,29 +152,39 @@ public class ReviewServiceImplTest {
 
     @Test
     void getReviewByUserId() {
-        Review review = new Review(5, "Great book!", "", "user123", 1L);
-        Mockito.when(reviewRepository.findAllByUserId("user123")).thenReturn(Collections.singletonList(review));
+        User user = new User(
+                "user123", "pass", "김철수", "010-1111-2222", "kim@test.com",
+                LocalDate.of(1990, 1, 1), 0, false,
+                User.Status.ACTIVE,
+                now());
+        Review review = new Review(5, "Great book!", "", user, 1L);
+        Mockito.when(reviewRepository.findAllByUser_UserId("user123")).thenReturn(Collections.singletonList(review));
         reviewService.getReviewsByUserId("user123");
-        Mockito.verify(reviewRepository, Mockito.times(1)).findAllByUserId("user123");
+        Mockito.verify(reviewRepository, Mockito.times(1)).findAllByUser_UserId("user123");
     }
 
     @Test
     void getReviewsByUserId_NullUserId_ThrowsException() {
         Assertions.assertThrows(InvalidDataException.class, () -> reviewService.getReviewsByUserId(null));
-        Mockito.verify(reviewRepository, Mockito.never()).findAllByUserId(Mockito.any());
+        Mockito.verify(reviewRepository, Mockito.never()).findAllByUser_UserId(Mockito.any());
     }
 
     @Test
     void getReviewsByUserId_EmptyUserId_ThrowsException() {
         Assertions.assertThrows(InvalidDataException.class, () -> reviewService.getReviewsByUserId(""));
-        Mockito.verify(reviewRepository, Mockito.never()).findAllByUserId(Mockito.any());
+        Mockito.verify(reviewRepository, Mockito.never()).findAllByUser_UserId(Mockito.any());
     }
 
 
     @Test
     void getReviewByBookId() {
         long bookId = 1L;
-        Review review = new Review(5, "Great book!", "", "user123", bookId);
+        User user = new User(
+                "user123", "pass", "김철수", "010-1111-2222", "kim@test.com",
+                LocalDate.of(1990, 1, 1), 0, false,
+                User.Status.ACTIVE,
+                now());
+        Review review = new Review(5, "Great book!", "", user, bookId);
         Mockito.when(reviewRepository.findAllByBookId(bookId)).thenReturn(Collections.singletonList(review));
         reviewService.getReviewsByBookId(bookId);
         Mockito.verify(reviewRepository, Mockito.times(1)).findAllByBookId(bookId);

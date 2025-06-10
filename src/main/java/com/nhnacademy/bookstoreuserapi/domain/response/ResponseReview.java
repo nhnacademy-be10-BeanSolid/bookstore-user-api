@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.domain.response;
 
 
+import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

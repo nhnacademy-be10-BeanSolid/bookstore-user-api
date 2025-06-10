@@ -2,14 +2,13 @@ package com.nhnacademy.bookstoreuserapi.service.impl;
 
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.Review;
+import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.request.EditRequestReview;
 import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestReview;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseReview;
-import com.nhnacademy.bookstoreuserapi.exception.InvalidDataException;
-import com.nhnacademy.bookstoreuserapi.exception.InvalidReviewDataException;
-import com.nhnacademy.bookstoreuserapi.exception.ReviewAlreadyExistsBookException;
-import com.nhnacademy.bookstoreuserapi.exception.ReviewNotFoundException;
+import com.nhnacademy.bookstoreuserapi.exception.*;
 import com.nhnacademy.bookstoreuserapi.repository.ReviewRepository;
+import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +21,7 @@ import java.util.List;
 @Transactional
 public class ReviewServiceImpl {
     private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository;
 
     public ResponseReview addReview(SignUpRequestReview review){
         if(review == null
@@ -29,11 +29,13 @@ public class ReviewServiceImpl {
                 || review.getBookId() <= 0L) {
             throw new InvalidReviewDataException("Invalid review data");  //InvalidReviewDataException말고 그냥 InvalidDataException으로 해도 될 것 같음 나중에 합친 후에 수정
         }
-        Review findReview = reviewRepository.findByUserIdAndBookId(review.getUserId(), review.getBookId());
+        Review findReview = reviewRepository.findByUser_UserIdAndBookId(review.getUserId(), review.getBookId());
         if (findReview != null) {
             throw new ReviewAlreadyExistsBookException(review.getUserId(), review.getBookId());
         }
-        Review savedReview = reviewRepository.save(new Review(review));
+        User user = userRepository.findById(review.getUserId())
+                .orElseThrow(() -> new UserNotFoundException(review.getUserId()));
+        Review savedReview = reviewRepository.save(new Review(review, user));
         return new ResponseReview(
                 savedReview.getReviewId(),
                 savedReview.getEvaluationScore(),
@@ -41,7 +43,7 @@ public class ReviewServiceImpl {
                 savedReview.getReviewPhoto(),
                 savedReview.getReviewedAt(),
                 savedReview.getUpdatedAt(),
-                savedReview.getUserId(),
+                savedReview.getUser().getUserId(),
                 savedReview.getBookId()
         );
     }
@@ -64,7 +66,7 @@ public class ReviewServiceImpl {
                 updatedReview.getReviewPhoto(),
                 updatedReview.getReviewedAt(),
                 updatedReview.getUpdatedAt(),
-                updatedReview.getUserId(),
+                updatedReview.getUser().getUserId(),
                 updatedReview.getBookId()
         );
     }
@@ -81,7 +83,7 @@ public class ReviewServiceImpl {
                 findReview.getReviewPhoto(),
                 findReview.getReviewedAt(),
                 findReview.getUpdatedAt(),
-                findReview.getUserId(),
+                findReview.getUser().getUserId(),
                 findReview.getBookId()
         );
     }
@@ -90,7 +92,7 @@ public class ReviewServiceImpl {
         if (userId == null || userId.isEmpty()) {
             throw new InvalidDataException("Invalid user ID");
         }
-        List<Review> reviews = reviewRepository.findAllByUserId(userId);
+        List<Review> reviews = reviewRepository.findAllByUser_UserId(userId);
         return reviews.stream()
                 .map(review -> new ResponseReview(
                         review.getReviewId(),
@@ -99,7 +101,7 @@ public class ReviewServiceImpl {
                         review.getReviewPhoto(),
                         review.getReviewedAt(),
                         review.getUpdatedAt(),
-                        review.getUserId(),
+                        review.getUser().getUserId(),
                         review.getBookId()))
                 .toList();
     }
@@ -117,7 +119,7 @@ public class ReviewServiceImpl {
                         review.getReviewPhoto(),
                         review.getReviewedAt(),
                         review.getUpdatedAt(),
-                        review.getUserId(),
+                        review.getUser().getUserId(),
                         review.getBookId()))
                 .toList();
     }

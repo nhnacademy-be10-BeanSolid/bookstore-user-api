@@ -52,4 +52,14 @@ public class Review {
         this.userId = review.getUserId();
         this.bookId = review.getBookId();
     }
+
+    public Review(int evaluationScore, String reviewContent, String reviewPhoto, String userId, long bookId) {
+        this.evaluationScore = evaluationScore;
+        this.reviewContent = reviewContent;
+        this.reviewPhoto = reviewPhoto;
+        this.reviewedAt = ZonedDateTime.now();
+        this.updatedAt = null;
+        this.userId = userId;
+        this.bookId = bookId;
+    }
 }

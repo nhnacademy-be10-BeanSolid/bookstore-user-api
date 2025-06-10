@@ -5,6 +5,10 @@ import com.nhnacademy.bookstoreuserapi.domain.entity.Review;
 import com.nhnacademy.bookstoreuserapi.domain.request.EditRequestReview;
 import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestReview;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseReview;
+import com.nhnacademy.bookstoreuserapi.exception.InvalidDataException;
+import com.nhnacademy.bookstoreuserapi.exception.InvalidReviewDataException;
+import com.nhnacademy.bookstoreuserapi.exception.ReviewAlreadyExistsBookException;
+import com.nhnacademy.bookstoreuserapi.exception.ReviewNotFoundException;
 import com.nhnacademy.bookstoreuserapi.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +24,14 @@ public class ReviewServiceImpl {
     private final ReviewRepository reviewRepository;
 
     public ResponseReview addReview(SignUpRequestReview review){
-        if(review == null || review.getUserId() == null || review.getBookId() <= 0) {
-            throw new IllegalArgumentException("Invalid review data");
+        if(review == null
+                || review.getUserId() == null
+                || review.getBookId() <= 0L) {
+            throw new InvalidReviewDataException("Invalid review data");  //InvalidReviewDataException말고 그냥 InvalidDataException으로 해도 될 것 같음 나중에 합친 후에 수정
         }
-        Review findReview = reviewRepository.findByUserIdByBookId(review.getUserId(), review.getBookId());
+        Review findReview = reviewRepository.findByUserIdAndBookId(review.getUserId(), review.getBookId());
         if (findReview != null) {
-            throw new IllegalArgumentException("Review already exists for user: " + review.getUserId() + " and book: " + review.getBookId());
+            throw new ReviewAlreadyExistsBookException(review.getUserId(), review.getBookId());
         }
         Review savedReview = reviewRepository.save(new Review(review));
         return new ResponseReview(
@@ -43,7 +49,7 @@ public class ReviewServiceImpl {
     public ResponseReview editReview(long reviewId, EditRequestReview review) {
         Review findReview = reviewRepository.findById(reviewId).orElse(null);
         if (findReview == null) {
-            throw new IllegalArgumentException("Review not found with ID: " + reviewId);
+            throw new ReviewNotFoundException(reviewId);
         }
         findReview.setEvaluationScore(review.getEvaluationScore());
         findReview.setReviewContent(review.getReviewContent());
@@ -66,7 +72,7 @@ public class ReviewServiceImpl {
     public ResponseReview getReview(long reviewId) {
         Review findReview = reviewRepository.findById(reviewId).orElse(null);
         if (findReview == null) {
-            throw new IllegalArgumentException("Review not found with ID: " + reviewId);
+            throw new ReviewNotFoundException(reviewId);
         }
         return new ResponseReview(
                 findReview.getReviewId(),
@@ -82,7 +88,7 @@ public class ReviewServiceImpl {
 
     public List<ResponseReview> getReviewsByUserId(String userId) {
         if (userId == null || userId.isEmpty()) {
-            throw new IllegalArgumentException("Invalid user ID");
+            throw new InvalidDataException("Invalid user ID");
         }
         List<Review> reviews = reviewRepository.findAllByUserId(userId);
         return reviews.stream()
@@ -100,7 +106,7 @@ public class ReviewServiceImpl {
 
     public List<ResponseReview> getReviewsByBookId(long bookId) {
         if (bookId <= 0) {
-            throw new IllegalArgumentException("Invalid book ID");
+            throw new InvalidDataException("Invalid book ID");
         }
         List<Review> reviews = reviewRepository.findAllByBookId(bookId);
         return reviews.stream()

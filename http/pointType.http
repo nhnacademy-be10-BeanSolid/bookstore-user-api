@@ -1,0 +1,42 @@
+### 유형별 적립포인트 등록 1
+POST http://localhost:10344/users/pointType
+Content-Type: application/json
+
+{
+  "typeName": "회원가입",
+  "earningPoint": 5000,
+  "earningRate": 1,
+  "gradeName": "일반"
+}
+
+### 유형별 적립포인트 등록 2
+POST http://localhost:10344/users/pointType
+Content-Type: application/json
+
+{
+  "typeName": "리뷰작성",
+  "earningPoint": 500,
+  "earningRate": 1,
+  "gradeName": "일반"
+}
+
+### 유형별 적립포인트 등록 3
+POST http://localhost:10344/users/pointType
+Content-Type: application/json
+
+{
+  "typeName": "순수금액별 포인트 적립",
+  "earningPoint": 500,
+  "earningRate": 2,
+  "gradeName": "로얄"
+}
+
+### 유형별 적립포인트 조회
+GET http://localhost:10344/users/pointType?gradeName=일반
+Content-Type: application/json
+
+### 모든 적립포인트 조회
+GET http://localhost:10344/users/pointType
+
+### 유형 식별키를 이용해 유형별 적립포인트 내역 삭제
+DELETE http://localhost:10344/users/pointType/3

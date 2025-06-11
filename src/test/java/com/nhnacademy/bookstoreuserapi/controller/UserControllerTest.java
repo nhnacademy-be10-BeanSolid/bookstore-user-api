@@ -101,6 +101,7 @@ class UserControllerTest {
     void updateLastLoginAt() throws Exception {
         User user = new User("user123", "pw", "홍길동", "01012345678",
                 "hong@test.com", LocalDate.of(1990, 1, 1));
+
         Mockito.when(userService.findById("user123")).thenReturn(Optional.of(user));
 
         mockMvc.perform(put("/users/user123/lastloginat"))

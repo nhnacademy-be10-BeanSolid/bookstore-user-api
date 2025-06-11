@@ -66,6 +66,8 @@ public class UserServiceImpl implements UserService {
         if(!userRepository.existsById(user.getUserId())){
             throw new UserNotFoundException(user.getUserId());
         }
+        String encodedPassword = passwordEncoder.encode(user.getUserPassword());
+        user.setUserPassword(encodedPassword);
 
         userRepository.save(user);
     }

@@ -1,5 +1,5 @@
 ### 회원 등록
-POST http://localhost:8080/users/register
+POST http://localhost:10344/users/register
 Content-Type: application/json
 
 {
@@ -12,14 +12,14 @@ Content-Type: application/json
 }
 
 ### 회원 조회
-GET http://localhost:8080/users/test
+GET http://localhost:10344/users/test
 Accept: application/json
 
 ### 회원 삭제
-DELETE http://localhost:8080/users/test
+DELETE http://localhost:10344/users/test
 
 ### 회원 인적사항 수정
-PUT http://localhost:8080/users/test/personalinformation
+PUT http://localhost:10344/users/test/personalinformation
 Content-Type: application/json
 
 {
@@ -32,14 +32,14 @@ Content-Type: application/json
 }
 
 ### 회원 마지막 로그인 날짜 수정
-PUT http://localhost:8080/users/test/lastloginat
+PUT http://localhost:10344/users/test/lastloginat
 
 ### 회원 포인트 수정
-PUT http://localhost:8080/users/test?point=500
+PUT http://localhost:10344/users/test?point=500
 Content-Type: application/json
 
 ### 회원 상태 수정
-PUT http://localhost:8080/users/test/status?status=WITHDRAWN
+PUT http://localhost:10344/users/test/status?status=WITHDRAWN
 Content-Type: application/json
 
 

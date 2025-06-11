@@ -1,6 +1,6 @@
 ### 리뷰등록
 
-POST http://localhost:8080/reviews
+POST http://localhost:10344/reviews
 Content-Type: application/json
 
 {
@@ -14,7 +14,7 @@ Content-Type: application/json
 
 ### 리뷰등록2
 
-POST http://localhost:8080/reviews
+POST http://localhost:10344/reviews
 Content-Type: application/json
 
 {
@@ -27,7 +27,7 @@ Content-Type: application/json
 
 ### 리뷰등록3
 
-POST http://localhost:8080/reviews
+POST http://localhost:10344/reviews
 Content-Type: application/json
 
 {
@@ -40,7 +40,7 @@ Content-Type: application/json
 
 ### 리뷰등록4
 
-POST http://localhost:8080/reviews
+POST http://localhost:10344/reviews
 Content-Type: application/json
 
 {
@@ -54,7 +54,7 @@ Content-Type: application/json
 
 ### 리뷰등록5
 
-POST http://localhost:8080/reviews
+POST http://localhost:10344/reviews
 Content-Type: application/json
 
 {
@@ -67,7 +67,7 @@ Content-Type: application/json
 
 
 ### 리뷰수정
-PUT http://localhost:8080/reviews/1
+PUT http://localhost:10344/reviews/1
 Content-Type: application/json
 
 {
@@ -77,13 +77,13 @@ Content-Type: application/json
 }
 
 ### 리뷰조회(단건)
-GET http://localhost:8080/reviews/1
+GET http://localhost:10344/reviews/1
 Content-Type: application/json
 
 ### 리뷰조회(유저별)
-GET http://localhost:8080/reviews/user/test
+GET http://localhost:10344/reviews/user/test
 Content-Type: application/json
 
 ### 리뷰조회(책별)
-GET http://localhost:8080/reviews/book/1
+GET http://localhost:10344/reviews/book/1
 Content-Type: application/json

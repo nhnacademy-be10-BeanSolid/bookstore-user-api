@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
+import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUser;
 import com.nhnacademy.bookstoreuserapi.service.UserService;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
@@ -41,11 +42,11 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<User> getUser(@PathVariable String userId) {
+    public ResponseEntity<ResponseUser> getUser(@PathVariable String userId) {
 
         User user = userService.findById(userId).get();
 
-        return ResponseEntity.ok().body(user);
+        return ResponseEntity.ok(new ResponseUser(user));
     }
 
     @DeleteMapping("/{userId}")
@@ -57,7 +58,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/personalinformation")
-    public ResponseEntity<User> updatePersonalInformation(@PathVariable String userId, @RequestBody UserUpdateRequest userUpdateRequest){
+    public ResponseEntity<ResponseUser> updatePersonalInformation(@PathVariable String userId, @RequestBody UserUpdateRequest userUpdateRequest){
 
         User user = userService.findById(userId).get();
         user.setUserName(userUpdateRequest.userName());
@@ -67,47 +68,56 @@ public class UserController {
         user.setUserEmail(userUpdateRequest.userEmail());
         userService.updatePersonalInformation(user);
 
-        return ResponseEntity.ok().body(user);
+        return ResponseEntity.ok(new ResponseUser(user));
     }
 
     @PutMapping("/{userId}/lastloginat")
-    public ResponseEntity<User> updateLastLoginAt(@PathVariable String userId){
+    public ResponseEntity<ResponseUser> updateLastLoginAt(@PathVariable String userId){
 
         userService.updateLastLoginAt(userId);
 
-        return ResponseEntity.ok().body(userService.findById(userId).get());
+        User user = userService.findById(userId).get();
+        return ResponseEntity.ok(new ResponseUser(user));
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<User> updatePoint(@PathVariable String userId, @RequestParam int point){
+    public ResponseEntity<ResponseUser> updatePoint(@PathVariable String userId, @RequestParam int point){
 
         userService.updatePoint(userId, point);
 
-        return ResponseEntity.ok().body(userService.findById(userId).get());
+        User user = userService.findById(userId).get();
+
+        return ResponseEntity.ok(new ResponseUser(user));
     }
 
     @PutMapping("/{userId}/status")
-    public ResponseEntity<User> updateStatus(@PathVariable String userId, @RequestParam User.Status status){
+    public ResponseEntity<ResponseUser> updateStatus(@PathVariable String userId, @RequestParam User.Status status){
 
         userService.updateUserStatus(userId, status);
 
-        return ResponseEntity.ok().body(userService.findById(userId).get());
+        User user = userService.findById(userId).get();
+
+        return ResponseEntity.ok(new ResponseUser(user));
     }
 
     @PutMapping("/{userId}/ordermoney")     // 기존 주문 금액에 더함 ++orderMoney
-    public ResponseEntity<User> updateOrderMoney(@PathVariable String userId, @RequestParam long orderMoney) {
+    public ResponseEntity<ResponseUser> updateOrderMoney(@PathVariable String userId, @RequestParam long orderMoney) {
 
         userService.updateOrderMoney(userId, orderMoney);
 
-        return ResponseEntity.ok().body(userService.findById(userId).get());
+        User user = userService.findById(userId).get();
+
+        return ResponseEntity.ok(new ResponseUser(user));
     }
 
     @PutMapping("/{userId}/grade")
-    public ResponseEntity<User> updateUserGradeName(@PathVariable String userId, @RequestParam String gradeName) {
+    public ResponseEntity<ResponseUser> updateUserGradeName(@PathVariable String userId, @RequestParam String gradeName) {
 
         userService.updateUserGradeName(userId, gradeName);
 
-        return ResponseEntity.ok().body(userService.findById(userId).get());
+        User user = userService.findById(userId).get();
+
+        return ResponseEntity.ok(new ResponseUser(user));
     }
 
 

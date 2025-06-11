@@ -80,7 +80,7 @@ public class User {
     @JsonIgnore
     private List<Review> reviews;
 
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)//테스트용으로 EAGER로 설정, 실제 서비스에서는 LAZY로 변경 필요
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "grade_name", nullable = false)
     private UserGrade userGrade;
 

@@ -1,4 +1,5 @@
-DELETE FROM users;
+delete from point;
+delete from users;
 
 DELETE FROM user_grades;
 
@@ -12,4 +13,4 @@ insert into users (user_id, user_password, user_name, user_phone_number, user_em
 values ('test', '1234','test','010-1234-5678', 'test@test.com',
         '2000-01-12', 500, false,'ACTIVE', '2000-01-12 14:35:25', 0, 'BASIC');
 
--- insert into user_grade(grade_name, required_money) values ('BASIC', 0);
+

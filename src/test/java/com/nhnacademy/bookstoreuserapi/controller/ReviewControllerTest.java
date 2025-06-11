@@ -10,7 +10,6 @@ import com.nhnacademy.bookstoreuserapi.exception.ReviewAlreadyExistsBookExceptio
 import com.nhnacademy.bookstoreuserapi.exception.ReviewNotFoundException;
 import com.nhnacademy.bookstoreuserapi.service.impl.ReviewServiceImpl;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -107,7 +106,7 @@ public class ReviewControllerTest {
     }
 
     @Test
-    void getReviewFailInvaildData() throws Exception {
+    void getReviewFailInvalidData() throws Exception {
         long reviewId = -1L;
         Mockito.when(reviewService.getReview(reviewId)).thenThrow(new InvalidDataException("Invalid review ID"));
 

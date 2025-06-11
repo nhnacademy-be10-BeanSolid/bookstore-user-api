@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class ReviewServiceImpl {
         findReview.setEvaluationScore(review.getEvaluationScore());
         findReview.setReviewContent(review.getReviewContent());
         findReview.setReviewPhoto(review.getReviewPhoto());
-        findReview.setUpdatedAt(ZonedDateTime.now());
+        findReview.setUpdatedAt(LocalDateTime.now());
 
         Review updatedReview = reviewRepository.save(findReview);
         return new ResponseReview(

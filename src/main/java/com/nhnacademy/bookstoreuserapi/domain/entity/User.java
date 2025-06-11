@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class User {
 
-    public User(String userId, String userPassword, String userName, String userPhoneNumber, String userEmail, LocalDate userBirth, int userPoint, boolean isAuth, Status userStatus, LocalDateTime lastLogin) {
+    public User(String userId, String userPassword, String userName, String userPhoneNumber, String userEmail, LocalDate userBirth, int userPoint, boolean isAuth, Status userStatus, LocalDateTime lastLogin, long orderMoney, UserGrade userGrade) {
         this.userId = userId;
         this.userPassword = userPassword;
         this.userName = userName;
@@ -27,6 +27,8 @@ public class User {
         this.isAuth = isAuth;
         this.userStatus = userStatus;
         this.lastLoginAt = lastLogin;
+        this.orderMoney = orderMoney;
+        this.userGrade = userGrade;
     }
 
     public enum Status {
@@ -67,6 +69,9 @@ public class User {
     @Column(name = "last_login_at", nullable = false)
     private LocalDateTime lastLoginAt;
 
+    @Column(name = "order_money", nullable = false)
+    private long orderMoney;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Address> address;
@@ -75,9 +80,9 @@ public class User {
     @JsonIgnore
     private List<Review> reviews;
 
-//    @ManyToOne(optional = false)
-//    @Column(name = "usergrade_id", nullable = false)
-//    private Long userGradeId;
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)//테스트용으로 EAGER로 설정, 실제 서비스에서는 LAZY로 변경 필요
+    @JoinColumn(name = "grade_name", nullable = false)
+    private UserGrade userGrade;
 
     public User(String userId, String userPassword, String userName, String userPhoneNumber, String userEmail, LocalDate userBirth) {
         this.userId = userId;

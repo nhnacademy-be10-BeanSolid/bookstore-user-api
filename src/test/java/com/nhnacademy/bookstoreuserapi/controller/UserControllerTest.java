@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
 import com.nhnacademy.bookstoreuserapi.service.UserService;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
@@ -18,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.ROYAL;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -133,6 +135,52 @@ class UserControllerTest {
                         .param("status", "WITHDRAWN"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userStatus").value("WITHDRAWN"));
+    }
+
+    @Test
+    @DisplayName("주문금액 추가")
+    void updateOrderMoney() throws Exception {
+        User user = new User("user123", "pw", "홍길동", "01012345678",
+                "hong@test.com", LocalDate.of(1990, 1, 1));
+        user.setOrderMoney(0);
+        user.setUserStatus(User.Status.ACTIVE);
+        user.setUserGrade(new UserGrade(UserGrade.Grade.BASIC, 0L));
+
+        // update 후 값 반영되도록 설정
+        Mockito.doAnswer(invocation -> {
+            user.setOrderMoney(user.getOrderMoney() + 5000);
+            return null;
+        }).when(userService).updateOrderMoney("user123", 5000);
+
+        Mockito.when(userService.findById("user123")).thenReturn(Optional.of(user));
+
+        mockMvc.perform(put("/users/user123/ordermoney")
+                        .param("orderMoney", "5000"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.orderMoney").value(5000));
+    }
+
+
+    @Test
+    @DisplayName("회원 등급 수정")
+    void updateUserGrade() throws Exception {
+        User user = new User("user123", "pw", "홍길동", "01012345678",
+                "hong@test.com", LocalDate.of(1990, 1, 1));
+        user.setOrderMoney(0);
+        user.setUserStatus(User.Status.ACTIVE);
+        user.setUserGrade(new UserGrade(UserGrade.Grade.BASIC, 0L));
+
+        Mockito.doAnswer(invocation -> {
+            user.setUserGrade(new UserGrade(ROYAL, 100000L));
+            return null;
+        }).when(userService).updateUserGradeName("user123", "ROYAL");
+
+        Mockito.when(userService.findById("user123")).thenReturn(Optional.of(user));
+
+        mockMvc.perform(put("/users/user123/grade")
+                        .param("gradeName", "ROYAL"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.userGrade.gradeName").value("ROYAL"));
     }
 }
 

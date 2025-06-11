@@ -50,5 +50,16 @@ public class AdviceController {
     public ErrorMessage handleValidationFailedException(ValidationFailedException e) {
         return new ErrorMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(UserGradeAlreadyExistException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleUserGradeAlreadyExistException(UserGradeAlreadyExistException e) {
+        return new ErrorMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserGradeNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorMessage handleUserGradeNotFoundException(UserGradeNotFoundException e) {
+        return new ErrorMessage(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
 
 }

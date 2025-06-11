@@ -2,20 +2,24 @@ package com.nhnacademy.bookstoreuserapi.repository;
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User.Status;
+import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
+import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASIC;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
+@Sql(scripts = "/user-test.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class UserRepositoryTest {
 
     @Autowired
@@ -36,6 +40,9 @@ class UserRepositoryTest {
         user.setUserStatus(Status.ACTIVE);
         user.setUserPoint(100);
         user.setLastLoginAt(LocalDateTime.now().minusDays(1));
+        user.setOrderMoney(0);
+        UserGrade userGrade = new UserGrade(BASIC, 0L);
+        user.setUserGrade(userGrade);
 
         userRepository.save(user);
     }

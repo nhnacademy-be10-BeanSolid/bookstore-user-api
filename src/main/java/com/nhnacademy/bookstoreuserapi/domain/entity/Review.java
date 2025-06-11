@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 @Entity
@@ -29,9 +30,9 @@ public class Review {
     private String reviewPhoto;
 
     @Column(nullable = false)
-    private ZonedDateTime reviewedAt;
+    private LocalDateTime reviewedAt;
 
-    private ZonedDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -45,7 +46,7 @@ public class Review {
         this.evaluationScore = review.getEvaluationScore();
         this.reviewContent = review.getReviewContent();
         this.reviewPhoto = review.getReviewPhoto();
-        this.reviewedAt = ZonedDateTime.now();
+        this.reviewedAt = LocalDateTime.now();
         this.updatedAt = null;
         this.user = user;
         this.bookId = review.getBookId();
@@ -55,7 +56,7 @@ public class Review {
         this.evaluationScore = evaluationScore;
         this.reviewContent = reviewContent;
         this.reviewPhoto = reviewPhoto;
-        this.reviewedAt = ZonedDateTime.now();
+        this.reviewedAt = LocalDateTime.now();
         this.updatedAt = null;
         this.user = user;
         this.bookId = bookId;

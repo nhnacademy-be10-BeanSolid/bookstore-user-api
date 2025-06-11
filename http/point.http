@@ -1,0 +1,14 @@
+POST http://localhost:10344/users/point
+Content-Type: application/json
+
+{
+  "userId": "test",
+  "typeId": 1,
+  "paymentId": 1,
+  "earnedAndUsedAt": "2012-02-14 14:51:05",
+  "earnedAndUsedPoint": 500
+}
+
+### 주소 조회
+GET http://localhost:10344/users/point/test
+Content-Type: application/json

@@ -2,12 +2,14 @@ package com.nhnacademy.bookstoreuserapi.service.impl;
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.Address;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
+import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
 import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestAddress;
 import com.nhnacademy.bookstoreuserapi.exception.AddressAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.AddressLengthExceededException;
 import com.nhnacademy.bookstoreuserapi.exception.AddressLimitExceededException;
 import com.nhnacademy.bookstoreuserapi.exception.AddressNotFoundException;
 import com.nhnacademy.bookstoreuserapi.repository.AddressRepository;
+import com.nhnacademy.bookstoreuserapi.repository.UserGradeRepository;
 import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,12 +32,16 @@ public class AddressServiceImplTest {
     @Mock
     UserRepository userRepository;
 
+    @Mock
+    UserGradeRepository userGradeRepository;
+
     @InjectMocks
     AddressServiceImpl addressService;
 
     @Test
     void saveAddress() {
         SignUpRequestAddress signUpRequestAddress = new SignUpRequestAddress("Home", "123 Main St", "user123");
+        UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
         Address address = new Address(0L, "Home", "123 Main St", new User(
                 "test",
                 "plainPassword",
@@ -46,7 +52,9 @@ public class AddressServiceImplTest {
                 0,
                 false,
                 User.Status.ACTIVE,
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                0,
+                userGrade
         ));
 
         Mockito.when(addressRepository.countByUser_UserId(signUpRequestAddress.getUserId())).thenReturn(1L);
@@ -102,6 +110,7 @@ public class AddressServiceImplTest {
     @Test
     void getAddress() {
         long addressId = 1L;
+        UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
         Address address = new Address(addressId, "Home", "123 Main St", new User(
                 "test",
                 "plainPassword",
@@ -112,7 +121,9 @@ public class AddressServiceImplTest {
                 0,
                 false,
                 User.Status.ACTIVE,
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                0,
+                userGrade
         ));
 
         Mockito.when(addressRepository.findById(addressId)).thenReturn(Optional.of(address));
@@ -139,6 +150,7 @@ public class AddressServiceImplTest {
     @Test
     void getAllAddresses() {
         String userId = "user123";
+        UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
         Address address = new Address(1L, "Home", "123 Main St", new User(
                 userId,
                 "plainPassword",
@@ -149,7 +161,9 @@ public class AddressServiceImplTest {
                 0,
                 false,
                 User.Status.ACTIVE,
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                0,
+                userGrade
         ));
 
         Mockito.when(addressRepository.findAllByUser_UserId(userId)).thenReturn(List.of(address));
@@ -161,6 +175,7 @@ public class AddressServiceImplTest {
     @Test
     void deleteAddress() {
         long addressId = 1L;
+        UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
         Address address = new Address(addressId, "Home", "123 Main St", new User(
                 "test",
                 "plainPassword",
@@ -171,7 +186,9 @@ public class AddressServiceImplTest {
                 0,
                 false,
                 User.Status.ACTIVE,
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                0,
+                userGrade
         ));
 
         Mockito.when(addressRepository.findById(addressId)).thenReturn(Optional.of(address));

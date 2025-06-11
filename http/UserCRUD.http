@@ -42,6 +42,14 @@ Content-Type: application/json
 PUT http://localhost:8080/users/test/status?status=WITHDRAWN
 Content-Type: application/json
 
+### 회원 주문금액 수정
+PUT http://localhost:8080/users/test/ordermoney?orderMoney=150000
+Content-Type: application/json
+
+### 회원 등급 수정
+PUT http://localhost:8080/users/test/grade?gradeName=ROYAL
+Content-Type: application/json
+
 
 
 

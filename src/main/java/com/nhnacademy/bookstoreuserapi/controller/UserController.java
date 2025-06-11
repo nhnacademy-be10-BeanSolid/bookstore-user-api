@@ -94,6 +94,21 @@ public class UserController {
         return ResponseEntity.ok().body(userService.findById(userId).get());
     }
 
+    @PutMapping("/{userId}/ordermoney")     // 기존 주문 금액에 더함 ++orderMoney
+    public ResponseEntity<User> updateOrderMoney(@PathVariable String userId, @RequestParam long orderMoney) {
+
+        userService.updateOrderMoney(userId, orderMoney);
+
+        return ResponseEntity.ok().body(userService.findById(userId).get());
+    }
+
+    @PutMapping("/{userId}/grade")
+    public ResponseEntity<User> updateUserGradeName(@PathVariable String userId, @RequestParam String gradeName) {
+
+        userService.updateUserGradeName(userId, gradeName);
+
+        return ResponseEntity.ok().body(userService.findById(userId).get());
+    }
 
 
 }

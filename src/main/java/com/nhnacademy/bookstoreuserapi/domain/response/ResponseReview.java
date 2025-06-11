@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 @Data
@@ -17,8 +18,8 @@ public class ResponseReview {
     private int evaluationScore;
     private String reviewContent;
     private String reviewPhoto;
-    private ZonedDateTime reviewedAt;
-    private ZonedDateTime updatedAt;
+    private LocalDateTime reviewedAt;
+    private LocalDateTime updatedAt;
     private String userId;
     private long bookId;
 }

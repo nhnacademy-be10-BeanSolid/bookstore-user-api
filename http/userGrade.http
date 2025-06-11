@@ -1,5 +1,5 @@
 ### 등급 추가(기본)
-POST http://localhost:8080/users/grade
+POST http://localhost:10344/users/grade
 Content-Type: application/json
 
 {
@@ -8,7 +8,7 @@ Content-Type: application/json
 }
 
 ### 등급추가(로얄)
-POST http://localhost:8080/users/grade
+POST http://localhost:10344/users/grade
 Content-Type: application/json
 
 {
@@ -17,7 +17,7 @@ Content-Type: application/json
 }
 
 ### 등급추가(골드)
-POST http://localhost:8080/users/grade
+POST http://localhost:10344/users/grade
 Content-Type: application/json
 
 {
@@ -26,7 +26,7 @@ Content-Type: application/json
 }
 
 ### 등급추가(플래티넘)
-POST http://localhost:8080/users/grade
+POST http://localhost:10344/users/grade
 Content-Type: application/json
 
 {
@@ -35,15 +35,15 @@ Content-Type: application/json
 }
 
 ### 등급조회
-GET http://localhost:8080/users/grade/BASIC
+GET http://localhost:10344/users/grade/BASIC
 Content-Type: application/json
 
 ### 등급조회(전체)
-GET http://localhost:8080/users/grade/all
+GET http://localhost:10344/users/grade/all
 Content-Type: application/json
 
 ### 등급수정
-PUT http://localhost:8080/users/grade/ROYAL
+PUT http://localhost:10344/users/grade/ROYAL
 Content-Type: application/json
 
 {
@@ -52,6 +52,6 @@ Content-Type: application/json
 }
 
 ### 등급삭제
-DELETE http://localhost:8080/users/grade/BASIC
+DELETE http://localhost:10344/users/grade/BASIC
 
 

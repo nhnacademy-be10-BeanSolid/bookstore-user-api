@@ -3,6 +3,7 @@ package com.nhnacademy.bookstoreuserapi.repository;
 import com.nhnacademy.bookstoreuserapi.domain.entity.Point;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User.Status;
+import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASIC;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -22,6 +24,9 @@ class PointRepositoryTest {
 
     @Autowired
     private PointRepository pointRepository;
+
+    @Autowired
+    private UserGradeRepository userGradeRepository;
 
     private final String userId = "testUser";
 
@@ -38,6 +43,9 @@ class PointRepositoryTest {
         user.setUserStatus(Status.ACTIVE);
         user.setUserPoint(100);
         user.setLastLoginAt(LocalDateTime.now());
+        UserGrade userGrade = new UserGrade(BASIC,0L);
+        userGradeRepository.save(userGrade);
+        user.setUserGrade(userGrade);
 
         userRepository.save(user);
 

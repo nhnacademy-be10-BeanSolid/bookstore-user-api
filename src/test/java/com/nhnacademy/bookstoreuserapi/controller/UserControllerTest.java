@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASIC;
 import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.ROYAL;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -54,6 +55,9 @@ class UserControllerTest {
     void getUser_success() throws Exception {
         User user = new User("user123", "pw", "홍길동", "01012345678",
                 "hong@test.com", LocalDate.of(1990, 1, 1));
+        user.setUserStatus(User.Status.ACTIVE);
+        UserGrade userGrade = new UserGrade(BASIC, 0L);
+        user.setUserGrade(userGrade);
         Mockito.when(userService.findById("user123")).thenReturn(Optional.of(user));
 
         mockMvc.perform(get("/users/user123"))
@@ -89,6 +93,10 @@ class UserControllerTest {
         User updatedUser = new User("user123", "newPassword", "김철수", "01011112222",
                 "lee@test.com", LocalDate.of(1995, 5, 5));
 
+        updatedUser.setUserStatus(User.Status.ACTIVE);
+        UserGrade userGrade = new UserGrade(BASIC, 0L);
+        updatedUser.setUserGrade(userGrade);
+
         Mockito.when(userService.findById("user123")).thenReturn(Optional.of(updatedUser));
 
         mockMvc.perform(put("/users/user123/personalinformation")
@@ -103,6 +111,9 @@ class UserControllerTest {
     void updateLastLoginAt() throws Exception {
         User user = new User("user123", "pw", "홍길동", "01012345678",
                 "hong@test.com", LocalDate.of(1990, 1, 1));
+        user.setUserStatus(User.Status.ACTIVE);
+        UserGrade userGrade = new UserGrade(BASIC, 0L);
+        user.setUserGrade(userGrade);
         Mockito.when(userService.findById("user123")).thenReturn(Optional.of(user));
 
         mockMvc.perform(put("/users/user123/lastloginat"))
@@ -115,6 +126,9 @@ class UserControllerTest {
         User user = new User("user123", "pw", "홍길동", "01012345678",
                 "hong@test.com", LocalDate.of(1990, 1, 1));
         user.setUserPoint(2000);
+        user.setUserStatus(User.Status.ACTIVE);
+        UserGrade userGrade = new UserGrade(BASIC, 0L);
+        user.setUserGrade(userGrade);
         Mockito.when(userService.findById("user123")).thenReturn(Optional.of(user));
 
         mockMvc.perform(put("/users/user123")
@@ -129,6 +143,8 @@ class UserControllerTest {
         User user = new User("user123", "pw", "홍길동", "01012345678",
                 "hong@test.com", LocalDate.of(1990, 1, 1));
         user.setUserStatus(User.Status.WITHDRAWN);
+        UserGrade userGrade = new UserGrade(BASIC, 0L);
+        user.setUserGrade(userGrade);
         Mockito.when(userService.findById("user123")).thenReturn(Optional.of(user));
 
         mockMvc.perform(put("/users/user123/status")
@@ -144,7 +160,7 @@ class UserControllerTest {
                 "hong@test.com", LocalDate.of(1990, 1, 1));
         user.setOrderMoney(0);
         user.setUserStatus(User.Status.ACTIVE);
-        user.setUserGrade(new UserGrade(UserGrade.Grade.BASIC, 0L));
+        user.setUserGrade(new UserGrade(BASIC, 0L));
 
         // update 후 값 반영되도록 설정
         Mockito.doAnswer(invocation -> {
@@ -168,7 +184,7 @@ class UserControllerTest {
                 "hong@test.com", LocalDate.of(1990, 1, 1));
         user.setOrderMoney(0);
         user.setUserStatus(User.Status.ACTIVE);
-        user.setUserGrade(new UserGrade(UserGrade.Grade.BASIC, 0L));
+        user.setUserGrade(new UserGrade(BASIC, 0L));
 
         Mockito.doAnswer(invocation -> {
             user.setUserGrade(new UserGrade(ROYAL, 100000L));
@@ -180,7 +196,7 @@ class UserControllerTest {
         mockMvc.perform(put("/users/user123/grade")
                         .param("gradeName", "ROYAL"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.userGrade.gradeName").value("ROYAL"));
+                .andExpect(jsonPath("$.userGradeName").value("ROYAL"));
     }
 }
 

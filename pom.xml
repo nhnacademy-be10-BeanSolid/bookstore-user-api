@@ -93,8 +93,11 @@
 			<artifactId>mysql-connector-j</artifactId>
 		</dependency>
 
-
-
+		<!-- LocalDatetime 필드를 가진 객체를 Json 으로 변환하기 위함 -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
 
 	</dependencies>
 

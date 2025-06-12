@@ -1,11 +1,10 @@
 delete from point;
 delete from users;
 
-DELETE FROM user_grades;
+DELETE FROM user_grade;
 
-
-insert into user_grades (grade_name, required_money) values ('BASIC', 0);
-insert into user_grades (grade_name, required_money) values ('ROYAL', 100000);
+insert into user_grade (grade_name, required_money) values ('BASIC', 0);
+insert into user_grade (grade_name, required_money) values ('ROYAL', 100000);
 
 
 insert into users (user_id, user_password, user_name, user_phone_number, user_email,

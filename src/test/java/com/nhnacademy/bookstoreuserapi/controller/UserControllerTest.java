@@ -89,7 +89,6 @@ class UserControllerTest {
                 "user123", "newPassword", "이수정", "01011112222",
                 "lee@test.com", LocalDate.of(1995, 5, 5)
         );
-
         User updatedUser = new User("user123", "newPassword", "김철수", "01011112222",
                 "lee@test.com", LocalDate.of(1995, 5, 5));
 

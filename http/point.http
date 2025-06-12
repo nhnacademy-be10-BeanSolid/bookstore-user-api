@@ -1,3 +1,4 @@
+### 포인트 내역 등록
 POST http://localhost:10344/users/point
 Content-Type: application/json
 
@@ -9,6 +10,6 @@ Content-Type: application/json
   "earnedAndUsedPoint": 500
 }
 
-### 주소 조회
+### 해당 유저의 포인트 내역 조회
 GET http://localhost:10344/users/point/test
 Content-Type: application/json

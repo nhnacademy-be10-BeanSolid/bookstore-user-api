@@ -12,7 +12,7 @@ public interface PointTypeService {
 
     List<ResponsePointType> getAllPointTypes();
 
-    List<ResponsePointType> getPointTypeByGradeName(UserGrade.Grade GradeName);
+    List<ResponsePointType> getPointTypeByGradeName(UserGrade.Grade gradeName);
 
     void deletePointType(Long id);
 

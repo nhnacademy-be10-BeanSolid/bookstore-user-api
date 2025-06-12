@@ -27,7 +27,7 @@ import java.util.Optional;
 import static java.time.LocalDateTime.now;
 
 @ExtendWith(MockitoExtension.class)
-public class ReviewServiceImplTest {
+class ReviewServiceImplTest {
     @Mock
     ReviewRepository reviewRepository;
 
@@ -123,7 +123,9 @@ public class ReviewServiceImplTest {
         long reviewId = 1L;
         Mockito.when(reviewRepository.findById(reviewId)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(ReviewNotFoundException.class, () -> reviewService.editReview(reviewId, new EditRequestReview(4, "Updated review", "")));
+        EditRequestReview request = new EditRequestReview(4, "Updated review", "");
+        Assertions.assertThrows(ReviewNotFoundException.class,
+                () -> reviewService.editReview(reviewId, request));
 
         Mockito.verify(reviewRepository, Mockito.times(1)).findById(reviewId);
     }

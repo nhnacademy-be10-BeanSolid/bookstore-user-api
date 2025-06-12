@@ -27,7 +27,7 @@ import java.util.Optional;
 import static java.time.LocalDateTime.now;
 
 @ExtendWith(MockitoExtension.class)
-public class CartServiceImplTest {
+class CartServiceImplTest {
 
     @Mock
     CartRepository cartRepository;
@@ -161,7 +161,7 @@ public class CartServiceImplTest {
         existingCart.setCartId(cartId);
         Mockito.when(userRepository.findById("user123")).thenReturn(Optional.of(user));
         Mockito.when(cartRepository.findAllByUser_UserId("user123")).thenReturn(List.of(existingCart));
-        List<ResponseCart> carts = cartService.getCartsByUserId("user123");
+        cartService.getCartsByUserId("user123");
         Mockito.verify(userRepository, Mockito.times(1)).findById("user123");
         Mockito.verify(cartRepository, Mockito.times(1)).findAllByUser_UserId("user123");
     }

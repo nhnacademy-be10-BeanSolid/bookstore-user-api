@@ -38,20 +38,21 @@ class AddressServiceImplTest {
     void saveAddress() {
         SignUpRequestAddress signUpRequestAddress = new SignUpRequestAddress("Home", "123 Main St", "user123");
         UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
-        Address address = new Address(0L, "Home", "123 Main St", new User(
-                "test",
-                "plainPassword",
-                "김철수",
-                "01098765432",
-                "kim@test.com",
-                LocalDate.of(1995, 6, 15),
-                0,
-                false,
-                User.Status.ACTIVE,
-                LocalDateTime.now(),
-                0,
-                userGrade
-        ));
+        User user = User.builder()
+                .userId("test")
+                .userPassword("plainPassword")
+                .userName("김철수")
+                .userPhoneNumber("01098765432")
+                .userEmail("kim@test.com")
+                .userBirth(LocalDate.of(1995, 6, 15))
+                .userPoint(0)
+                .isAuth(false)
+                .userStatus(User.Status.ACTIVE)
+                .lastLoginAt(LocalDateTime.now())
+                .orderMoney(0)
+                .userGrade(userGrade)
+                .build();
+        Address address = new Address(0L, "Home", "123 Main St", user);
 
         Mockito.when(addressRepository.countByUser_UserId(signUpRequestAddress.getUserId())).thenReturn(1L);
         Mockito.when(addressRepository.existsByUser_UserIdAndAddressDetail(signUpRequestAddress.getUserId(), signUpRequestAddress.getAddressDetail())).thenReturn(false);
@@ -107,20 +108,21 @@ class AddressServiceImplTest {
     void getAddress() {
         long addressId = 1L;
         UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
-        Address address = new Address(addressId, "Home", "123 Main St", new User(
-                "test",
-                "plainPassword",
-                "김철수",
-                "01098765432",
-                "kim@test.com",
-                LocalDate.of(1995, 6, 15),
-                0,
-                false,
-                User.Status.ACTIVE,
-                LocalDateTime.now(),
-                0,
-                userGrade
-        ));
+        User user = User.builder()
+                .userId("test")
+                .userPassword("plainPassword")
+                .userName("김철수")
+                .userPhoneNumber("01098765432")
+                .userEmail("kim@test.com")
+                .userBirth(LocalDate.of(1995, 6, 15))
+                .userPoint(0)
+                .isAuth(false)
+                .userStatus(User.Status.ACTIVE)
+                .lastLoginAt(LocalDateTime.now())
+                .orderMoney(0)
+                .userGrade(userGrade)
+                .build();
+        Address address = new Address(addressId, "Home", "123 Main St", user);
 
         Mockito.when(addressRepository.findById(addressId)).thenReturn(Optional.of(address));
 
@@ -147,20 +149,21 @@ class AddressServiceImplTest {
     void getAllAddresses() {
         String userId = "user123";
         UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
-        Address address = new Address(1L, "Home", "123 Main St", new User(
-                userId,
-                "plainPassword",
-                "김철수",
-                "01098765432",
-                "kim@test.com",
-                LocalDate.of(1995, 6, 15),
-                0,
-                false,
-                User.Status.ACTIVE,
-                LocalDateTime.now(),
-                0,
-                userGrade
-        ));
+        User user = User.builder()
+                .userId(userId)
+                .userPassword("plainPassword")
+                .userName("김철수")
+                .userPhoneNumber("01098765432")
+                .userEmail("kim@test.com")
+                .userBirth(LocalDate.of(1995, 6, 15))
+                .userPoint(0)
+                .isAuth(false)
+                .userStatus(User.Status.ACTIVE)
+                .lastLoginAt(LocalDateTime.now())
+                .orderMoney(0)
+                .userGrade(userGrade)
+                .build();
+        Address address = new Address(1L, "Home", "123 Main St", user);
 
         Mockito.when(addressRepository.findAllByUser_UserId(userId)).thenReturn(List.of(address));
 
@@ -172,20 +175,21 @@ class AddressServiceImplTest {
     void deleteAddress() {
         long addressId = 1L;
         UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
-        Address address = new Address(addressId, "Home", "123 Main St", new User(
-                "test",
-                "plainPassword",
-                "김철수",
-                "01098765432",
-                "kim@test.com",
-                LocalDate.of(1995, 6, 15),
-                0,
-                false,
-                User.Status.ACTIVE,
-                LocalDateTime.now(),
-                0,
-                userGrade
-        ));
+        User user = User.builder()
+                .userId("test")
+                .userPassword("plainPassword")
+                .userName("김철수")
+                .userPhoneNumber("01098765432")
+                .userEmail("kim@test.com")
+                .userBirth(LocalDate.of(1995, 6, 15))
+                .userPoint(0)
+                .isAuth(false)
+                .userStatus(User.Status.ACTIVE)
+                .lastLoginAt(LocalDateTime.now())
+                .orderMoney(0)
+                .userGrade(userGrade)
+                .build();
+        Address address = new Address(addressId, "Home", "123 Main St", user);
 
         Mockito.when(addressRepository.findById(addressId)).thenReturn(Optional.of(address));
         Mockito.doNothing().when(addressRepository).delete(address);

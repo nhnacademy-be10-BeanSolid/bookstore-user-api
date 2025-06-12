@@ -14,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@Builder
 public class User {
 
     public User(String userId, String userPassword, String userName, String userPhoneNumber, String userEmail, LocalDate userBirth, int userPoint, boolean isAuth, Status userStatus, LocalDateTime lastLogin, long orderMoney, UserGrade userGrade) {

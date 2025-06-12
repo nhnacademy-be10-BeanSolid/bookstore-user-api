@@ -79,7 +79,7 @@ class UserControllerTest {
     @DisplayName("회원 삭제")
     void deleteUser_success() throws Exception {
         mockMvc.perform(delete("/users/user123"))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @Test

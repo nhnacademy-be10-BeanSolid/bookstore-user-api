@@ -62,4 +62,10 @@ public class AdviceController {
         return new ErrorMessage(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(PointTypeNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorMessage handlePointTypeNotFoundException(Exception e) {
+        return new ErrorMessage(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
 }

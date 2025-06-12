@@ -8,6 +8,7 @@ import com.nhnacademy.bookstoreuserapi.exception.UserNotFoundException;
 import com.nhnacademy.bookstoreuserapi.repository.PointRepository;
 import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
 import com.nhnacademy.bookstoreuserapi.service.PointService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,8 @@ public class PointServiceImpl implements PointService {
     private final PointRepository pointRepository;
     private final UserRepository userRepository;
 
+    @Override
+    @Transactional
     public ResponsePoint savePoint(PointCreateRequest pointCreateRequest) {
 
         if(userRepository.findById(pointCreateRequest.getUserId()).isEmpty()) {
@@ -48,6 +51,7 @@ public class PointServiceImpl implements PointService {
         );
     }
 
+    @Override
     public List<ResponsePoint> findAll(String userId) {
         if (userRepository.findById(userId).isEmpty()) {
             throw new UserNotFoundException(userId);

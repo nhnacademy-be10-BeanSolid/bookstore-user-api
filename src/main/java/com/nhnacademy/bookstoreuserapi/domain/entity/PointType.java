@@ -27,6 +27,7 @@ public class PointType {
     private int earningRate;
 
     // 관계 매핑 필요
-    @Column(name = "grade_name", nullable = false)
-    private String gradeName;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "grade_name", nullable = false)
+    private UserGrade userGrade;
 }

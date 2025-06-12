@@ -13,12 +13,13 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
+import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.GOLD;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@Sql(scripts = "/point-type-test.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = {"/user-grade-test.sql", "/point-type-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class PointTypeServiceTest {
 
     @Autowired
@@ -38,10 +39,10 @@ class PointTypeServiceTest {
     @Test
     @DisplayName("등급명으로 포인트 타입 조회 성공")
     void testGetPointTypeByGradeName() {
-        List<ResponsePointType> list = pointTypeService.getPointTypeByGradeName("GOLD");
+        List<ResponsePointType> list = pointTypeService.getPointTypeByGradeName(GOLD);
 
         assertThat(list).isNotEmpty();
-        assertThat(list).allMatch(pt -> pt.getGradeName().equals("GOLD"));
+        assertThat(list).allMatch(pt -> pt.getGradeName().equals(GOLD.toString()));
     }
 
     @Test
@@ -49,9 +50,9 @@ class PointTypeServiceTest {
     void testSavePointType() {
         PointTypeCreateRequest request = new PointTypeCreateRequest(
                 "순수 주문금액",
-                200L,
+                2000L,
                 20,
-                "BRONZE"
+                "ROYAL"
         );
 
         pointTypeService.savePointType(request);

@@ -1,7 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.repository;
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.PointType;
-import com.nhnacademy.bookstoreuserapi.repository.PointTypeRepository;
+import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASIC;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -19,6 +20,9 @@ class PointTypeRepositoryTest {
 
     @Autowired
     private PointTypeRepository pointTypeRepository;
+
+    @Autowired
+    private UserGradeRepository userGradeRepository;
 
     private Long savedTypeId;
 
@@ -28,15 +32,21 @@ class PointTypeRepositoryTest {
         pointType.setTypeName("회원가입 포인트");
         pointType.setEarningPoint(100L);
         pointType.setEarningRate(10);
-        pointType.setGradeName("BASIC");
 
+        UserGrade userGrade = new UserGrade();
+        userGrade.setGradeName(BASIC);
+        userGrade.setRequiredMoney(100L);
+
+        pointType.setUserGrade(userGrade);
+
+        userGradeRepository.save(userGrade);
         savedTypeId = pointTypeRepository.save(pointType).getTypeId();
     }
 
     @Test
     @DisplayName("등급 이름으로 PointType 조회")
     void testFindByGradeName() {
-        List<PointType> result = pointTypeRepository.findPointTypeByGradeName("BASIC");
+        List<PointType> result = pointTypeRepository.findPointTypeByGradeName(BASIC);
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getTypeName()).isEqualTo("회원가입 포인트");

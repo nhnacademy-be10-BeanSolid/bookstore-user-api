@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
+import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.GOLD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -57,14 +58,14 @@ class PointTypeControllerTest {
     @Test
     @DisplayName("등급명으로 포인트 타입 조회 성공")
     void getPointTypeByGradeName() throws Exception {
-        Mockito.when(pointTypeService.getPointTypeByGradeName("GOLD"))
+        Mockito.when(pointTypeService.getPointTypeByGradeName(GOLD))
                 .thenReturn(List.of(new ResponsePointType(1L, "가입", 100L, 5, "GOLD")));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/users/pointType")
                         .param("gradeName", "GOLD"))
                 .andExpect(status().isOk());
 
-        Mockito.verify(pointTypeService).getPointTypeByGradeName("GOLD");
+        Mockito.verify(pointTypeService).getPointTypeByGradeName(GOLD);
     }
 
     @Test

@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.nhnacademy</groupId>
-	<artifactId>bookstore-user-api</artifactId>
+	<artifactId>user-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>bookstore-user-api</name>
-	<description>bookstore-user-api</description>
+	<name>user-api</name>
+	<description>user-api</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -97,6 +97,10 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 
 	</dependencies>

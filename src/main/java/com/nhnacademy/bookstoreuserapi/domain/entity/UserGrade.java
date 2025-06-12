@@ -14,13 +14,14 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "user_grades")
+@Table(name = "user_grade")
 public class UserGrade {
     @Id
     @Enumerated(EnumType.STRING)
+    @Column(name = "grade_name")
     private Grade gradeName;
 
-    @Column(nullable = false)
+    @Column(name = "required_money", nullable = false)
     private long requiredMoney;
 
     @OneToMany(mappedBy = "userGrade")

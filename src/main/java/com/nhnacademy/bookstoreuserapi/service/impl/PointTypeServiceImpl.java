@@ -1,11 +1,13 @@
 package com.nhnacademy.bookstoreuserapi.service.impl;
 
-import com.nhnacademy.bookstoreuserapi.domain.entity.Point;
 import com.nhnacademy.bookstoreuserapi.domain.entity.PointType;
+import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
 import com.nhnacademy.bookstoreuserapi.domain.request.PointTypeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePointType;
 import com.nhnacademy.bookstoreuserapi.exception.PointTypeNotFoundException;
+import com.nhnacademy.bookstoreuserapi.exception.UserGradeNotFoundException;
 import com.nhnacademy.bookstoreuserapi.repository.PointTypeRepository;
+import com.nhnacademy.bookstoreuserapi.repository.UserGradeRepository;
 import com.nhnacademy.bookstoreuserapi.service.PointTypeService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import java.util.List;
 public class PointTypeServiceImpl implements PointTypeService {
 
     private final PointTypeRepository pointTypeRepository;
+    private final UserGradeRepository userGradeRepository;
 
     @Override
     @Transactional
@@ -28,7 +31,14 @@ public class PointTypeServiceImpl implements PointTypeService {
         pointType.setTypeName(request.getTypeName());
         pointType.setEarningPoint(request.getEarningPoint());
         pointType.setEarningRate(request.getEarningRate());
-        pointType.setGradeName(request.getGradeName());
+
+        UserGrade userGrade = userGradeRepository.findByGradeName(UserGrade.Grade.valueOf(request.getGradeName()));
+
+        if(userGrade == null) {
+            throw new UserGradeNotFoundException(request.getGradeName());
+        }
+
+        pointType.setUserGrade(userGrade);
 
         pointTypeRepository.save(pointType);
     }
@@ -46,14 +56,14 @@ public class PointTypeServiceImpl implements PointTypeService {
                     pointType.getTypeName(),
                     pointType.getEarningPoint(),
                     pointType.getEarningRate(),
-                    pointType.getGradeName()
+                    pointType.getUserGrade().getGradeName().toString()
             ));
         }
         return responsePointTypes;
     }
 
     @Override
-    public List<ResponsePointType> getPointTypeByGradeName(String GradeName) {
+    public List<ResponsePointType> getPointTypeByGradeName(UserGrade.Grade GradeName) {
 
         List<PointType> pointTypes = pointTypeRepository.findPointTypeByGradeName(GradeName);
 
@@ -65,7 +75,7 @@ public class PointTypeServiceImpl implements PointTypeService {
                     pointType.getTypeName(),
                     pointType.getEarningPoint(),
                     pointType.getEarningRate(),
-                    pointType.getGradeName()
+                    pointType.getUserGrade().getGradeName().toString()
                     ));
         }
         return responsePointTypes;
@@ -96,7 +106,7 @@ public class PointTypeServiceImpl implements PointTypeService {
                 pointType.getTypeName(),
                 pointType.getEarningPoint(),
                 pointType.getEarningRate(),
-                pointType.getGradeName()
+                pointType.getUserGrade().getGradeName().toString()
 
         );
     }
@@ -115,7 +125,7 @@ public class PointTypeServiceImpl implements PointTypeService {
                 pointType.getTypeName(),
                 pointType.getEarningPoint(),
                 pointType.getEarningRate(),
-                pointType.getGradeName()
+                pointType.getUserGrade().getGradeName().toString()
         );
     }
 }

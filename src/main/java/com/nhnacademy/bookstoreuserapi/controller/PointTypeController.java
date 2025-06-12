@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
+import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
 import com.nhnacademy.bookstoreuserapi.domain.request.PointTypeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePointType;
 import com.nhnacademy.bookstoreuserapi.service.PointTypeService;
@@ -22,7 +23,7 @@ public class PointTypeController {
             return pointTypeService.getAllPointTypes();
         }
 
-        return pointTypeService.getPointTypeByGradeName(gradeName);
+        return pointTypeService.getPointTypeByGradeName(UserGrade.Grade.valueOf(gradeName));
     }
 
     @PostMapping

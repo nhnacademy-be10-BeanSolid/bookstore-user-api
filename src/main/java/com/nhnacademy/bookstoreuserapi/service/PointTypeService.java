@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.service;
 
+import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
 import com.nhnacademy.bookstoreuserapi.domain.request.PointTypeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePointType;
 
@@ -11,7 +12,7 @@ public interface PointTypeService {
 
     List<ResponsePointType> getAllPointTypes();
 
-    List<ResponsePointType> getPointTypeByGradeName(String GradeName);
+    List<ResponsePointType> getPointTypeByGradeName(UserGrade.Grade GradeName);
 
     void deletePointType(Long id);
 

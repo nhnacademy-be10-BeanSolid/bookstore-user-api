@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.service.impl;
 
+import com.nhnacademy.bookstoreuserapi.domain.entity.Point;
 import com.nhnacademy.bookstoreuserapi.domain.entity.PointType;
 import com.nhnacademy.bookstoreuserapi.domain.request.PointTypeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePointType;
@@ -82,31 +83,39 @@ public class PointTypeServiceImpl implements PointTypeService {
     }
 
     @Override
-    public ResponsePointType updateEarningPoint(Long point, String gradeName, String typeName) {
+    @Transactional
+    public ResponsePointType updateEarningPoint(Long point, Long typeId) {
 
-        PointType pointType = pointTypeRepository.updateEarningPoint(point, gradeName, typeName);
+        pointTypeRepository.updateEarningPoint(point, typeId);
 
-        ResponsePointType responsePointType = new ResponsePointType();
-        responsePointType.setTypeId(pointType.getTypeId());
-        responsePointType.setTypeName(pointType.getTypeName());
-        responsePointType.setEarningPoint(pointType.getEarningPoint());
-        responsePointType.setEarningRate(pointType.getEarningRate());
-        responsePointType.setGradeName(pointType.getGradeName());
-        return responsePointType;
+        PointType pointType = pointTypeRepository.findById(typeId)
+                .orElseThrow(() -> new PointTypeNotFoundException(typeId));
+
+        return new ResponsePointType(
+                pointType.getTypeId(),
+                pointType.getTypeName(),
+                pointType.getEarningPoint(),
+                pointType.getEarningRate(),
+                pointType.getGradeName()
+
+        );
     }
 
     @Override
-    public ResponsePointType updateEarningRate(int rate, String gradeName, String typeName) {
+    @Transactional
+    public ResponsePointType updateEarningRate(int rate, Long typeId) {
 
-        PointType pointType = pointTypeRepository.updateEarningRate(rate, gradeName, typeName);
+        pointTypeRepository.updateEarningRate(rate, typeId);
 
-        ResponsePointType responsePointType = new ResponsePointType();
-        responsePointType.setTypeId(pointType.getTypeId());
-        responsePointType.setTypeName(pointType.getTypeName());
-        responsePointType.setEarningPoint(pointType.getEarningPoint());
-        responsePointType.setEarningRate(pointType.getEarningRate());
-        responsePointType.setGradeName(pointType.getGradeName());
+        PointType pointType = pointTypeRepository.findById(typeId)
+                .orElseThrow(() -> new PointTypeNotFoundException(typeId));
 
-        return responsePointType;
+        return new ResponsePointType(
+                pointType.getTypeId(),
+                pointType.getTypeName(),
+                pointType.getEarningPoint(),
+                pointType.getEarningRate(),
+                pointType.getGradeName()
+        );
     }
 }

@@ -13,10 +13,10 @@ public interface PointTypeRepository extends JpaRepository<PointType, Long> {
     List<PointType> findPointTypeByGradeName(String gradeName);
 
     @Modifying(clearAutomatically = true)
-    @Query("update PointType p set p.earningPoint = :point where p.gradeName = :gradeName and p.typeName = :typeName")
-    PointType updateEarningPoint(Long point, String gradeName, String typeName);
+    @Query("update PointType p set p.earningPoint = :point where p.typeId = :typeId")
+    void updateEarningPoint(Long point, Long typeId);
 
     @Modifying(clearAutomatically = true)
-    @Query("update PointType p set p.earningRate = :rate where p.gradeName = :gradeName and p.typeName = :typeName")
-    PointType updateEarningRate(int rate, String gradeName, String typeName);
+    @Query("update PointType p set p.earningRate = :rate where p.typeId = :typeId")
+    void updateEarningRate(int rate, Long typeId);
 }

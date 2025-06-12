@@ -40,3 +40,9 @@ GET http://localhost:10344/users/pointType
 
 ### 유형 식별키를 이용해 유형별 적립포인트 내역 삭제
 DELETE http://localhost:10344/users/pointType/3
+
+### 유형에 따른 적립포인트 포인트 수정 수정
+PUT http://localhost:10344/users/pointType/1/point?point=300
+
+### 유형에 따른 적립포인트 적립률 수정
+PUT http://localhost:10344/users/pointType/1/rate?rate=15

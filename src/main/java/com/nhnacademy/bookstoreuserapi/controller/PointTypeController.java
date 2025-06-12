@@ -1,6 +1,5 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
-import com.nhnacademy.bookstoreuserapi.domain.entity.PointType;
 import com.nhnacademy.bookstoreuserapi.domain.request.PointTypeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePointType;
 import com.nhnacademy.bookstoreuserapi.service.PointTypeService;
@@ -37,8 +36,15 @@ public class PointTypeController {
         pointTypeService.deletePointType(typeId);
     }
 
-//    @PutMapping("/{typeId}")
-////    public ResponsePointType updateEarningPoint(@PathVariable Long typeId, @RequestParam String gradeName, @RequestParam Double point) {
-////
-////    }
+    @PutMapping("/{typeId}/point")
+    public ResponsePointType updateEarningPoint(@PathVariable Long typeId, @RequestParam Long point) {
+
+        return pointTypeService.updateEarningPoint(point, typeId);
+    }
+
+    @PutMapping("/{typeId}/rate")
+    public ResponsePointType updateRatePoint(@PathVariable Long typeId, @RequestParam int rate) {
+
+        return pointTypeService.updateEarningRate(rate, typeId);
+    }
 }

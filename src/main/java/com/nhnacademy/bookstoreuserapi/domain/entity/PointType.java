@@ -20,7 +20,7 @@ public class PointType {
     @Column(name = "type_name", nullable = false)
     private String typeName;
 
-    @Column(name = "earning_point", nullable = false)
+    @Column(name = "earning_point")
     private Long earningPoint;
 
     @Column(name = "earning_rate")

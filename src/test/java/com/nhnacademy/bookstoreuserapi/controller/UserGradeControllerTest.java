@@ -49,7 +49,7 @@ public class UserGradeControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/users/grade")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userGrade)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isConflict());
         Mockito.verify(userGradeService, Mockito.times(1)).saveUserGrade(userGrade);
     }
 

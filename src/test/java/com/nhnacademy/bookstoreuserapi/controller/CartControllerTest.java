@@ -49,7 +49,7 @@ public class CartControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/carts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(cart)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isConflict());
         Mockito.verify(cartService, Mockito.times(1)).addCart(cart);
     }
 

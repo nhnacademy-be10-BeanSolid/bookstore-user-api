@@ -52,7 +52,7 @@ public class ReviewControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/reviews")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(review)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isConflict());
         Mockito.verify(reviewService, Mockito.times(1)).addReview(review);
     }
 

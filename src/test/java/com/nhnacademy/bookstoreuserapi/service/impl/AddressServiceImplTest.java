@@ -9,7 +9,6 @@ import com.nhnacademy.bookstoreuserapi.exception.AddressLengthExceededException;
 import com.nhnacademy.bookstoreuserapi.exception.AddressLimitExceededException;
 import com.nhnacademy.bookstoreuserapi.exception.AddressNotFoundException;
 import com.nhnacademy.bookstoreuserapi.repository.AddressRepository;
-import com.nhnacademy.bookstoreuserapi.repository.UserGradeRepository;
 import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-public class AddressServiceImplTest {
+class AddressServiceImplTest {
 
     @Mock
     AddressRepository addressRepository;

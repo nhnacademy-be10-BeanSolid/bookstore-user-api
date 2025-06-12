@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = CartController.class)
 @AutoConfigureMockMvc
-public class CartControllerTest {
+class CartControllerTest {
     @Autowired
     private MockMvc mockMvc;
 

@@ -31,6 +31,8 @@ public class AddressController {
     public ResponseAddress getAddress(@PathVariable long addressId) {
         return addressService.getAddress(addressId);
     }
+
+
     @GetMapping("/user/{userId}")
     public List<ResponseAddress> getAllAddresses(@PathVariable String userId) {
         return addressService.getAllAddresses(userId);

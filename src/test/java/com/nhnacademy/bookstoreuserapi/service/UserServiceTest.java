@@ -53,20 +53,20 @@ class UserServiceTest {
     @DisplayName("사용자 저장 성공")
     @Transactional
     void saveUser_success() {
-        User user = new User(
-                "newUser",
-                "plainPassword",
-                "김철수",
-                "01098765432",
-                "kim@test.com",
-                LocalDate.of(1995, 6, 15),
-                0,
-                false,
-                User.Status.ACTIVE,
-                LocalDateTime.now(),
-                0,
-                userGradeRepository.findByGradeName(BASIC)
-        );
+        User user = User.builder()
+                .userId("newUser")
+                .userPassword("plainPassword")
+                .userName("김철수")
+                .userPhoneNumber("01098765432")
+                .userEmail("kim@test.com")
+                .userBirth(LocalDate.of(1995, 6, 15))
+                .userPoint(0)
+                .isAuth(false)
+                .userStatus(User.Status.ACTIVE)
+                .lastLoginAt(LocalDateTime.now())
+                .orderMoney(0)
+                .userGrade(userGradeRepository.findByGradeName(BASIC))
+                .build();
 
         userService.saveUser(user);
 
@@ -79,20 +79,20 @@ class UserServiceTest {
     @DisplayName("중복 사용자 저장 실패")
     @Transactional
     void saveUser_alreadyExists() {
-        User user = new User(
-                userId,
-                "plainPassword",
-                "김철수",
-                "01098765432",
-                "kim@test.com",
-                LocalDate.of(1995, 6, 15),
-                0,
-                false,
-                User.Status.ACTIVE,
-                LocalDateTime.now(),
-                0,
-                userGradeRepository.findByGradeName(BASIC)
-        );
+        User user = User.builder()
+                .userId(userId)
+                .userPassword("plainPassword")
+                .userName("김철수")
+                .userPhoneNumber("01098765432")
+                .userEmail("kim@test.com")
+                .userBirth(LocalDate.of(1995, 6, 15))
+                .userPoint(0)
+                .isAuth(false)
+                .userStatus(User.Status.ACTIVE)
+                .lastLoginAt(LocalDateTime.now())
+                .orderMoney(0)
+                .userGrade(userGradeRepository.findByGradeName(BASIC))
+                .build();
 
         assertThatThrownBy(() -> userService.saveUser(user))
                 .isInstanceOf(UserAlreadyExistException.class);

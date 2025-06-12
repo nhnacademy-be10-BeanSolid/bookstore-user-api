@@ -21,10 +21,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
-import static java.time.LocalDateTime.now;
 
 @ExtendWith(MockitoExtension.class)
 class CartServiceImplTest {
@@ -42,11 +41,20 @@ class CartServiceImplTest {
     void addCart(){
         SignUpRequestCart signUpRequestCart = new SignUpRequestCart(1, "user123", 3);
         UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
-        User user = new User(
-                "user123", "pass", "김철수", "010-1111-2222", "kim@test.com",
-                LocalDate.of(1990, 1, 1), 0, false,
-                User.Status.ACTIVE,
-                now(),0, userGrade);
+        User user = User.builder()
+                .userId("user123")
+                .userPassword("pass")
+                .userName("김철수")
+                .userPhoneNumber("01098765432")
+                .userEmail("kim@test.com")
+                .userBirth(LocalDate.of(1995, 6, 15))
+                .userPoint(0)
+                .isAuth(false)
+                .userStatus(User.Status.ACTIVE)
+                .lastLoginAt(LocalDateTime.now())
+                .orderMoney(0)
+                .userGrade(userGrade)
+                .build();
         Cart cart = new Cart(signUpRequestCart, user);
         Mockito.when(cartRepository.findByUser_UserIdAndBookId("user123", 1L)).thenReturn(null);
         Mockito.when(userRepository.findById("user123")).thenReturn(Optional.of(user));
@@ -69,11 +77,20 @@ class CartServiceImplTest {
     void addCartFailCartAlreadyExists() {
         SignUpRequestCart signUpRequestCart = new SignUpRequestCart(1, "user123", 3);
         UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
-        User user = new User(
-                "user123", "pass", "김철수", "010-1111-2222", "kim@test.com",
-                LocalDate.of(1990, 1, 1), 0, false,
-                User.Status.ACTIVE,
-                now(), 0, userGrade);
+        User user = User.builder()
+                .userId("user123")
+                .userPassword("pass")
+                .userName("김철수")
+                .userPhoneNumber("01098765432")
+                .userEmail("kim@test.com")
+                .userBirth(LocalDate.of(1995, 6, 15))
+                .userPoint(0)
+                .isAuth(false)
+                .userStatus(User.Status.ACTIVE)
+                .lastLoginAt(LocalDateTime.now())
+                .orderMoney(0)
+                .userGrade(userGrade)
+                .build();
         Cart cart = new Cart(signUpRequestCart, user);
         Mockito.when(cartRepository.findByUser_UserIdAndBookId("user123", 1L)).thenReturn(cart);
         Assertions.assertThrows(CartAlreadyExistException.class, () -> cartService.addCart(signUpRequestCart));
@@ -87,11 +104,20 @@ class CartServiceImplTest {
         long cartId = 1L;
         SignUpRequestCart signUpRequestCart = new SignUpRequestCart(1, "user123", 3);
         UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
-        User user = new User(
-                "user123", "pass", "김철수", "010-1111-2222", "kim@test.com",
-                LocalDate.of(1990, 1, 1), 0, false,
-                User.Status.ACTIVE,
-                now(), 0, userGrade);
+        User user = User.builder()
+                .userId("user123")
+                .userPassword("pass")
+                .userName("김철수")
+                .userPhoneNumber("01098765432")
+                .userEmail("kim@test.com")
+                .userBirth(LocalDate.of(1995, 6, 15))
+                .userPoint(0)
+                .isAuth(false)
+                .userStatus(User.Status.ACTIVE)
+                .lastLoginAt(LocalDateTime.now())
+                .orderMoney(0)
+                .userGrade(userGrade)
+                .build();
         Cart existingCart = new Cart(signUpRequestCart, user);
         existingCart.setCartId(cartId);
         Mockito.when(cartRepository.findById(cartId)).thenReturn(Optional.of(existingCart));
@@ -107,11 +133,20 @@ class CartServiceImplTest {
         long cartId = 1L;
         SignUpRequestCart signUpRequestCart = new SignUpRequestCart(1, "user123", 3);
         UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
-        User user = new User(
-                "user123", "pass", "김철수", "010-1111-2222", "kim@test.com",
-                LocalDate.of(1990, 1, 1), 0, false,
-                User.Status.ACTIVE,
-                now(), 0, userGrade);
+        User user = User.builder()
+                .userId("user123")
+                .userPassword("pass")
+                .userName("김철수")
+                .userPhoneNumber("01098765432")
+                .userEmail("kim@test.com")
+                .userBirth(LocalDate.of(1995, 6, 15))
+                .userPoint(0)
+                .isAuth(false)
+                .userStatus(User.Status.ACTIVE)
+                .lastLoginAt(LocalDateTime.now())
+                .orderMoney(0)
+                .userGrade(userGrade)
+                .build();
         Cart existingCart = new Cart(signUpRequestCart, user);
         existingCart.setCartId(cartId);
         Mockito.when(cartRepository.findById(cartId)).thenReturn(Optional.of(existingCart));
@@ -127,11 +162,20 @@ class CartServiceImplTest {
         long cartId = 1L;
         SignUpRequestCart signUpRequestCart = new SignUpRequestCart(1, "user123", 3);
         UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
-        User user = new User(
-                "user123", "pass", "김철수", "010-1111-2222", "kim@test.com",
-                LocalDate.of(1990, 1, 1), 0, false,
-                User.Status.ACTIVE,
-                now(), 0, userGrade);
+        User user = User.builder()
+                .userId("user123")
+                .userPassword("pass")
+                .userName("김철수")
+                .userPhoneNumber("01098765432")
+                .userEmail("kim@test.com")
+                .userBirth(LocalDate.of(1995, 6, 15))
+                .userPoint(0)
+                .isAuth(false)
+                .userStatus(User.Status.ACTIVE)
+                .lastLoginAt(LocalDateTime.now())
+                .orderMoney(0)
+                .userGrade(userGrade)
+                .build();
         Cart existingCart = new Cart(signUpRequestCart, user);
         existingCart.setCartId(cartId);
         Mockito.when(cartRepository.findById(cartId)).thenReturn(Optional.of(existingCart));
@@ -152,11 +196,20 @@ class CartServiceImplTest {
         long cartId = 1L;
         SignUpRequestCart signUpRequestCart = new SignUpRequestCart(1, "user123", 3);
         UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
-        User user = new User(
-                "user123", "pass", "김철수", "010-1111-2222", "kim@test.com",
-                LocalDate.of(1990, 1, 1), 0, false,
-                User.Status.ACTIVE,
-                now(), 0, userGrade);
+        User user = User.builder()
+                .userId("user123")
+                .userPassword("pass")
+                .userName("김철수")
+                .userPhoneNumber("01098765432")
+                .userEmail("kim@test.com")
+                .userBirth(LocalDate.of(1995, 6, 15))
+                .userPoint(0)
+                .isAuth(false)
+                .userStatus(User.Status.ACTIVE)
+                .lastLoginAt(LocalDateTime.now())
+                .orderMoney(0)
+                .userGrade(userGrade)
+                .build();
         Cart existingCart = new Cart(signUpRequestCart, user);
         existingCart.setCartId(cartId);
         Mockito.when(userRepository.findById("user123")).thenReturn(Optional.of(user));
@@ -171,11 +224,20 @@ class CartServiceImplTest {
         long cartId = 1L;
         SignUpRequestCart signUpRequestCart = new SignUpRequestCart(1, "user123", 3);
         UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
-        User user = new User(
-                "user123", "pass", "김철수", "010-1111-2222", "kim@test.com",
-                LocalDate.of(1990, 1, 1), 0, false,
-                User.Status.ACTIVE,
-                now(), 0, userGrade);
+        User user = User.builder()
+                .userId("user123")
+                .userPassword("pass")
+                .userName("김철수")
+                .userPhoneNumber("01098765432")
+                .userEmail("kim@test.com")
+                .userBirth(LocalDate.of(1995, 6, 15))
+                .userPoint(0)
+                .isAuth(false)
+                .userStatus(User.Status.ACTIVE)
+                .lastLoginAt(LocalDateTime.now())
+                .orderMoney(0)
+                .userGrade(userGrade)
+                .build();
         Cart existingCart = new Cart(signUpRequestCart, user);
         existingCart.setCartId(cartId);
         Mockito.when(userRepository.findById("user123")).thenReturn(Optional.of(user));

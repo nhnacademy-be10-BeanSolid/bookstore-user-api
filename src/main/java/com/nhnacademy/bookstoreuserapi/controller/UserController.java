@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUser;
+import com.nhnacademy.bookstoreuserapi.exception.UserNotFoundException;
 import com.nhnacademy.bookstoreuserapi.service.UserService;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
@@ -54,13 +55,14 @@ public class UserController {
 
         userService.deleteUser(userId);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{userId}/personalinformation")
     public ResponseEntity<ResponseUser> updatePersonalInformation(@PathVariable String userId, @RequestBody UserUpdateRequest userUpdateRequest){
 
-        User user = userService.findById(userId).get();
+        User user = userService.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
         user.setUserName(userUpdateRequest.userName());
         user.setUserPassword(userUpdateRequest.userPassword());
         user.setUserBirth(userUpdateRequest.userBirth());
@@ -76,7 +78,8 @@ public class UserController {
 
         userService.updateLastLoginAt(userId);
 
-        User user = userService.findById(userId).get();
+        User user = userService.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
         return ResponseEntity.ok(new ResponseUser(user));
     }
 
@@ -85,8 +88,8 @@ public class UserController {
 
         userService.updatePoint(userId, point);
 
-        User user = userService.findById(userId).get();
-
+        User user = userService.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
         return ResponseEntity.ok(new ResponseUser(user));
     }
 
@@ -95,8 +98,8 @@ public class UserController {
 
         userService.updateUserStatus(userId, status);
 
-        User user = userService.findById(userId).get();
-
+        User user = userService.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
         return ResponseEntity.ok(new ResponseUser(user));
     }
 
@@ -105,8 +108,8 @@ public class UserController {
 
         userService.updateOrderMoney(userId, orderMoney);
 
-        User user = userService.findById(userId).get();
-
+        User user = userService.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
         return ResponseEntity.ok(new ResponseUser(user));
     }
 
@@ -115,8 +118,8 @@ public class UserController {
 
         userService.updateUserGradeName(userId, gradeName);
 
-        User user = userService.findById(userId).get();
-
+        User user = userService.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
         return ResponseEntity.ok(new ResponseUser(user));
     }
 

@@ -21,6 +21,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -42,11 +43,20 @@ class ReviewServiceImplTest {
     void addReview() {
         SignUpRequestReview signUpRequestReview = new SignUpRequestReview(5, "Great book!", "", "user123", 1L);
         UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
-        User user = new User(
-                "user123", "pass", "김철수", "010-1111-2222", "kim@test.com",
-                LocalDate.of(1990, 1, 1), 0, false,
-                User.Status.ACTIVE,
-                now(),0, userGrade);
+        User user = User.builder()
+                .userId("user123")
+                .userPassword("pass")
+                .userName("김철수")
+                .userPhoneNumber("01098765432")
+                .userEmail("kim@test.com")
+                .userBirth(LocalDate.of(1995, 6, 15))
+                .userPoint(0)
+                .isAuth(false)
+                .userStatus(User.Status.ACTIVE)
+                .lastLoginAt(LocalDateTime.now())
+                .orderMoney(0)
+                .userGrade(userGrade)
+                .build();
         Review review = new Review(signUpRequestReview, user);
         Mockito.when(userRepository.findById(signUpRequestReview.getUserId())).thenReturn(Optional.of(user));
         Mockito.when(reviewRepository.findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId())).thenReturn(null);
@@ -61,11 +71,20 @@ class ReviewServiceImplTest {
     void addReviewFail() {
         SignUpRequestReview signUpRequestReview = new SignUpRequestReview(5, "Great book!", "", "user123", 1L);
         UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
-        User user = new User(
-                "user123", "pass", "김철수", "010-1111-2222", "kim@test.com",
-                LocalDate.of(1990, 1, 1), 0, false,
-                User.Status.ACTIVE,
-                now(),0, userGrade);
+        User user = User.builder()
+                .userId("user123")
+                .userPassword("pass")
+                .userName("김철수")
+                .userPhoneNumber("01098765432")
+                .userEmail("kim@test.com")
+                .userBirth(LocalDate.of(1995, 6, 15))
+                .userPoint(0)
+                .isAuth(false)
+                .userStatus(User.Status.ACTIVE)
+                .lastLoginAt(LocalDateTime.now())
+                .orderMoney(0)
+                .userGrade(userGrade)
+                .build();
         Review review = new Review(signUpRequestReview, user);
         Mockito.when(reviewRepository.findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId())).thenReturn(review);
 
@@ -103,11 +122,21 @@ class ReviewServiceImplTest {
     void editReview() {
         long reviewId = 1L;
         UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
-        Review existingReview = new Review(new SignUpRequestReview(5, "Great book!", "", "user123", 1L),new User(
-                "user123", "pass", "김철수", "010-1111-2222", "kim@test.com",
-                LocalDate.of(1990, 1, 1), 0, false,
-                User.Status.ACTIVE,
-                now(),0, userGrade));
+        User user = User.builder()
+                .userId("user123")
+                .userPassword("pass")
+                .userName("김철수")
+                .userPhoneNumber("01098765432")
+                .userEmail("kim@test.com")
+                .userBirth(LocalDate.of(1995, 6, 15))
+                .userPoint(0)
+                .isAuth(false)
+                .userStatus(User.Status.ACTIVE)
+                .lastLoginAt(LocalDateTime.now())
+                .orderMoney(0)
+                .userGrade(userGrade)
+                .build();
+        Review existingReview = new Review(new SignUpRequestReview(5, "Great book!", "", "user123", 1L), user);
         existingReview.setReviewId(reviewId);
 
         Mockito.when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(existingReview));
@@ -134,12 +163,21 @@ class ReviewServiceImplTest {
     void getReview() {
         long reviewId = 1L;
         UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
-        Review existingReview = new Review(new SignUpRequestReview(5, "Great book!", "", "user123", 1L),
-                new User(
-                        "user123", "pass", "김철수", "010-1111-2222", "kim@test.com",
-                        LocalDate.of(1990, 1, 1), 0, false,
-                        User.Status.ACTIVE,
-                        now(),0, userGrade));
+        User user = User.builder()
+                .userId("user123")
+                .userPassword("pass")
+                .userName("김철수")
+                .userPhoneNumber("01098765432")
+                .userEmail("kim@test.com")
+                .userBirth(LocalDate.of(1995, 6, 15))
+                .userPoint(0)
+                .isAuth(false)
+                .userStatus(User.Status.ACTIVE)
+                .lastLoginAt(LocalDateTime.now())
+                .orderMoney(0)
+                .userGrade(userGrade)
+                .build();
+        Review existingReview = new Review(new SignUpRequestReview(5, "Great book!", "", "user123", 1L), user);
         existingReview.setReviewId(reviewId);
 
         Mockito.when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(existingReview));
@@ -160,11 +198,20 @@ class ReviewServiceImplTest {
     @Test
     void getReviewByUserId() {
         UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
-        User user = new User(
-                "user123", "pass", "김철수", "010-1111-2222", "kim@test.com",
-                LocalDate.of(1990, 1, 1), 0, false,
-                User.Status.ACTIVE,
-                now(), 0, userGrade);
+        User user = User.builder()
+                .userId("user123")
+                .userPassword("pass")
+                .userName("김철수")
+                .userPhoneNumber("01098765432")
+                .userEmail("kim@test.com")
+                .userBirth(LocalDate.of(1995, 6, 15))
+                .userPoint(0)
+                .isAuth(false)
+                .userStatus(User.Status.ACTIVE)
+                .lastLoginAt(LocalDateTime.now())
+                .orderMoney(0)
+                .userGrade(userGrade)
+                .build();
         Review review = new Review(5, "Great book!", "", user, 1L);
         Mockito.when(reviewRepository.findAllByUser_UserId("user123")).thenReturn(Collections.singletonList(review));
         reviewService.getReviewsByUserId("user123");
@@ -188,11 +235,20 @@ class ReviewServiceImplTest {
     void getReviewByBookId() {
         long bookId = 1L;
         UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
-        User user = new User(
-                "user123", "pass", "김철수", "010-1111-2222", "kim@test.com",
-                LocalDate.of(1990, 1, 1), 0, false,
-                User.Status.ACTIVE,
-                now(), 0, userGrade);
+        User user = User.builder()
+                .userId("user123")
+                .userPassword("pass")
+                .userName("김철수")
+                .userPhoneNumber("01098765432")
+                .userEmail("kim@test.com")
+                .userBirth(LocalDate.of(1995, 6, 15))
+                .userPoint(0)
+                .isAuth(false)
+                .userStatus(User.Status.ACTIVE)
+                .lastLoginAt(LocalDateTime.now())
+                .orderMoney(0)
+                .userGrade(userGrade)
+                .build();
         Review review = new Review(5, "Great book!", "", user, bookId);
         Mockito.when(reviewRepository.findAllByBookId(bookId)).thenReturn(Collections.singletonList(review));
         reviewService.getReviewsByBookId(bookId);

@@ -41,8 +41,9 @@ class PointTypeServiceTest {
     void testGetPointTypeByGradeName() {
         List<ResponsePointType> list = pointTypeService.getPointTypeByGradeName(GOLD);
 
-        assertThat(list).isNotEmpty();
-        assertThat(list).allMatch(pt -> pt.getGradeName().equals(GOLD.toString()));
+        assertThat(list)
+                .isNotEmpty()
+                .allMatch(pt -> pt.getGradeName().equals(GOLD.toString()));
     }
 
     @Test

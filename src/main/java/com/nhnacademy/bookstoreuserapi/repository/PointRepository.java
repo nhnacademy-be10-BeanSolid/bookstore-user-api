@@ -1,7 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.repository;
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.Point;
-import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePoint;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

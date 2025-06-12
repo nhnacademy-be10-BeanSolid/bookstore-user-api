@@ -3,7 +3,6 @@ package com.nhnacademy.bookstoreuserapi.service;
 import com.nhnacademy.bookstoreuserapi.domain.request.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePoint;
 import com.nhnacademy.bookstoreuserapi.exception.UserNotFoundException;
-import com.nhnacademy.bookstoreuserapi.service.PointService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

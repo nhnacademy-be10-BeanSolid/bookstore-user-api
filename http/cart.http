@@ -1,0 +1,70 @@
+### 장바구니 추가
+
+POST http://localhost:10344/carts
+Content-Type: application/json
+
+{
+  "userId": "test",
+  "bookId": 1,
+  "quantity": 2
+}
+
+### 장바구니 추가2
+POST http://localhost:10344/carts
+Content-Type: application/json
+
+{
+  "userId": "test",
+  "bookId": 2,
+  "quantity": 1
+}
+
+### 장바구니 추가3
+POST http://localhost:10344/carts
+Content-Type: application/json
+
+{
+  "userId": "test1",
+  "bookId": 3,
+  "quantity": 3
+}
+
+### 장바구니 조회
+GET http://localhost:10344/carts/user/test
+Content-Type: application/json
+
+### 장바구니 조회2
+GET http://localhost:10344/carts/user/test1
+Content-Type: application/json
+
+### 장바구니 수정
+PUT http://localhost:10344/carts/1
+Content-Type: application/json
+
+{
+  "quantity": 5
+}
+
+### 장바구니 삭제
+DELETE http://localhost:10344/carts/1
+Content-Type: application/json
+
+### 장바구니 삭제2
+DELETE http://localhost:10344/carts/2
+Content-Type: application/json
+
+### 장바구니 삭제3
+DELETE http://localhost:10344/carts/3
+Content-Type: application/json
+
+### 장바구니 조회(단건)
+GET http://localhost:10344/carts/1
+Content-Type: application/json
+
+### 장바구니 조회(단건2)
+GET http://localhost:10344/carts/2
+Content-Type: application/json
+
+### 장바구니 삭제 - 유저
+DELETE http://localhost:10344/carts/user/test
+Content-Type: application/json

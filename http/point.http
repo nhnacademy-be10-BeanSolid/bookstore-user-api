@@ -1,5 +1,5 @@
 ### 포인트 내역 등록
-POST http://localhost:10344/users/point
+POST http://localhost:10348/users/point
 Content-Type: application/json
 
 {
@@ -11,5 +11,5 @@ Content-Type: application/json
 }
 
 ### 해당 유저의 포인트 내역 조회
-GET http://localhost:10344/users/point/test
+GET http://localhost:10348/users/point/test
 Content-Type: application/json

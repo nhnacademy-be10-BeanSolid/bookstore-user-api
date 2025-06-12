@@ -90,7 +90,7 @@ public class ReviewServiceImpl {
 
     public List<ResponseReview> getReviewsByUserId(String userId) {
         if (userId == null || userId.isEmpty()) {
-            throw new InvalidDataException("Invalid user ID");
+            throw new UserNotFoundException(userId);
         }
         List<Review> reviews = reviewRepository.findAllByUser_UserId(userId);
         return reviews.stream()

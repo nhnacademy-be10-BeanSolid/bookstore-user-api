@@ -4,10 +4,7 @@ import com.nhnacademy.bookstoreuserapi.domain.entity.Address;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestAddress;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseAddress;
-import com.nhnacademy.bookstoreuserapi.exception.AddressAlreadyExistException;
-import com.nhnacademy.bookstoreuserapi.exception.AddressLengthExceededException;
-import com.nhnacademy.bookstoreuserapi.exception.AddressLimitExceededException;
-import com.nhnacademy.bookstoreuserapi.exception.AddressNotFoundException;
+import com.nhnacademy.bookstoreuserapi.exception.*;
 import com.nhnacademy.bookstoreuserapi.repository.AddressRepository;
 import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -32,7 +29,7 @@ public class AddressServiceImpl{
             throw new AddressLimitExceededException(address.getUserId());
         }
         if (address.getAddressDetail().length() > 255) {
-            throw new AddressLengthExceededException("주소는 255자 이내여야 합니다.");
+            throw new AddressLengthExceededException();
         }
         boolean exists = addressRepository.existsByUser_UserIdAndAddressDetail(address.getUserId(), address.getAddressDetail());
         if (exists) {
@@ -42,7 +39,7 @@ public class AddressServiceImpl{
         addressTmp.setAddressNickName(address.getAddressNickName());
         addressTmp.setAddressDetail(address.getAddressDetail());
         User user = userRepository.findById(address.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다: " + address.getUserId()));
+                .orElseThrow(() -> new UserNotFoundException(address.getUserId()));
         addressTmp.setUser(user);
         Address savedAddress = addressRepository.save(addressTmp);
         return new ResponseAddress(

@@ -1,7 +1,11 @@
 package com.nhnacademy.bookstoreuserapi.exception;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
 public class UserGradeNotFoundException extends RuntimeException {
     public UserGradeNotFoundException(String userGradeId) {
-        super("해당 등급이 존재하지 않습니다: " + userGradeId);
+        super("UserGrade ID : " + userGradeId + " not found");
     }
 }

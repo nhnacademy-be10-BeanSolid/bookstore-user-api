@@ -92,7 +92,7 @@ public class CartServiceImpl {
 
     public void deleteCartsByUserId(String userId) {
         if (userId == null || userId.isEmpty()) {
-            throw new InvalidDataException("Invalid user ID");
+            throw new UserNotFoundException(userId);
         }
         userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));

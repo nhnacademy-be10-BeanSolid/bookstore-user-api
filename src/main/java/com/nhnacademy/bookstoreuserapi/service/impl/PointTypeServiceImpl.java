@@ -63,9 +63,9 @@ public class PointTypeServiceImpl implements PointTypeService {
     }
 
     @Override
-    public List<ResponsePointType> getPointTypeByGradeName(UserGrade.Grade GradeName) {
+    public List<ResponsePointType> getPointTypeByGradeName(UserGrade.Grade gradeName) {
 
-        List<PointType> pointTypes = pointTypeRepository.findPointTypeByGradeName(GradeName);
+        List<PointType> pointTypes = pointTypeRepository.findPointTypeByGradeName(gradeName);
 
         List<ResponsePointType> responsePointTypes = new ArrayList<>();
 

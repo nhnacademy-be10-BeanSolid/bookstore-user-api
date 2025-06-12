@@ -18,8 +18,7 @@ public interface UserService {
 
     void updateUserStatus(String userId, User.Status status);
 
-    // 나중에 구현
-     void updateUserGradeName(String userId, String gradeName);
+    void updateUserGradeName(String userId, String gradeName);
 
     void deleteUser(String userId);
 

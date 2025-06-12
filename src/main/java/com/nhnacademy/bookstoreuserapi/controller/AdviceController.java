@@ -3,7 +3,6 @@ package com.nhnacademy.bookstoreuserapi.controller;
 import com.nhnacademy.bookstoreuserapi.exception.*;
 import com.nhnacademy.bookstoreuserapi.util.ErrorMessage;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -60,6 +59,18 @@ public class AdviceController {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorMessage handleUserGradeNotFoundException(UserGradeNotFoundException e) {
         return new ErrorMessage(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CartNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorMessage handleCartNotFoundException(CartNotFoundException e) {
+        return new ErrorMessage(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CartAlreadyExistException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleCartAlreadyExistException(CartAlreadyExistException e) {
+        return new ErrorMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(PointTypeNotFoundException.class)

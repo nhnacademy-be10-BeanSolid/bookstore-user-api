@@ -32,9 +32,6 @@ public class AddressServiceImplTest {
     @Mock
     UserRepository userRepository;
 
-    @Mock
-    UserGradeRepository userGradeRepository;
-
     @InjectMocks
     AddressServiceImpl addressService;
 

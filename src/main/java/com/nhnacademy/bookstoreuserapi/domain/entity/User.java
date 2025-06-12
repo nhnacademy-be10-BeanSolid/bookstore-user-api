@@ -80,6 +80,10 @@ public class User {
     @JsonIgnore
     private List<Review> reviews;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Cart> carts;
+
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "grade_name", nullable = false)
     private UserGrade userGrade;

@@ -7,7 +7,6 @@ import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
 import com.nhnacademy.bookstoreuserapi.domain.request.EditRequestReview;
 import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestReview;
 import com.nhnacademy.bookstoreuserapi.exception.InvalidDataException;
-import com.nhnacademy.bookstoreuserapi.exception.InvalidReviewDataException;
 import com.nhnacademy.bookstoreuserapi.exception.ReviewAlreadyExistsBookException;
 import com.nhnacademy.bookstoreuserapi.exception.ReviewNotFoundException;
 import com.nhnacademy.bookstoreuserapi.repository.ReviewRepository;
@@ -95,14 +94,14 @@ class ReviewServiceImplTest {
     void addReviewInvalidData() {
         SignUpRequestReview signUpRequestReview = new SignUpRequestReview(0, "", "", null, 0L);
 
-        Assertions.assertThrows(InvalidReviewDataException.class, () -> reviewService.addReview(signUpRequestReview));
+        Assertions.assertThrows(InvalidDataException.class, () -> reviewService.addReview(signUpRequestReview));
         Mockito.verify(reviewRepository, Mockito.never()).findByUser_UserIdAndBookId(Mockito.anyString(), Mockito.anyLong());
         Mockito.verify(reviewRepository, Mockito.never()).save(Mockito.any(Review.class));
     }
 
     @Test
     void addReviewInvalidDataNull() {
-        Assertions.assertThrows(InvalidReviewDataException.class, () -> reviewService.addReview(null));
+        Assertions.assertThrows(InvalidDataException.class, () -> reviewService.addReview(null));
         Mockito.verify(reviewRepository, Mockito.never()).findByUser_UserIdAndBookId(Mockito.anyString(), Mockito.anyLong());
         Mockito.verify(reviewRepository, Mockito.never()).save(Mockito.any(Review.class));
     }
@@ -111,7 +110,7 @@ class ReviewServiceImplTest {
     void addReviewInvalidDataEmpty() {
         SignUpRequestReview signUpRequestReview = new SignUpRequestReview(0, "", "", "", 0L);
 
-        Assertions.assertThrows(InvalidReviewDataException.class, () -> reviewService.addReview(signUpRequestReview));
+        Assertions.assertThrows(InvalidDataException.class, () -> reviewService.addReview(signUpRequestReview));
         Mockito.verify(reviewRepository, Mockito.never()).findByUser_UserIdAndBookId(Mockito.anyString(), Mockito.anyLong());
         Mockito.verify(reviewRepository, Mockito.never()).save(Mockito.any(Review.class));
     }

@@ -27,7 +27,7 @@ public class ReviewServiceImpl {
         if(review == null
                 || review.getUserId() == null
                 || review.getBookId() <= 0L) {
-            throw new InvalidReviewDataException("Invalid review data");  //InvalidReviewDataException말고 그냥 InvalidDataException으로 해도 될 것 같음 나중에 합친 후에 수정
+            throw new InvalidDataException("Invalid review data");
         }
         Review findReview = reviewRepository.findByUser_UserIdAndBookId(review.getUserId(), review.getBookId());
         if (findReview != null) {
@@ -90,7 +90,7 @@ public class ReviewServiceImpl {
 
     public List<ResponseReview> getReviewsByUserId(String userId) {
         if (userId == null || userId.isEmpty()) {
-            throw new UserNotFoundException(userId);
+            throw new InvalidDataException("Invalid user ID");
         }
         List<Review> reviews = reviewRepository.findAllByUser_UserId(userId);
         return reviews.stream()

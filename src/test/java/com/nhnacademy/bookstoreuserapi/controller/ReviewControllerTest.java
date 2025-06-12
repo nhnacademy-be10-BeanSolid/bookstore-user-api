@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstoreuserapi.domain.request.EditRequestReview;
 import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestReview;
 import com.nhnacademy.bookstoreuserapi.exception.InvalidDataException;
-import com.nhnacademy.bookstoreuserapi.exception.InvalidReviewDataException;
 import com.nhnacademy.bookstoreuserapi.exception.ReviewAlreadyExistsBookException;
 import com.nhnacademy.bookstoreuserapi.exception.ReviewNotFoundException;
 import com.nhnacademy.bookstoreuserapi.service.impl.ReviewServiceImpl;
@@ -59,7 +58,7 @@ class ReviewControllerTest {
     @Test
     void addReviewFailInvalidReviewData() throws Exception {
         SignUpRequestReview review = new SignUpRequestReview(0, "", "", "user123", 1L); // Invalid data
-        Mockito.when(reviewService.addReview(review)).thenThrow(new InvalidReviewDataException("Invalid review data"));
+        Mockito.when(reviewService.addReview(review)).thenThrow(new InvalidDataException("Invalid review data"));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/reviews")
                     .contentType(MediaType.APPLICATION_JSON)

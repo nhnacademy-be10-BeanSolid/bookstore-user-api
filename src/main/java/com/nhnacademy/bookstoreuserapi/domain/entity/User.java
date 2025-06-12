@@ -17,21 +17,6 @@ import java.util.List;
 @Builder
 public class User {
 
-    public User(String userId, String userPassword, String userName, String userPhoneNumber, String userEmail, LocalDate userBirth, int userPoint, boolean isAuth, Status userStatus, LocalDateTime lastLogin, long orderMoney, UserGrade userGrade) {
-        this.userId = userId;
-        this.userPassword = userPassword;
-        this.userName = userName;
-        this.userPhoneNumber = userPhoneNumber;
-        this.userEmail = userEmail;
-        this.userBirth = userBirth;
-        this.userPoint = userPoint;
-        this.isAuth = isAuth;
-        this.userStatus = userStatus;
-        this.lastLoginAt = lastLogin;
-        this.orderMoney = orderMoney;
-        this.userGrade = userGrade;
-    }
-
     public enum Status {
         ACTIVE,
         DORMANT,

@@ -25,8 +25,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
 
-import static java.time.LocalDateTime.now;
-
 @ExtendWith(MockitoExtension.class)
 class ReviewServiceImplTest {
     @Mock

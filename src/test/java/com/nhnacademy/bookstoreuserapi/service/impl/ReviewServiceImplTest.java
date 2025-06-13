@@ -4,8 +4,8 @@ package com.nhnacademy.bookstoreuserapi.service.impl;
 import com.nhnacademy.bookstoreuserapi.domain.entity.Review;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
-import com.nhnacademy.bookstoreuserapi.domain.request.EditRequestReview;
-import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestReview;
+import com.nhnacademy.bookstoreuserapi.domain.request.ReviewUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.domain.request.ReviewCreateRequest;
 import com.nhnacademy.bookstoreuserapi.exception.InvalidDataException;
 import com.nhnacademy.bookstoreuserapi.exception.ReviewAlreadyExistsBookException;
 import com.nhnacademy.bookstoreuserapi.exception.ReviewNotFoundException;
@@ -38,7 +38,7 @@ class ReviewServiceImplTest {
 
     @Test
     void addReview() {
-        SignUpRequestReview signUpRequestReview = new SignUpRequestReview(5, "Great book!", "", "user123", 1L);
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(5, "Great book!", "", "user123", 1L);
         UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
         User user = User.builder()
                 .userId("user123")
@@ -54,19 +54,19 @@ class ReviewServiceImplTest {
                 .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
-        Review review = new Review(signUpRequestReview, user);
-        Mockito.when(userRepository.findById(signUpRequestReview.getUserId())).thenReturn(Optional.of(user));
+        Review review = new Review(reviewCreateRequest, user);
+        Mockito.when(userRepository.findById(reviewCreateRequest.getUserId())).thenReturn(Optional.of(user));
         Mockito.when(reviewRepository.findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId())).thenReturn(null);
         Mockito.when(reviewRepository.save(Mockito.any(Review.class))).thenReturn(review);
 
-        reviewService.addReview(signUpRequestReview);
+        reviewService.addReview(reviewCreateRequest);
         Mockito.verify(reviewRepository, Mockito.times(1)).findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId());
         Mockito.verify(reviewRepository, Mockito.times(1)).save(Mockito.any(Review.class));
     }
 
     @Test
     void addReviewFail() {
-        SignUpRequestReview signUpRequestReview = new SignUpRequestReview(5, "Great book!", "", "user123", 1L);
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(5, "Great book!", "", "user123", 1L);
         UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
         User user = User.builder()
                 .userId("user123")
@@ -82,19 +82,19 @@ class ReviewServiceImplTest {
                 .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
-        Review review = new Review(signUpRequestReview, user);
+        Review review = new Review(reviewCreateRequest, user);
         Mockito.when(reviewRepository.findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId())).thenReturn(review);
 
-        Assertions.assertThrows(ReviewAlreadyExistsBookException.class, () -> reviewService.addReview(signUpRequestReview));
+        Assertions.assertThrows(ReviewAlreadyExistsBookException.class, () -> reviewService.addReview(reviewCreateRequest));
 
         Mockito.verify(reviewRepository, Mockito.times(1)).findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId());
     }
 
     @Test
     void addReviewInvalidData() {
-        SignUpRequestReview signUpRequestReview = new SignUpRequestReview(0, "", "", null, 0L);
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(0, "", "", null, 0L);
 
-        Assertions.assertThrows(InvalidDataException.class, () -> reviewService.addReview(signUpRequestReview));
+        Assertions.assertThrows(InvalidDataException.class, () -> reviewService.addReview(reviewCreateRequest));
         Mockito.verify(reviewRepository, Mockito.never()).findByUser_UserIdAndBookId(Mockito.anyString(), Mockito.anyLong());
         Mockito.verify(reviewRepository, Mockito.never()).save(Mockito.any(Review.class));
     }
@@ -108,9 +108,9 @@ class ReviewServiceImplTest {
 
     @Test
     void addReviewInvalidDataEmpty() {
-        SignUpRequestReview signUpRequestReview = new SignUpRequestReview(0, "", "", "", 0L);
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(0, "", "", "", 0L);
 
-        Assertions.assertThrows(InvalidDataException.class, () -> reviewService.addReview(signUpRequestReview));
+        Assertions.assertThrows(InvalidDataException.class, () -> reviewService.addReview(reviewCreateRequest));
         Mockito.verify(reviewRepository, Mockito.never()).findByUser_UserIdAndBookId(Mockito.anyString(), Mockito.anyLong());
         Mockito.verify(reviewRepository, Mockito.never()).save(Mockito.any(Review.class));
     }
@@ -133,13 +133,13 @@ class ReviewServiceImplTest {
                 .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
-        Review existingReview = new Review(new SignUpRequestReview(5, "Great book!", "", "user123", 1L), user);
+        Review existingReview = new Review(new ReviewCreateRequest(5, "Great book!", "", "user123", 1L), user);
         existingReview.setReviewId(reviewId);
 
         Mockito.when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(existingReview));
         Mockito.when(reviewRepository.save(Mockito.any(Review.class))).thenReturn(existingReview);
 
-        reviewService.editReview(reviewId, new EditRequestReview(4, "Updated review", ""));
+        reviewService.editReview(reviewId, new ReviewUpdateRequest(4, "Updated review", ""));
 
         Mockito.verify(reviewRepository, Mockito.times(1)).findById(reviewId);
     }
@@ -149,7 +149,7 @@ class ReviewServiceImplTest {
         long reviewId = 1L;
         Mockito.when(reviewRepository.findById(reviewId)).thenReturn(Optional.empty());
 
-        EditRequestReview request = new EditRequestReview(4, "Updated review", "");
+        ReviewUpdateRequest request = new ReviewUpdateRequest(4, "Updated review", "");
         Assertions.assertThrows(ReviewNotFoundException.class,
                 () -> reviewService.editReview(reviewId, request));
 
@@ -174,7 +174,7 @@ class ReviewServiceImplTest {
                 .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
-        Review existingReview = new Review(new SignUpRequestReview(5, "Great book!", "", "user123", 1L), user);
+        Review existingReview = new Review(new ReviewCreateRequest(5, "Great book!", "", "user123", 1L), user);
         existingReview.setReviewId(reviewId);
 
         Mockito.when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(existingReview));

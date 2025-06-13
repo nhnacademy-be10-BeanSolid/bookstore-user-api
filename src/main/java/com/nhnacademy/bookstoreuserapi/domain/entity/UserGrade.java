@@ -2,7 +2,7 @@ package com.nhnacademy.bookstoreuserapi.domain.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestUserGrade;
+import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeCreateRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +28,7 @@ public class UserGrade {
     @JsonIgnore
     private List<User> user;
 
-    public UserGrade(SignUpRequestUserGrade userGrade) {
+    public UserGrade(UserGradeCreateRequest userGrade) {
         this.gradeName = Grade.valueOf(userGrade.getGradeName());
         this.requiredMoney = userGrade.getRequiredMoney();
     }

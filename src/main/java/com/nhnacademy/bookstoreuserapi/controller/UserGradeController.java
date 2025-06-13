@@ -1,10 +1,10 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
 
-import com.nhnacademy.bookstoreuserapi.domain.request.EditRequestUserGrade;
-import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestUserGrade;
+import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUserGrade;
-import com.nhnacademy.bookstoreuserapi.service.impl.UserGradeServiceImpl;
+import com.nhnacademy.bookstoreuserapi.service.UserGradeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,15 +14,15 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/users/grade")
 public class UserGradeController {
-    private final UserGradeServiceImpl userGradeService;
+    private final UserGradeService userGradeService;
 
     @PostMapping
-    public ResponseUserGrade addUserGrade(@RequestBody SignUpRequestUserGrade userGrade) {
+    public ResponseUserGrade addUserGrade(@RequestBody UserGradeCreateRequest userGrade) {
         return userGradeService.saveUserGrade(userGrade);
     }
 
     @PutMapping("/{gradeName}")
-    public ResponseUserGrade updateUserGrade(@PathVariable String gradeName, @RequestBody EditRequestUserGrade userGrade) {
+    public ResponseUserGrade updateUserGrade(@PathVariable String gradeName, @RequestBody UserGradeUpdateRequest userGrade) {
         return userGradeService.updateUserGrade(gradeName, userGrade);
     }
 

@@ -4,12 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignUpRequestAddress {
-    private String addressNickName;
-    private String addressDetail;
-    private String userId;
+public class UserGradeCreateRequest {
+    private String gradeName;
+    private long requiredMoney;
 }

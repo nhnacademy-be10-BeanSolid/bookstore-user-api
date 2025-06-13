@@ -3,7 +3,7 @@ package com.nhnacademy.bookstoreuserapi.service.impl;
 import com.nhnacademy.bookstoreuserapi.domain.entity.Address;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
-import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestAddress;
+import com.nhnacademy.bookstoreuserapi.domain.request.AddressCreateRequest;
 import com.nhnacademy.bookstoreuserapi.exception.AddressAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.AddressLengthExceededException;
 import com.nhnacademy.bookstoreuserapi.exception.AddressLimitExceededException;
@@ -36,7 +36,7 @@ class AddressServiceImplTest {
 
     @Test
     void saveAddress() {
-        SignUpRequestAddress signUpRequestAddress = new SignUpRequestAddress("Home", "123 Main St", "user123");
+        AddressCreateRequest addressCreateRequest = new AddressCreateRequest("Home", "123 Main St", "user123");
         UserGrade userGrade = new UserGrade(UserGrade.Grade.BASIC, 0L);
         User user = User.builder()
                 .userId("test")
@@ -54,50 +54,50 @@ class AddressServiceImplTest {
                 .build();
         Address address = new Address(0L, "Home", "123 Main St", user);
 
-        Mockito.when(addressRepository.countByUser_UserId(signUpRequestAddress.getUserId())).thenReturn(1L);
-        Mockito.when(addressRepository.existsByUser_UserIdAndAddressDetail(signUpRequestAddress.getUserId(), signUpRequestAddress.getAddressDetail())).thenReturn(false);
+        Mockito.when(addressRepository.countByUser_UserId(addressCreateRequest.getUserId())).thenReturn(1L);
+        Mockito.when(addressRepository.existsByUser_UserIdAndAddressDetail(addressCreateRequest.getUserId(), addressCreateRequest.getAddressDetail())).thenReturn(false);
         Mockito.when(addressRepository.save(address)).thenReturn(address);
-        Mockito.when(userRepository.findById(signUpRequestAddress.getUserId())).thenReturn(Optional.of(address.getUser()));
+        Mockito.when(userRepository.findById(addressCreateRequest.getUserId())).thenReturn(Optional.of(address.getUser()));
 
-        addressService.save(signUpRequestAddress);
-        Mockito.verify(addressRepository, Mockito.times(1)).countByUser_UserId(signUpRequestAddress.getUserId());
-        Mockito.verify(addressRepository, Mockito.times(1)).existsByUser_UserIdAndAddressDetail(signUpRequestAddress.getUserId(), signUpRequestAddress.getAddressDetail());
+        addressService.save(addressCreateRequest);
+        Mockito.verify(addressRepository, Mockito.times(1)).countByUser_UserId(addressCreateRequest.getUserId());
+        Mockito.verify(addressRepository, Mockito.times(1)).existsByUser_UserIdAndAddressDetail(addressCreateRequest.getUserId(), addressCreateRequest.getAddressDetail());
         Mockito.verify(addressRepository, Mockito.times(1)).save(address);
-        Mockito.verify(userRepository, Mockito.times(1)).findById(signUpRequestAddress.getUserId());
+        Mockito.verify(userRepository, Mockito.times(1)).findById(addressCreateRequest.getUserId());
     }
 
     @Test
     void saveAddressFailAlreadyExists() {
-        SignUpRequestAddress signUpRequestAddress = new SignUpRequestAddress("Home", "123 Main St", "user123");
+        AddressCreateRequest addressCreateRequest = new AddressCreateRequest("Home", "123 Main St", "user123");
 
-        Mockito.when(addressRepository.existsByUser_UserIdAndAddressDetail(signUpRequestAddress.getUserId(), signUpRequestAddress.getAddressDetail())).thenReturn(true);
+        Mockito.when(addressRepository.existsByUser_UserIdAndAddressDetail(addressCreateRequest.getUserId(), addressCreateRequest.getAddressDetail())).thenReturn(true);
 
         try {
-            addressService.save(signUpRequestAddress);
+            addressService.save(addressCreateRequest);
         } catch (Exception e) {
             assert e instanceof AddressAlreadyExistException;
         }
 
-        Mockito.verify(addressRepository, Mockito.times(1)).existsByUser_UserIdAndAddressDetail(signUpRequestAddress.getUserId(), signUpRequestAddress.getAddressDetail());
+        Mockito.verify(addressRepository, Mockito.times(1)).existsByUser_UserIdAndAddressDetail(addressCreateRequest.getUserId(), addressCreateRequest.getAddressDetail());
     }
 
     @Test
     void saveAddressFailLimitExceeded() {
-        SignUpRequestAddress signUpRequestAddress = new SignUpRequestAddress("Home", "123 Main St", "user123");
-        Mockito.when(addressRepository.countByUser_UserId(signUpRequestAddress.getUserId())).thenReturn(10L);
+        AddressCreateRequest addressCreateRequest = new AddressCreateRequest("Home", "123 Main St", "user123");
+        Mockito.when(addressRepository.countByUser_UserId(addressCreateRequest.getUserId())).thenReturn(10L);
         try {
-            addressService.save(signUpRequestAddress);
+            addressService.save(addressCreateRequest);
         } catch (Exception e) {
             assert e instanceof AddressLimitExceededException;
         }
-        Mockito.verify(addressRepository, Mockito.times(1)).countByUser_UserId(signUpRequestAddress.getUserId());
+        Mockito.verify(addressRepository, Mockito.times(1)).countByUser_UserId(addressCreateRequest.getUserId());
     }
 
     @Test
     void saveAddressFailLengthExceeded() {
-        SignUpRequestAddress signUpRequestAddress = new SignUpRequestAddress("Home", "A".repeat(256), "user123");
+        AddressCreateRequest addressCreateRequest = new AddressCreateRequest("Home", "A".repeat(256), "user123");
         try {
-            addressService.save(signUpRequestAddress);
+            addressService.save(addressCreateRequest);
         } catch (Exception e) {
             assert e instanceof AddressLengthExceededException;
         }

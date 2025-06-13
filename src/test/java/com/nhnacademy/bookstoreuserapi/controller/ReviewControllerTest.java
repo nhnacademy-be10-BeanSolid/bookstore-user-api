@@ -2,8 +2,8 @@ package com.nhnacademy.bookstoreuserapi.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstoreuserapi.domain.request.EditRequestReview;
-import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestReview;
+import com.nhnacademy.bookstoreuserapi.domain.request.ReviewUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.domain.request.ReviewCreateRequest;
 import com.nhnacademy.bookstoreuserapi.exception.InvalidDataException;
 import com.nhnacademy.bookstoreuserapi.exception.ReviewAlreadyExistsBookException;
 import com.nhnacademy.bookstoreuserapi.exception.ReviewNotFoundException;
@@ -33,7 +33,7 @@ class ReviewControllerTest {
 
     @Test
     void addReview() throws Exception {
-        SignUpRequestReview review = new SignUpRequestReview(5, "Great book!", "", "user123", 1L);
+        ReviewCreateRequest review = new ReviewCreateRequest(5, "Great book!", "", "user123", 1L);
         Mockito.when(reviewService.addReview(review)).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/reviews")
@@ -45,7 +45,7 @@ class ReviewControllerTest {
 
     @Test
     void addReviewFailAlreadyExist() throws Exception {
-        SignUpRequestReview review = new SignUpRequestReview(5, "Great book!", "", "user123", 1L);
+        ReviewCreateRequest review = new ReviewCreateRequest(5, "Great book!", "", "user123", 1L);
         Mockito.when(reviewService.addReview(review)).thenThrow(new ReviewAlreadyExistsBookException("user123", 1L));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/reviews")
@@ -57,7 +57,7 @@ class ReviewControllerTest {
 
     @Test
     void addReviewFailInvalidReviewData() throws Exception {
-        SignUpRequestReview review = new SignUpRequestReview(0, "", "", "user123", 1L); // Invalid data
+        ReviewCreateRequest review = new ReviewCreateRequest(0, "", "", "user123", 1L); // Invalid data
         Mockito.when(reviewService.addReview(review)).thenThrow(new InvalidDataException("Invalid review data"));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/reviews")
@@ -70,7 +70,7 @@ class ReviewControllerTest {
     @Test
     void editReview() throws Exception {
         long reviewId = 1L;
-        EditRequestReview review = new EditRequestReview(5, "Updated review", "");
+        ReviewUpdateRequest review = new ReviewUpdateRequest(5, "Updated review", "");
         Mockito.when(reviewService.editReview(reviewId, review)).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/reviews/" + reviewId)
@@ -83,7 +83,7 @@ class ReviewControllerTest {
     @Test
     void editReviewFailNotFound() throws Exception {
         long reviewId = 1L;
-        EditRequestReview review = new EditRequestReview(5, "Updated review", "");
+        ReviewUpdateRequest review = new ReviewUpdateRequest(5, "Updated review", "");
         Mockito.when(reviewService.editReview(reviewId, review)).thenThrow(new ReviewNotFoundException(1L));
 
         mockMvc.perform(MockMvcRequestBuilders.put("/reviews/" + reviewId)

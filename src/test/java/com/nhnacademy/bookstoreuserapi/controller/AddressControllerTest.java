@@ -6,6 +6,7 @@ import com.nhnacademy.bookstoreuserapi.domain.request.AddressCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseAddress;
 import com.nhnacademy.bookstoreuserapi.exception.AddressAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.AddressNotFoundException;
+import com.nhnacademy.bookstoreuserapi.service.AddressService;
 import com.nhnacademy.bookstoreuserapi.service.impl.AddressServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ class AddressControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private AddressServiceImpl addressService;
+    private AddressService addressService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

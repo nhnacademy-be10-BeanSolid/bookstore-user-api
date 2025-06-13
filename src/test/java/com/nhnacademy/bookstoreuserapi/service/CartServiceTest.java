@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.service.impl;
+package com.nhnacademy.bookstoreuserapi.service;
 
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.Cart;
@@ -12,6 +12,7 @@ import com.nhnacademy.bookstoreuserapi.exception.CartNotFoundException;
 import com.nhnacademy.bookstoreuserapi.exception.InvalidDataException;
 import com.nhnacademy.bookstoreuserapi.repository.CartRepository;
 import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
+import com.nhnacademy.bookstoreuserapi.service.impl.CartServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-class CartServiceImplTest {
+class CartServiceTest {
 
     @Mock
     CartRepository cartRepository;

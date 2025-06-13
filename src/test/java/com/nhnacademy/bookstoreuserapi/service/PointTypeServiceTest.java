@@ -18,8 +18,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@Sql(scripts = {"/user-grade-test.sql", "/point-type-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = {"/user-test.sql", "/point-type-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class PointTypeServiceTest {
 
     @Autowired

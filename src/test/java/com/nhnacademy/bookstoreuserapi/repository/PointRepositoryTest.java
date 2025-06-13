@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.repository;
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.Point;
+import com.nhnacademy.bookstoreuserapi.domain.entity.PointType;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User.Status;
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
@@ -28,6 +29,9 @@ class PointRepositoryTest {
     @Autowired
     private UserGradeRepository userGradeRepository;
 
+    @Autowired
+    private PointTypeRepository pointTypeRepository;
+
     private final String userId = "testUser";
 
     @BeforeEach
@@ -44,13 +48,21 @@ class PointRepositoryTest {
         user.setUserPoint(100);
         user.setLastLoginAt(LocalDateTime.now());
         UserGrade userGrade = new UserGrade(BASIC,0L);
+
         userGradeRepository.save(userGrade);
+
         user.setUserGrade(userGrade);
 
         userRepository.save(user);
 
-        Point point1 = new Point(null, user, 1L, 1L, LocalDateTime.now(), 50L);
-        Point point2 = new Point(null, user, 2L, 2L, LocalDateTime.now(), -100L);
+        PointType pointType1 = new PointType(null, "회원가입", 5000L, 1, userGrade);
+        PointType pointType2 = new PointType(null,"리뷰작성", 500L, 1, userGrade);
+
+        pointTypeRepository.save(pointType1);
+        pointTypeRepository.save(pointType2);
+
+        Point point1 = new Point(null, user, pointType1, 1L, LocalDateTime.now(), 50L);
+        Point point2 = new Point(null, user, pointType2, 2L, LocalDateTime.now(), -100L);
 
         pointRepository.save(point1);
         pointRepository.save(point2);

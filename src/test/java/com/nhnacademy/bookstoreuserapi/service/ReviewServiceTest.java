@@ -11,6 +11,7 @@ import com.nhnacademy.bookstoreuserapi.exception.ReviewAlreadyExistsBookExceptio
 import com.nhnacademy.bookstoreuserapi.exception.ReviewNotFoundException;
 import com.nhnacademy.bookstoreuserapi.repository.ReviewRepository;
 import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
+import com.nhnacademy.bookstoreuserapi.service.impl.ReviewServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +35,7 @@ class ReviewServiceTest {
     UserRepository userRepository;
 
     @InjectMocks
-    ReviewService reviewService;
+    ReviewServiceImpl reviewService;
 
     @Test
     void addReview() {

@@ -12,6 +12,7 @@ import com.nhnacademy.bookstoreuserapi.exception.CartNotFoundException;
 import com.nhnacademy.bookstoreuserapi.exception.InvalidDataException;
 import com.nhnacademy.bookstoreuserapi.repository.CartRepository;
 import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
+import com.nhnacademy.bookstoreuserapi.service.impl.CartServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +36,7 @@ class CartServiceTest {
     UserRepository userRepository;
 
     @InjectMocks
-    CartService cartService;
+    CartServiceImpl cartService;
 
     @Test
     void addCart(){

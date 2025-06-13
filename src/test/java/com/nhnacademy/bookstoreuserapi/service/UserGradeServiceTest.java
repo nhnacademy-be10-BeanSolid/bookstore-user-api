@@ -7,6 +7,7 @@ import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.exception.InvalidDataException;
 import com.nhnacademy.bookstoreuserapi.exception.UserGradeAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.repository.UserGradeRepository;
+import com.nhnacademy.bookstoreuserapi.service.impl.UserGradeServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +24,7 @@ class UserGradeServiceTest {
     UserGradeRepository userGradeRepository;
 
     @InjectMocks
-    UserGradeService userGradeService;
+    UserGradeServiceImpl userGradeService;
 
     @Test
     void saveUserGrade() {

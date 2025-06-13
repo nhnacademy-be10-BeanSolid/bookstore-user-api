@@ -10,6 +10,7 @@ import com.nhnacademy.bookstoreuserapi.exception.AddressLimitExceededException;
 import com.nhnacademy.bookstoreuserapi.exception.AddressNotFoundException;
 import com.nhnacademy.bookstoreuserapi.repository.AddressRepository;
 import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
+import com.nhnacademy.bookstoreuserapi.service.impl.AddressServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,7 +33,7 @@ class AddressServiceTest {
     UserRepository userRepository;
 
     @InjectMocks
-    AddressService addressService;
+    AddressServiceImpl addressService;
 
     @Test
     void saveAddress() {

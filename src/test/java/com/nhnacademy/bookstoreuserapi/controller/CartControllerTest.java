@@ -5,6 +5,7 @@ import com.nhnacademy.bookstoreuserapi.domain.request.CartUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.CartCreateRequest;
 import com.nhnacademy.bookstoreuserapi.exception.CartAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.CartNotFoundException;
+import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.service.impl.CartServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -18,6 +19,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = CartController.class)
@@ -54,6 +57,17 @@ class CartControllerTest {
     }
 
     @Test
+    void addCartFailValidation() throws Exception {
+        CartCreateRequest cart = new CartCreateRequest(0, "", 0);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/carts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(cart)))
+                .andExpect(result ->
+                        assertTrue(result.getResolvedException() instanceof ValidationFailedException));
+    }
+
+    @Test
     void editCart() throws Exception {
         long cartId = 1L;
         CartUpdateRequest cart = new CartUpdateRequest(5);
@@ -63,6 +77,18 @@ class CartControllerTest {
                         .content(objectMapper.writeValueAsString(cart)))
                 .andExpect(status().is2xxSuccessful());
         Mockito.verify(cartService, Mockito.times(1)).editCart(cartId, cart);
+    }
+
+    @Test
+    void editCartFailValidation() throws Exception {
+        long cartId = 1L;
+        CartUpdateRequest cart = new CartUpdateRequest(-1);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/carts/" + cartId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(cart)))
+                .andExpect(result ->
+                        assertTrue(result.getResolvedException() instanceof ValidationFailedException));
     }
 
     @Test

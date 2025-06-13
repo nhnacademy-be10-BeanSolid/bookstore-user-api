@@ -5,7 +5,6 @@ import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUserGrade;
-import com.nhnacademy.bookstoreuserapi.exception.InvalidDataException;
 import com.nhnacademy.bookstoreuserapi.exception.UserGradeAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.UserGradeNotFoundException;
 import com.nhnacademy.bookstoreuserapi.repository.UserGradeRepository;
@@ -26,11 +25,8 @@ public class UserGradeServiceImpl implements UserGradeService {
 
     @Override
     public ResponseUserGrade saveUserGrade(UserGradeCreateRequest userGrade) {
-        if (userGrade.getRequiredMoney() < 0) {
-            throw new InvalidDataException("금액은 음수일 수 없습니다.");
-        }
-        if(userGradeRepository.existsByGradeName(UserGrade.Grade.valueOf(userGrade.getGradeName()))){
-            throw new UserGradeAlreadyExistException(userGrade.getGradeName());
+        if(userGradeRepository.existsByGradeName(UserGrade.Grade.valueOf(userGrade.gradeName()))){
+            throw new UserGradeAlreadyExistException(userGrade.gradeName());
         }
         UserGrade savedUserGrade = userGradeRepository.save(new UserGrade(userGrade));
         return new ResponseUserGrade(
@@ -43,19 +39,15 @@ public class UserGradeServiceImpl implements UserGradeService {
     public ResponseUserGrade updateUserGrade(String gradeName, UserGradeUpdateRequest userGrade) {
         UserGrade findUserGrade = userGradeRepository.findById(UserGrade.Grade.valueOf(gradeName))
                 .orElseThrow(() -> new UserGradeNotFoundException(gradeName));
-
-        if (userGrade.getRequiredMoney() < 0) {
-            throw new InvalidDataException("금액은 음수일 수 없습니다.");
-        }
-        if(userGradeRepository.existsByGradeName(UserGrade.Grade.valueOf(userGrade.getGradeName())) &&
-                !findUserGrade.getGradeName().name().equals(userGrade.getGradeName())){
-            throw new UserGradeAlreadyExistException(userGrade.getGradeName());
+        if(userGradeRepository.existsByGradeName(UserGrade.Grade.valueOf(userGrade.gradeName())) &&
+                !findUserGrade.getGradeName().name().equals(userGrade.gradeName())){
+            throw new UserGradeAlreadyExistException(userGrade.gradeName());
         }
 
-        findUserGrade.setGradeName(UserGrade.Grade.valueOf(userGrade.getGradeName()));
-        findUserGrade.setRequiredMoney(userGrade.getRequiredMoney());
+        findUserGrade.setGradeName(UserGrade.Grade.valueOf(userGrade.gradeName()));
+        findUserGrade.setRequiredMoney(userGrade.requiredMoney());
 
-        log.warn("주의: 등급 {}의 금액이 위계상 비정상일 수 있음. (입력값: {})", userGrade.getGradeName(), userGrade.getRequiredMoney());
+        log.warn("주의: 등급 {}의 금액이 위계상 비정상일 수 있음. (입력값: {})", userGrade.gradeName(), userGrade.requiredMoney());
 
         return new ResponseUserGrade(
                 findUserGrade.getGradeName().name(),

@@ -6,7 +6,6 @@ import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
 import com.nhnacademy.bookstoreuserapi.domain.request.ReviewUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.ReviewCreateRequest;
-import com.nhnacademy.bookstoreuserapi.exception.InvalidDataException;
 import com.nhnacademy.bookstoreuserapi.exception.ReviewAlreadyExistsBookException;
 import com.nhnacademy.bookstoreuserapi.exception.ReviewNotFoundException;
 import com.nhnacademy.bookstoreuserapi.repository.ReviewRepository;
@@ -55,7 +54,7 @@ class ReviewServiceImplTest {
                 .userGrade(userGrade)
                 .build();
         Review review = new Review(reviewCreateRequest, user);
-        Mockito.when(userRepository.findById(reviewCreateRequest.getUserId())).thenReturn(Optional.of(user));
+        Mockito.when(userRepository.findById(reviewCreateRequest.userId())).thenReturn(Optional.of(user));
         Mockito.when(reviewRepository.findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId())).thenReturn(null);
         Mockito.when(reviewRepository.save(Mockito.any(Review.class))).thenReturn(review);
 
@@ -88,31 +87,6 @@ class ReviewServiceImplTest {
         Assertions.assertThrows(ReviewAlreadyExistsBookException.class, () -> reviewService.addReview(reviewCreateRequest));
 
         Mockito.verify(reviewRepository, Mockito.times(1)).findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId());
-    }
-
-    @Test
-    void addReviewInvalidData() {
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(0, "", "", null, 0L);
-
-        Assertions.assertThrows(InvalidDataException.class, () -> reviewService.addReview(reviewCreateRequest));
-        Mockito.verify(reviewRepository, Mockito.never()).findByUser_UserIdAndBookId(Mockito.anyString(), Mockito.anyLong());
-        Mockito.verify(reviewRepository, Mockito.never()).save(Mockito.any(Review.class));
-    }
-
-    @Test
-    void addReviewInvalidDataNull() {
-        Assertions.assertThrows(InvalidDataException.class, () -> reviewService.addReview(null));
-        Mockito.verify(reviewRepository, Mockito.never()).findByUser_UserIdAndBookId(Mockito.anyString(), Mockito.anyLong());
-        Mockito.verify(reviewRepository, Mockito.never()).save(Mockito.any(Review.class));
-    }
-
-    @Test
-    void addReviewInvalidDataEmpty() {
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(0, "", "", "", 0L);
-
-        Assertions.assertThrows(InvalidDataException.class, () -> reviewService.addReview(reviewCreateRequest));
-        Mockito.verify(reviewRepository, Mockito.never()).findByUser_UserIdAndBookId(Mockito.anyString(), Mockito.anyLong());
-        Mockito.verify(reviewRepository, Mockito.never()).save(Mockito.any(Review.class));
     }
 
     @Test
@@ -215,18 +189,6 @@ class ReviewServiceImplTest {
         Mockito.verify(reviewRepository, Mockito.times(1)).findAllByUser_UserId("user123");
     }
 
-    @Test
-    void getReviewsByUserId_NullUserId_ThrowsException() {
-        Assertions.assertThrows(InvalidDataException.class, () -> reviewService.getReviewsByUserId(null));
-        Mockito.verify(reviewRepository, Mockito.never()).findAllByUser_UserId(Mockito.any());
-    }
-
-    @Test
-    void getReviewsByUserId_EmptyUserId_ThrowsException() {
-        Assertions.assertThrows(InvalidDataException.class, () -> reviewService.getReviewsByUserId(""));
-        Mockito.verify(reviewRepository, Mockito.never()).findAllByUser_UserId(Mockito.any());
-    }
-
 
     @Test
     void getReviewByBookId() {
@@ -252,9 +214,4 @@ class ReviewServiceImplTest {
         Mockito.verify(reviewRepository, Mockito.times(1)).findAllByBookId(bookId);
     }
 
-    @Test
-    void getReviewsByBookId_InvalidBookId_ThrowsException() {
-        Assertions.assertThrows(InvalidDataException.class, () -> reviewService.getReviewsByBookId(-1L));
-        Mockito.verify(reviewRepository, Mockito.never()).findAllByBookId(Mockito.anyLong());
-    }
 }

@@ -26,18 +26,15 @@ public class PointServiceImpl implements PointService {
     @Transactional
     public ResponsePoint savePoint(PointCreateRequest pointCreateRequest) {
 
-        if(userRepository.findById(pointCreateRequest.getUserId()).isEmpty()) {
-            throw new UserNotFoundException(pointCreateRequest.getUserId());
-        }
 
+        User user = userRepository.findById(pointCreateRequest.userId())
+                .orElseThrow(() -> new UserNotFoundException(pointCreateRequest.userId()));
         Point point = new Point();
-        User user = userRepository.findById(pointCreateRequest.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException(pointCreateRequest.getUserId()));
         point.setUser(user);
-        point.setPaymentId(pointCreateRequest.getPaymentId());
-        point.setTypeId(pointCreateRequest.getTypeId());
-        point.setEarnedAndUsedAt(pointCreateRequest.getEarnedAndUsedAt());
-        point.setEarnedAndUsedPoint(pointCreateRequest.getEarnedAndUsedPoint());
+        point.setPaymentId(pointCreateRequest.paymentId());
+        point.setTypeId(pointCreateRequest.typeId());
+        point.setEarnedAndUsedAt(pointCreateRequest.earnedAndUsedAt());
+        point.setEarnedAndUsedPoint(pointCreateRequest.earnedAndUsedPoint());
 
         Point savedPoint = pointRepository.save(point);
 

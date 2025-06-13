@@ -9,7 +9,6 @@ import com.nhnacademy.bookstoreuserapi.domain.request.CartCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseCart;
 import com.nhnacademy.bookstoreuserapi.exception.CartAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.CartNotFoundException;
-import com.nhnacademy.bookstoreuserapi.exception.InvalidDataException;
 import com.nhnacademy.bookstoreuserapi.repository.CartRepository;
 import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -63,14 +62,6 @@ class CartServiceImplTest {
         Mockito.verify(cartRepository, Mockito.times(1)).findByUser_UserIdAndBookId("user123", 1L);
         Mockito.verify(userRepository, Mockito.times(1)).findById("user123");
         Mockito.verify(cartRepository, Mockito.times(1)).save(Mockito.any(Cart.class));
-    }
-
-    @Test
-    void addCartFailInvalidData() {
-        CartCreateRequest cartCreateRequest = new CartCreateRequest(0, null, -1);
-        Assertions.assertThrows(InvalidDataException.class, () -> cartService.addCart(cartCreateRequest));
-        Mockito.verify(cartRepository, Mockito.never()).findByUser_UserIdAndBookId(Mockito.anyString(), Mockito.anyLong());
-        Mockito.verify(cartRepository, Mockito.never()).save(Mockito.any(Cart.class));
     }
 
     @Test
@@ -247,13 +238,6 @@ class CartServiceImplTest {
         Mockito.verify(userRepository, Mockito.times(1)).findById("user123");
         Mockito.verify(cartRepository, Mockito.times(1)).findAllByUser_UserId("user123");
         Mockito.verify(cartRepository, Mockito.times(1)).deleteAll(List.of(existingCart));
-    }
-
-    @Test
-    void deleteCartsByUserIdFailInvalidDate() {
-        String userId = "";
-        Assertions.assertThrows(InvalidDataException.class, () -> cartService.deleteCartsByUserId(userId));
-        Mockito.verify(userRepository, Mockito.never()).findById(Mockito.anyString());
     }
 
 }

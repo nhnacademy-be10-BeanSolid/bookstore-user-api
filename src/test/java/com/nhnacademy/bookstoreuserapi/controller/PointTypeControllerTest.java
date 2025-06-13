@@ -3,6 +3,7 @@ package com.nhnacademy.bookstoreuserapi.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstoreuserapi.domain.request.PointTypeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePointType;
+import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.service.PointTypeService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -79,6 +80,18 @@ class PointTypeControllerTest {
                 .andExpect(status().isOk());
 
         Mockito.verify(pointTypeService).savePointType(request);
+    }
+
+    @Test
+    @DisplayName("포인트 타입 생성 실패 - 유효성 검사")
+    void createPointTypeValidationFail() throws Exception {
+        PointTypeCreateRequest request = new PointTypeCreateRequest("", 0L, 0, "BRONZE");
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/pointType")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(result ->
+                        assertThat(result.getResolvedException()).isInstanceOf(ValidationFailedException.class));
     }
 
     @Test

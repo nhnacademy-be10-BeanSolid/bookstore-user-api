@@ -26,22 +26,19 @@ public class AddressServiceImpl implements AddressService {
     // 주소 등록
     @Override
     public ResponseAddress save(AddressCreateRequest address) {
-        long count = addressRepository.countByUser_UserId(address.getUserId());
+        long count = addressRepository.countByUser_UserId(address.userId());
         if (count >= 10) {
-            throw new AddressLimitExceededException(address.getUserId());
+            throw new AddressLimitExceededException(address.userId());
         }
-        if (address.getAddressDetail().length() > 255) {
-            throw new AddressLengthExceededException();
-        }
-        boolean exists = addressRepository.existsByUser_UserIdAndAddressDetail(address.getUserId(), address.getAddressDetail());
+        boolean exists = addressRepository.existsByUser_UserIdAndAddressDetail(address.userId(), address.addressDetail());
         if (exists) {
-            throw new AddressAlreadyExistException(address.getAddressDetail(), address.getUserId());
+            throw new AddressAlreadyExistException(address.addressDetail(), address.userId());
         }
         Address addressTmp = new Address();
-        addressTmp.setAddressNickName(address.getAddressNickName());
-        addressTmp.setAddressDetail(address.getAddressDetail());
-        User user = userRepository.findById(address.getUserId())
-                .orElseThrow(() -> new UserNotFoundException(address.getUserId()));
+        addressTmp.setAddressNickName(address.addressNickName());
+        addressTmp.setAddressDetail(address.addressDetail());
+        User user = userRepository.findById(address.userId())
+                .orElseThrow(() -> new UserNotFoundException(address.userId()));
         addressTmp.setUser(user);
         Address savedAddress = addressRepository.save(addressTmp);
         return new ResponseAddress(

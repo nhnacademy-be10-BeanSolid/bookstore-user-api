@@ -6,6 +6,7 @@ import com.nhnacademy.bookstoreuserapi.domain.request.AddressCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseAddress;
 import com.nhnacademy.bookstoreuserapi.exception.AddressAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.AddressNotFoundException;
+import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.service.impl.AddressServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AddressController.class)
@@ -48,7 +51,7 @@ class AddressControllerTest {
     }
 
     @Test
-    void addAddressFail() throws Exception{
+    void addAddressFailAlreadyExist() throws Exception{
         AddressCreateRequest address = new AddressCreateRequest("별칭", "광주광역시 도로명주소 123", "userId123");
         Mockito.when(addressService.save(address)).thenThrow(AddressAlreadyExistException.class);
 
@@ -56,6 +59,16 @@ class AddressControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(address)))
                 .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void addAddressFailValidation() throws Exception{
+        AddressCreateRequest address = new AddressCreateRequest("", "", "");
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/address")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(address)))
+                .andExpect(result ->
+                        assertTrue(result.getResolvedException() instanceof ValidationFailedException));
     }
 
     @Test

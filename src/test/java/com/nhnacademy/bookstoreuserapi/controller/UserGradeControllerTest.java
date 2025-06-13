@@ -5,6 +5,7 @@ import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.exception.UserGradeAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.UserGradeNotFoundException;
+import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.service.impl.UserGradeServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -16,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = UserGradeController.class)
@@ -34,7 +37,7 @@ class UserGradeControllerTest {
         UserGradeCreateRequest userGrade = new UserGradeCreateRequest("BASIC", 0);
         Mockito.when(userGradeService.saveUserGrade(userGrade)).thenReturn(null);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/users/grade")
+        mockMvc.perform(post("/users/grade")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userGrade)))
                 .andExpect(status().is2xxSuccessful());
@@ -42,11 +45,22 @@ class UserGradeControllerTest {
     }
 
     @Test
+    void addUserGradeFailValidation() throws Exception {
+        UserGradeCreateRequest userGrade = new UserGradeCreateRequest("", -1);
+        mockMvc.perform(post("/users/grade")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userGrade)))
+                .andExpect(status().isBadRequest())
+                .andExpect(result ->
+                        assertThat(result.getResolvedException()).isInstanceOf(ValidationFailedException.class));
+    }
+
+    @Test
     void addUserGradeFailExists() throws Exception {
         UserGradeCreateRequest userGrade = new UserGradeCreateRequest("BASIC", 0);
-        Mockito.when(userGradeService.saveUserGrade(userGrade)).thenThrow(new UserGradeAlreadyExistException(userGrade.getGradeName()));
+        Mockito.when(userGradeService.saveUserGrade(userGrade)).thenThrow(new UserGradeAlreadyExistException(userGrade.gradeName()));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/users/grade")
+        mockMvc.perform(post("/users/grade")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userGrade)))
                 .andExpect(status().isConflict());
@@ -85,6 +99,19 @@ class UserGradeControllerTest {
                         .content(objectMapper.writeValueAsString(userGrade)))
                 .andExpect(status().is2xxSuccessful());
         Mockito.verify(userGradeService, Mockito.times(1)).updateUserGrade(grade, userGrade);
+    }
+
+    @Test
+    void updateUserGradeFailValidation() throws Exception {
+        String grade = "BASIC";
+        UserGradeUpdateRequest userGrade = new UserGradeUpdateRequest("", -1);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/users/grade/{gradeName}", grade)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userGrade)))
+                .andExpect(status().isBadRequest())
+                .andExpect(result ->
+                        assertThat(result.getResolvedException()).isInstanceOf(ValidationFailedException.class));
     }
 
     @Test

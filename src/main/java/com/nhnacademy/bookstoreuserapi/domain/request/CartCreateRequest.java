@@ -1,14 +1,12 @@
 package com.nhnacademy.bookstoreuserapi.domain.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class CartCreateRequest {
-    private long bookId;
-    private String userId;
-    private int quantity;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+public record CartCreateRequest (@Min(1) long bookId,
+                                 @NotBlank @Size(max = 20) String userId,
+                                 @Min(1) int quantity){
+
 }

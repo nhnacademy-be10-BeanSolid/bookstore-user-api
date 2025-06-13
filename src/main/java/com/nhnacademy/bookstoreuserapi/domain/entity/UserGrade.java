@@ -29,8 +29,8 @@ public class UserGrade {
     private List<User> user;
 
     public UserGrade(UserGradeCreateRequest userGrade) {
-        this.gradeName = Grade.valueOf(userGrade.getGradeName());
-        this.requiredMoney = userGrade.getRequiredMoney();
+        this.gradeName = Grade.valueOf(userGrade.gradeName());
+        this.requiredMoney = userGrade.requiredMoney();
     }
 
     public UserGrade(Grade grade, long requiredMoney) {

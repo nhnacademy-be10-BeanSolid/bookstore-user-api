@@ -27,8 +27,8 @@ public class Cart {
     private int quantity;
 
     public Cart(CartCreateRequest cart, User user) {
-        this.bookId = cart.getBookId();
+        this.bookId = cart.bookId();
         this.user = user;
-        this.quantity = cart.getQuantity();
+        this.quantity = cart.quantity();
     }
 }

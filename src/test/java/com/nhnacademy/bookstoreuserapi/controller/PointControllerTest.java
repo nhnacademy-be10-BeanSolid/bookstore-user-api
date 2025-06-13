@@ -3,6 +3,7 @@ package com.nhnacademy.bookstoreuserapi.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstoreuserapi.domain.request.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePoint;
+import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.service.PointService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -67,5 +68,16 @@ class PointControllerTest {
                 .andExpect(status().is2xxSuccessful());
 
         Mockito.verify(pointService, Mockito.times(1)).savePoint(request);
+    }
+
+    @Test
+    void savePointValidationFail() throws Exception {
+        PointCreateRequest request = new PointCreateRequest("", 0L, 0L, LocalDateTime.now(), 0L);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/point")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(result ->
+                        Assertions.assertTrue(result.getResolvedException() instanceof ValidationFailedException));
     }
 }

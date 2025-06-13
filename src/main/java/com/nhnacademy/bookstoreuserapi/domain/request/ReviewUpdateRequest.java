@@ -1,14 +1,12 @@
 package com.nhnacademy.bookstoreuserapi.domain.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class ReviewUpdateRequest {
-    private int evaluationScore;
-    private String reviewContent;
-    private String reviewPhoto;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+public record ReviewUpdateRequest (@Min(1) @Max(5) int evaluationScore,
+                                   @NotBlank @Size(max = 255) String reviewContent,
+                                   @Size(max = 255) String reviewPhoto){
 }

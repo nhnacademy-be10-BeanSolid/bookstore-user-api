@@ -8,6 +8,9 @@ import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -51,7 +54,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<ResponseUser> deleteUser(@PathVariable String userId) {
+    public ResponseEntity<ResponseUser> deleteUser(@PathVariable @NotBlank @Size(max = 20) String userId) {
 
         userService.deleteUser(userId);
 
@@ -59,7 +62,11 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/personalinformation")
-    public ResponseEntity<ResponseUser> updatePersonalInformation(@PathVariable String userId, @RequestBody UserUpdateRequest userUpdateRequest){
+    public ResponseEntity<ResponseUser> updatePersonalInformation(@PathVariable @NotBlank @Size(max = 20) String userId, @Valid @RequestBody UserUpdateRequest userUpdateRequest, BindingResult bindingResult){
+
+        if(bindingResult.hasErrors()) {
+            throw new ValidationFailedException(bindingResult);
+        }
 
         User user = userService.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -74,7 +81,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/lastloginat")
-    public ResponseEntity<ResponseUser> updateLastLoginAt(@PathVariable String userId){
+    public ResponseEntity<ResponseUser> updateLastLoginAt(@PathVariable @NotBlank @Size(max = 20) String userId){
 
         userService.updateLastLoginAt(userId);
 
@@ -84,7 +91,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<ResponseUser> updatePoint(@PathVariable String userId, @RequestParam int point){
+    public ResponseEntity<ResponseUser> updatePoint(@PathVariable @NotBlank @Size(max = 20) String userId, @RequestParam @Min(0) int point){
 
         userService.updatePoint(userId, point);
 
@@ -94,7 +101,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/status")
-    public ResponseEntity<ResponseUser> updateStatus(@PathVariable String userId, @RequestParam User.Status status){
+    public ResponseEntity<ResponseUser> updateStatus(@PathVariable @NotBlank @Size(max = 20) String userId, @RequestParam User.Status status){
 
         userService.updateUserStatus(userId, status);
 
@@ -104,7 +111,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/ordermoney")     // 기존 주문 금액에 더함 ++orderMoney
-    public ResponseEntity<ResponseUser> updateOrderMoney(@PathVariable String userId, @RequestParam long orderMoney) {
+    public ResponseEntity<ResponseUser> updateOrderMoney(@PathVariable @NotBlank @Size(max = 20) String userId, @RequestParam long orderMoney) {
 
         userService.updateOrderMoney(userId, orderMoney);
 
@@ -114,7 +121,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/grade")
-    public ResponseEntity<ResponseUser> updateUserGradeName(@PathVariable String userId, @RequestParam String gradeName) {
+    public ResponseEntity<ResponseUser> updateUserGradeName(@PathVariable @NotBlank @Size(max = 20) String userId, @RequestParam @NotBlank @Size(max = 10) String gradeName) {
 
         userService.updateUserGradeName(userId, gradeName);
 

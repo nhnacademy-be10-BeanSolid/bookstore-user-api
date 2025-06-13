@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.controllerAdvice;
+package com.nhnacademy.bookstoreuserapi.controller.advice;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -14,12 +14,12 @@ public class GlobalExceptionHandler {
         ResponseStatus responseStatus = e.getClass().getAnnotation(ResponseStatus.class);
         HttpStatus status = responseStatus != null ? responseStatus.value() : HttpStatus.INTERNAL_SERVER_ERROR;
 
-        ErrorMessage Errormessage = new ErrorMessage(
+        ErrorMessage errorMessage = new ErrorMessage(
                 status.value(),
                 status.getReasonPhrase(),
                 request.getRequestURI(),
                 e.getMessage()
         );
-        return ResponseEntity.status(status).body(Errormessage);
+        return ResponseEntity.status(status).body(errorMessage);
     }
 }

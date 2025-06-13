@@ -1,19 +1,19 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
-import com.nhnacademy.bookstoreuserapi.service.UserService;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
+import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.exception.UserNotFoundException;
+import com.nhnacademy.bookstoreuserapi.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
@@ -22,7 +22,8 @@ import java.util.Optional;
 import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASIC;
 import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.ROYAL;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
 class UserControllerTest {
@@ -30,7 +31,7 @@ class UserControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    @MockitoBean
+    @MockBean
     UserService userService;
 
     @Autowired

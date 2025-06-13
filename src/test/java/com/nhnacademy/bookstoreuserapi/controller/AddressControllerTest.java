@@ -6,15 +6,15 @@ import com.nhnacademy.bookstoreuserapi.domain.request.AddressCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseAddress;
 import com.nhnacademy.bookstoreuserapi.exception.AddressAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.AddressNotFoundException;
-import com.nhnacademy.bookstoreuserapi.service.AddressService;
+import com.nhnacademy.bookstoreuserapi.service.impl.AddressServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -29,8 +29,8 @@ class AddressControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockitoBean
-    private AddressService addressService;
+    @MockBean
+    private AddressServiceImpl addressService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

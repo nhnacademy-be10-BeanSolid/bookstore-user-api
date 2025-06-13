@@ -5,15 +5,14 @@ import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.exception.UserGradeAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.UserGradeNotFoundException;
-import com.nhnacademy.bookstoreuserapi.service.UserGradeService;
 import com.nhnacademy.bookstoreuserapi.service.impl.UserGradeServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -25,8 +24,8 @@ class UserGradeControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockitoBean
-    private UserGradeService userGradeService;
+    @MockBean
+    private UserGradeServiceImpl userGradeService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

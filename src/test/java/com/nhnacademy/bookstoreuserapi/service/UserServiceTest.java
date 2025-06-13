@@ -12,9 +12,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,7 +22,8 @@ import java.util.Optional;
 
 import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASIC;
 import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.ROYAL;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -39,7 +40,7 @@ class UserServiceTest {
     @Autowired
     private UserGradeRepository userGradeRepository;
 
-    @MockitoBean
+    @MockBean
     private PasswordEncoder passwordEncoder;
 
     private final String userId = "test";

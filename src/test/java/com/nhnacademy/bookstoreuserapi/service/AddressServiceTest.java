@@ -50,7 +50,6 @@ class AddressServiceTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Address address = new Address(0L, "Home", "123 Main St", user);
@@ -120,7 +119,6 @@ class AddressServiceTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Address address = new Address(addressId, "Home", "123 Main St", user);
@@ -161,7 +159,6 @@ class AddressServiceTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Address address = new Address(1L, "Home", "123 Main St", user);
@@ -187,7 +184,6 @@ class AddressServiceTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Address address = new Address(addressId, "Home", "123 Main St", user);

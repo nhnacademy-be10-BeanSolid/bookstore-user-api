@@ -53,7 +53,6 @@ class CartServiceTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Cart cart = new Cart(cartCreateRequest, user);
@@ -89,7 +88,6 @@ class CartServiceTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Cart cart = new Cart(cartCreateRequest, user);
@@ -116,7 +114,6 @@ class CartServiceTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Cart existingCart = new Cart(cartCreateRequest, user);
@@ -145,7 +142,6 @@ class CartServiceTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Cart existingCart = new Cart(cartCreateRequest, user);
@@ -174,7 +170,6 @@ class CartServiceTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Cart existingCart = new Cart(cartCreateRequest, user);
@@ -208,7 +203,6 @@ class CartServiceTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Cart existingCart = new Cart(cartCreateRequest, user);
@@ -236,7 +230,6 @@ class CartServiceTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Cart existingCart = new Cart(cartCreateRequest, user);

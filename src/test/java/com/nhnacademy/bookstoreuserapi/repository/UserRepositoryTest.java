@@ -40,7 +40,6 @@ class UserRepositoryTest {
         user.setUserStatus(Status.ACTIVE);
         user.setUserPoint(100);
         user.setLastLoginAt(LocalDateTime.now().minusDays(1));
-        user.setOrderMoney(0);
         UserGrade userGrade = new UserGrade(BASIC, 0L);
         user.setUserGrade(userGrade);
 

@@ -25,9 +25,9 @@ public class Point {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // 관계매핑필요
-    @Column(name = "type_id", nullable = false)
-    private Long typeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "type_id", nullable = false)
+    private PointType pointType;
 
     // 관계매핑필요
     @Column(name = "payment_id")

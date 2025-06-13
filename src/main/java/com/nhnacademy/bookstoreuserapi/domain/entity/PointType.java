@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.domain.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import lombok.Setter;
 @Table(name = "point_type")
 @Getter
 @Setter
+@AllArgsConstructor
 public class PointType {
 
     @Id
@@ -26,7 +28,6 @@ public class PointType {
     @Column(name = "earning_rate")
     private int earningRate;
 
-    // 관계 매핑 필요
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "grade_name", nullable = false)
     private UserGrade userGrade;

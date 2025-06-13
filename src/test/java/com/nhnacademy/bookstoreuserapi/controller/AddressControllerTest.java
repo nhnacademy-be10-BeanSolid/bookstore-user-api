@@ -7,7 +7,6 @@ import com.nhnacademy.bookstoreuserapi.domain.response.ResponseAddress;
 import com.nhnacademy.bookstoreuserapi.exception.AddressAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.AddressNotFoundException;
 import com.nhnacademy.bookstoreuserapi.service.AddressService;
-import com.nhnacademy.bookstoreuserapi.service.impl.AddressServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

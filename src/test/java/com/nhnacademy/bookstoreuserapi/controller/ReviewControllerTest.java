@@ -6,8 +6,8 @@ import com.nhnacademy.bookstoreuserapi.domain.request.ReviewUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.ReviewCreateRequest;
 import com.nhnacademy.bookstoreuserapi.exception.ReviewAlreadyExistsBookException;
 import com.nhnacademy.bookstoreuserapi.exception.ReviewNotFoundException;
+import com.nhnacademy.bookstoreuserapi.service.ReviewService;
 import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
-import com.nhnacademy.bookstoreuserapi.service.impl.ReviewServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ class ReviewControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ReviewServiceImpl reviewService;
+    private ReviewService reviewService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

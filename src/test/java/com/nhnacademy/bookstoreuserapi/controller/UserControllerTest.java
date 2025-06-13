@@ -183,36 +183,12 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.userStatus").value("WITHDRAWN"));
     }
 
-    @Test
-    @DisplayName("주문금액 추가")
-    void updateOrderMoney() throws Exception {
-        User user = new User("user123", "pw", "홍길동", "01012345678",
-                "hong@test.com", LocalDate.of(1990, 1, 1));
-        user.setOrderMoney(0);
-        user.setUserStatus(User.Status.ACTIVE);
-        user.setUserGrade(new UserGrade(BASIC, 0L));
-
-        // update 후 값 반영되도록 설정
-        Mockito.doAnswer(invocation -> {
-            user.setOrderMoney(user.getOrderMoney() + 5000);
-            return null;
-        }).when(userService).updateOrderMoney("user123", 5000);
-
-        Mockito.when(userService.findById("user123")).thenReturn(Optional.of(user));
-
-        mockMvc.perform(put("/users/user123/ordermoney")
-                        .param("orderMoney", "5000"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.orderMoney").value(5000));
-    }
-
 
     @Test
     @DisplayName("회원 등급 수정")
     void updateUserGrade() throws Exception {
         User user = new User("user123", "pw", "홍길동", "01012345678",
                 "hong@test.com", LocalDate.of(1990, 1, 1));
-        user.setOrderMoney(0);
         user.setUserStatus(User.Status.ACTIVE);
         user.setUserGrade(new UserGrade(BASIC, 0L));
 

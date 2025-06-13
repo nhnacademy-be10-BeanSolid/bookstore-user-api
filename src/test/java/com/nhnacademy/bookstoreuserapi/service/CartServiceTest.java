@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.service.impl;
+package com.nhnacademy.bookstoreuserapi.service;
 
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.Cart;
@@ -11,6 +11,7 @@ import com.nhnacademy.bookstoreuserapi.exception.CartAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.CartNotFoundException;
 import com.nhnacademy.bookstoreuserapi.repository.CartRepository;
 import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
+import com.nhnacademy.bookstoreuserapi.service.impl.CartServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-class CartServiceImplTest {
+class CartServiceTest {
 
     @Mock
     CartRepository cartRepository;
@@ -51,7 +52,6 @@ class CartServiceImplTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Cart cart = new Cart(cartCreateRequest, user);
@@ -79,7 +79,6 @@ class CartServiceImplTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Cart cart = new Cart(cartCreateRequest, user);
@@ -106,7 +105,6 @@ class CartServiceImplTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Cart existingCart = new Cart(cartCreateRequest, user);
@@ -135,7 +133,6 @@ class CartServiceImplTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Cart existingCart = new Cart(cartCreateRequest, user);
@@ -164,7 +161,6 @@ class CartServiceImplTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Cart existingCart = new Cart(cartCreateRequest, user);
@@ -198,7 +194,6 @@ class CartServiceImplTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Cart existingCart = new Cart(cartCreateRequest, user);
@@ -226,7 +221,6 @@ class CartServiceImplTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Cart existingCart = new Cart(cartCreateRequest, user);

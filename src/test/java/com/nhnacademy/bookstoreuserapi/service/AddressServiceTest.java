@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.service.impl;
+package com.nhnacademy.bookstoreuserapi.service;
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.Address;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
@@ -9,6 +9,7 @@ import com.nhnacademy.bookstoreuserapi.exception.AddressLimitExceededException;
 import com.nhnacademy.bookstoreuserapi.exception.AddressNotFoundException;
 import com.nhnacademy.bookstoreuserapi.repository.AddressRepository;
 import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
+import com.nhnacademy.bookstoreuserapi.service.impl.AddressServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-class AddressServiceImplTest {
+class AddressServiceTest {
 
     @Mock
     AddressRepository addressRepository;
@@ -48,7 +49,6 @@ class AddressServiceImplTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Address address = new Address(0L, "Home", "123 Main St", user);
@@ -107,7 +107,6 @@ class AddressServiceImplTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Address address = new Address(addressId, "Home", "123 Main St", user);
@@ -148,7 +147,6 @@ class AddressServiceImplTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Address address = new Address(1L, "Home", "123 Main St", user);
@@ -174,7 +172,6 @@ class AddressServiceImplTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Address address = new Address(addressId, "Home", "123 Main St", user);

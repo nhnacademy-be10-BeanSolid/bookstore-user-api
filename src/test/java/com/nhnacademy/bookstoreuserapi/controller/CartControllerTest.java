@@ -5,8 +5,8 @@ import com.nhnacademy.bookstoreuserapi.domain.request.CartUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.CartCreateRequest;
 import com.nhnacademy.bookstoreuserapi.exception.CartAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.CartNotFoundException;
+import com.nhnacademy.bookstoreuserapi.service.CartService;
 import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
-import com.nhnacademy.bookstoreuserapi.service.impl.CartServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = CartController.class)
@@ -30,7 +29,7 @@ class CartControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private CartServiceImpl cartService;
+    private CartService cartService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

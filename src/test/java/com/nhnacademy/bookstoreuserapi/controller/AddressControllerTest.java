@@ -7,7 +7,7 @@ import com.nhnacademy.bookstoreuserapi.domain.response.ResponseAddress;
 import com.nhnacademy.bookstoreuserapi.exception.AddressAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.AddressNotFoundException;
 import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
-import com.nhnacademy.bookstoreuserapi.service.impl.AddressServiceImpl;
+import com.nhnacademy.bookstoreuserapi.service.AddressService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -23,7 +23,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AddressController.class)
@@ -33,7 +32,7 @@ class AddressControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private AddressServiceImpl addressService;
+    private AddressService addressService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

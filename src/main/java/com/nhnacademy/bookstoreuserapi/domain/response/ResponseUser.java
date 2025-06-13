@@ -22,7 +22,6 @@ public class ResponseUser {
     private boolean isAuth;
     private String userStatus;
     private LocalDateTime lastLoginAt;
-    private long orderMoney;
     private String userGradeName;
 
     public ResponseUser(User user) {
@@ -36,7 +35,6 @@ public class ResponseUser {
         this.isAuth = user.isAuth();
         this.userStatus = user.getUserStatus().name();
         this.lastLoginAt = user.getLastLoginAt();
-        this.orderMoney = user.getOrderMoney();
         this.userGradeName = user.getUserGrade().getGradeName().name();
     }
 }

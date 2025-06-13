@@ -110,16 +110,6 @@ public class UserController {
         return ResponseEntity.ok(new ResponseUser(user));
     }
 
-    @PutMapping("/{userId}/ordermoney")     // 기존 주문 금액에 더함 ++orderMoney
-    public ResponseEntity<ResponseUser> updateOrderMoney(@PathVariable @NotBlank @Size(max = 20) String userId, @RequestParam long orderMoney) {
-
-        userService.updateOrderMoney(userId, orderMoney);
-
-        User user = userService.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-        return ResponseEntity.ok(new ResponseUser(user));
-    }
-
     @PutMapping("/{userId}/grade")
     public ResponseEntity<ResponseUser> updateUserGradeName(@PathVariable @NotBlank @Size(max = 20) String userId, @RequestParam @NotBlank @Size(max = 10) String gradeName) {
 

@@ -15,7 +15,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
-@Sql(scripts = {"/user-test.sql", "/point-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = {"/user-test.sql", "/point-type-test.sql", "/point-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class PointServiceTest {
 
     @Autowired
@@ -46,7 +46,7 @@ class PointServiceTest {
     void testSavePoint_success() {
         PointCreateRequest request = new PointCreateRequest(
                 userId,
-                3L,
+                2L,
                 1L,
                 LocalDateTime.of(2025, 1, 1, 10, 0, 15),
                 1000L
@@ -56,7 +56,7 @@ class PointServiceTest {
 
         assertThat(response).isNotNull();
         assertThat(response.getUserId()).isEqualTo(userId);
-        assertThat(response.getPaymentId()).isEqualTo(3L);
+        assertThat(response.getPaymentId()).isEqualTo(2L);
         assertThat(response.getEarnedAndUsedPoint()).isEqualTo(1000L);
 
         // 저장 후 조회 시 개수가 3개인지 확인

@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.service.impl;
+package com.nhnacademy.bookstoreuserapi.service;
 
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
@@ -6,6 +6,7 @@ import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.exception.UserGradeAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.repository.UserGradeRepository;
+import com.nhnacademy.bookstoreuserapi.service.impl.UserGradeServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
-class UserGradeServiceImplTest {
+class UserGradeServiceTest {
     @Mock
     UserGradeRepository userGradeRepository;
 

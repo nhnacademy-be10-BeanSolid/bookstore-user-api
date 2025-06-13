@@ -2,8 +2,8 @@ package com.nhnacademy.bookstoreuserapi.service.impl;
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.Cart;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
-import com.nhnacademy.bookstoreuserapi.domain.request.EditRequestCart;
-import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestCart;
+import com.nhnacademy.bookstoreuserapi.domain.request.CartUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.domain.request.CartCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseCart;
 import com.nhnacademy.bookstoreuserapi.exception.CartAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.CartNotFoundException;
@@ -11,6 +11,7 @@ import com.nhnacademy.bookstoreuserapi.exception.InvalidDataException;
 import com.nhnacademy.bookstoreuserapi.exception.UserNotFoundException;
 import com.nhnacademy.bookstoreuserapi.repository.CartRepository;
 import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
+import com.nhnacademy.bookstoreuserapi.service.CartService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,11 +22,12 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class CartServiceImpl {
+public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
 
-    public ResponseCart addCart(SignUpRequestCart cart){
+    @Override
+    public ResponseCart addCart(CartCreateRequest cart){
         if(cart == null || cart.getUserId() == null || cart.getBookId() <= 0L) {
             throw new InvalidDataException("Invalid cart data");
         }
@@ -44,7 +46,8 @@ public class CartServiceImpl {
         );
     }
 
-    public Optional<ResponseCart> editCart(long cartId, EditRequestCart cart) {
+    @Override
+    public Optional<ResponseCart> editCart(long cartId, CartUpdateRequest cart) {
         Cart findCart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new CartNotFoundException(cartId));
         if (cart.getQuantity() <= 0) {
@@ -60,6 +63,7 @@ public class CartServiceImpl {
         ));
     }
 
+    @Override
     public ResponseCart getCart(long cartId) {
         Cart findCart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new CartNotFoundException(cartId));
@@ -71,6 +75,7 @@ public class CartServiceImpl {
         );
     }
 
+    @Override
     public List<ResponseCart> getCartsByUserId(String userId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -84,12 +89,14 @@ public class CartServiceImpl {
                 .toList();
     }
 
+    @Override
     public void deleteCart(long cartId) {
         Cart findCart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new CartNotFoundException(cartId));
         cartRepository.delete(findCart);
     }
 
+    @Override
     public void deleteCartsByUserId(String userId) {
         if (userId == null || userId.isEmpty()) {
             throw new InvalidDataException("Invalid user ID");

@@ -3,12 +3,13 @@ package com.nhnacademy.bookstoreuserapi.service.impl;
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.Review;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
-import com.nhnacademy.bookstoreuserapi.domain.request.EditRequestReview;
-import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestReview;
+import com.nhnacademy.bookstoreuserapi.domain.request.ReviewUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.domain.request.ReviewCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseReview;
 import com.nhnacademy.bookstoreuserapi.exception.*;
 import com.nhnacademy.bookstoreuserapi.repository.ReviewRepository;
 import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
+import com.nhnacademy.bookstoreuserapi.service.ReviewService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,11 +20,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class ReviewServiceImpl {
+public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
 
-    public ResponseReview addReview(SignUpRequestReview review){
+    @Override
+    public ResponseReview addReview(ReviewCreateRequest review){
         if(review == null
                 || review.getUserId() == null
                 || review.getBookId() <= 0L) {
@@ -48,7 +50,8 @@ public class ReviewServiceImpl {
         );
     }
 
-    public ResponseReview editReview(long reviewId, EditRequestReview review) {
+    @Override
+    public ResponseReview editReview(long reviewId, ReviewUpdateRequest review) {
         Review findReview = reviewRepository.findById(reviewId).orElse(null);
         if (findReview == null) {
             throw new ReviewNotFoundException(reviewId);
@@ -71,6 +74,7 @@ public class ReviewServiceImpl {
         );
     }
 
+    @Override
     public ResponseReview getReview(long reviewId) {
         Review findReview = reviewRepository.findById(reviewId).orElse(null);
         if (findReview == null) {
@@ -88,6 +92,7 @@ public class ReviewServiceImpl {
         );
     }
 
+    @Override
     public List<ResponseReview> getReviewsByUserId(String userId) {
         if (userId == null || userId.isEmpty()) {
             throw new InvalidDataException("Invalid user ID");
@@ -106,6 +111,7 @@ public class ReviewServiceImpl {
                 .toList();
     }
 
+    @Override
     public List<ResponseReview> getReviewsByBookId(long bookId) {
         if (bookId <= 0) {
             throw new InvalidDataException("Invalid book ID");

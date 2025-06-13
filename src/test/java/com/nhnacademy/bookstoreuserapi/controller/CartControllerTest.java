@@ -1,8 +1,8 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstoreuserapi.domain.request.EditRequestCart;
-import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestCart;
+import com.nhnacademy.bookstoreuserapi.domain.request.CartUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.domain.request.CartCreateRequest;
 import com.nhnacademy.bookstoreuserapi.exception.CartAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.CartNotFoundException;
 import com.nhnacademy.bookstoreuserapi.service.impl.CartServiceImpl;
@@ -33,7 +33,7 @@ class CartControllerTest {
 
     @Test
     void addCart() throws Exception {
-        SignUpRequestCart cart = new SignUpRequestCart(1, "user123", 3);
+        CartCreateRequest cart = new CartCreateRequest(1, "user123", 3);
         Mockito.when(cartService.addCart(cart)).thenReturn(null);
         mockMvc.perform(MockMvcRequestBuilders.post("/carts")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -44,7 +44,7 @@ class CartControllerTest {
 
     @Test
     void addCartFailAlreadyExist() throws Exception {
-        SignUpRequestCart cart = new SignUpRequestCart(1, "user123", 3);
+        CartCreateRequest cart = new CartCreateRequest(1, "user123", 3);
         Mockito.when(cartService.addCart(cart)).thenThrow(new CartAlreadyExistException("user123", 1L));
         mockMvc.perform(MockMvcRequestBuilders.post("/carts")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -56,7 +56,7 @@ class CartControllerTest {
     @Test
     void editCart() throws Exception {
         long cartId = 1L;
-        EditRequestCart cart = new EditRequestCart(5);
+        CartUpdateRequest cart = new CartUpdateRequest(5);
         Mockito.when(cartService.editCart(cartId, cart)).thenReturn(Optional.empty());
         mockMvc.perform(MockMvcRequestBuilders.put("/carts/" + cartId)
                         .contentType(MediaType.APPLICATION_JSON)

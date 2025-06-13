@@ -1,8 +1,8 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstoreuserapi.domain.request.EditRequestUserGrade;
-import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestUserGrade;
+import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.exception.UserGradeAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.UserGradeNotFoundException;
 import com.nhnacademy.bookstoreuserapi.service.impl.UserGradeServiceImpl;
@@ -31,7 +31,7 @@ class UserGradeControllerTest {
 
     @Test
     void addUserGrade() throws Exception {
-        SignUpRequestUserGrade userGrade = new SignUpRequestUserGrade("BASIC", 0);
+        UserGradeCreateRequest userGrade = new UserGradeCreateRequest("BASIC", 0);
         Mockito.when(userGradeService.saveUserGrade(userGrade)).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/users/grade")
@@ -43,7 +43,7 @@ class UserGradeControllerTest {
 
     @Test
     void addUserGradeFailExists() throws Exception {
-        SignUpRequestUserGrade userGrade = new SignUpRequestUserGrade("BASIC", 0);
+        UserGradeCreateRequest userGrade = new UserGradeCreateRequest("BASIC", 0);
         Mockito.when(userGradeService.saveUserGrade(userGrade)).thenThrow(new UserGradeAlreadyExistException(userGrade.getGradeName()));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/users/grade")
@@ -77,7 +77,7 @@ class UserGradeControllerTest {
     @Test
     void updateUserGrade() throws Exception {
         String grade = "BASIC";
-        EditRequestUserGrade userGrade = new EditRequestUserGrade("ROYAL", 100);
+        UserGradeUpdateRequest userGrade = new UserGradeUpdateRequest("ROYAL", 100);
         Mockito.when(userGradeService.updateUserGrade(grade, userGrade)).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/users/grade/{gradeName}", grade)

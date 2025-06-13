@@ -2,7 +2,7 @@ package com.nhnacademy.bookstoreuserapi.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestAddress;
+import com.nhnacademy.bookstoreuserapi.domain.request.AddressCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseAddress;
 import com.nhnacademy.bookstoreuserapi.exception.AddressAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.AddressNotFoundException;
@@ -36,7 +36,7 @@ class AddressControllerTest {
 
     @Test
     void addAddress() throws Exception{
-        SignUpRequestAddress address = new SignUpRequestAddress("별칭", "광주광역시 도로명주소 123", "userId123");
+        AddressCreateRequest address = new AddressCreateRequest("별칭", "광주광역시 도로명주소 123", "userId123");
         Mockito.when(addressService.save(address)).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/users/address")
@@ -49,7 +49,7 @@ class AddressControllerTest {
 
     @Test
     void addAddressFail() throws Exception{
-        SignUpRequestAddress address = new SignUpRequestAddress("별칭", "광주광역시 도로명주소 123", "userId123");
+        AddressCreateRequest address = new AddressCreateRequest("별칭", "광주광역시 도로명주소 123", "userId123");
         Mockito.when(addressService.save(address)).thenThrow(AddressAlreadyExistException.class);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/users/address")

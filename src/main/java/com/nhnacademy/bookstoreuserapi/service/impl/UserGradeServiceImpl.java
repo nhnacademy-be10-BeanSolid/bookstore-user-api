@@ -2,13 +2,14 @@ package com.nhnacademy.bookstoreuserapi.service.impl;
 
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
-import com.nhnacademy.bookstoreuserapi.domain.request.EditRequestUserGrade;
-import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestUserGrade;
+import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUserGrade;
 import com.nhnacademy.bookstoreuserapi.exception.InvalidDataException;
 import com.nhnacademy.bookstoreuserapi.exception.UserGradeAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.UserGradeNotFoundException;
 import com.nhnacademy.bookstoreuserapi.repository.UserGradeRepository;
+import com.nhnacademy.bookstoreuserapi.service.UserGradeService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +21,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class UserGradeServiceImpl {
+public class UserGradeServiceImpl implements UserGradeService {
     private final UserGradeRepository userGradeRepository;
 
-    public ResponseUserGrade saveUserGrade(SignUpRequestUserGrade userGrade) {
+    @Override
+    public ResponseUserGrade saveUserGrade(UserGradeCreateRequest userGrade) {
         if (userGrade.getRequiredMoney() < 0) {
             throw new InvalidDataException("금액은 음수일 수 없습니다.");
         }
@@ -37,7 +39,8 @@ public class UserGradeServiceImpl {
         );
     }
 
-    public ResponseUserGrade updateUserGrade(String gradeName, EditRequestUserGrade userGrade) {
+    @Override
+    public ResponseUserGrade updateUserGrade(String gradeName, UserGradeUpdateRequest userGrade) {
         UserGrade findUserGrade = userGradeRepository.findById(UserGrade.Grade.valueOf(gradeName))
                 .orElseThrow(() -> new UserGradeNotFoundException(gradeName));
 
@@ -60,6 +63,7 @@ public class UserGradeServiceImpl {
         );
     }
 
+    @Override
     public ResponseUserGrade getUserGrade(String gradeName) {
         UserGrade findUserGrade = userGradeRepository.findById(UserGrade.Grade.valueOf(gradeName))
                 .orElseThrow(() -> new UserGradeNotFoundException(gradeName));
@@ -70,12 +74,14 @@ public class UserGradeServiceImpl {
         );
     }
 
+    @Override
     public void deleteUserGrade(String gradeName) {
         UserGrade findUserGrade = userGradeRepository.findById(UserGrade.Grade.valueOf(gradeName))
                 .orElseThrow(() -> new UserGradeNotFoundException(gradeName));
         userGradeRepository.delete(findUserGrade);
     }
 
+    @Override
     public List<ResponseUserGrade> getAllUserGrades() {
         List<UserGrade> userGrades = userGradeRepository.findAll();
         return userGrades.stream()

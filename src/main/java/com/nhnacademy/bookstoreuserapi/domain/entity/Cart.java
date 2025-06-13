@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.domain.entity;
 
-import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestCart;
+import com.nhnacademy.bookstoreuserapi.domain.request.CartCreateRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,7 +26,7 @@ public class Cart {
     @Column(nullable = false)
     private int quantity;
 
-    public Cart(SignUpRequestCart cart, User user) {
+    public Cart(CartCreateRequest cart, User user) {
         this.bookId = cart.getBookId();
         this.user = user;
         this.quantity = cart.getQuantity();

@@ -5,9 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class SignUpRequestUserGrade {
+@AllArgsConstructor
+public class UserGradeUpdateRequest {
     private String gradeName;
     private long requiredMoney;
 }

@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EditRequestUserGrade {
-    private String gradeName;
-    private long requiredMoney;
+public class CartUpdateRequest {
+    private int quantity;
 }

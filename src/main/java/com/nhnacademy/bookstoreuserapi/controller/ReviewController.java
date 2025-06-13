@@ -1,10 +1,10 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
 
-import com.nhnacademy.bookstoreuserapi.domain.request.EditRequestReview;
-import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestReview;
+import com.nhnacademy.bookstoreuserapi.domain.request.ReviewUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.domain.request.ReviewCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseReview;
-import com.nhnacademy.bookstoreuserapi.service.impl.ReviewServiceImpl;
+import com.nhnacademy.bookstoreuserapi.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,15 +14,15 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/reviews")
 public class ReviewController {
-    private final ReviewServiceImpl reviewService;
+    private final ReviewService reviewService;
 
     @PostMapping
-    public ResponseReview addReview(@RequestBody SignUpRequestReview review){
+    public ResponseReview addReview(@RequestBody ReviewCreateRequest review){
         return reviewService.addReview(review);
     }
 
     @PutMapping("/{reviewId}")
-    public ResponseReview updateReview(@PathVariable long reviewId, @RequestBody EditRequestReview review) {
+    public ResponseReview updateReview(@PathVariable long reviewId, @RequestBody ReviewUpdateRequest review) {
         return reviewService.editReview(reviewId, review);
     }
 

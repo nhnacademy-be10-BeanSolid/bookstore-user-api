@@ -1,9 +1,9 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
 
-import com.nhnacademy.bookstoreuserapi.domain.request.SignUpRequestAddress;
+import com.nhnacademy.bookstoreuserapi.domain.request.AddressCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseAddress;
-import com.nhnacademy.bookstoreuserapi.service.impl.AddressServiceImpl;
+import com.nhnacademy.bookstoreuserapi.service.AddressService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +14,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/users/address")
 public class AddressController {
-    private final AddressServiceImpl addressService;
+    private final AddressService addressService;
 
     @PostMapping
-    public ResponseAddress addAddress(@RequestBody SignUpRequestAddress address){
+    public ResponseAddress addAddress(@RequestBody AddressCreateRequest address){
         return addressService.save(address);
     }
 

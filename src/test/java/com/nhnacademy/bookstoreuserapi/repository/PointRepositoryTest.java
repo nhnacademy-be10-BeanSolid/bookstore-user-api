@@ -55,14 +55,14 @@ class PointRepositoryTest {
 
         userRepository.save(user);
 
-        PointType pointType1 = new PointType(1L, "회원가입", 5000L, 1, userGrade);
-        PointType pointType2 = new PointType(2L, "리뷰작성", 500L, 1, userGrade);
+        PointType pointType1 = new PointType(null, "회원가입", 5000L, 1, userGrade);
+        PointType pointType2 = new PointType(null,"리뷰작성", 500L, 1, userGrade);
 
         pointTypeRepository.save(pointType1);
         pointTypeRepository.save(pointType2);
 
-        Point point1 = new Point(1L, user, pointType1, 1L, LocalDateTime.now(), 50L);
-        Point point2 = new Point(2L, user, pointType2, 2L, LocalDateTime.now(), -100L);
+        Point point1 = new Point(null, user, pointType1, 1L, LocalDateTime.now(), 50L);
+        Point point2 = new Point(null, user, pointType2, 2L, LocalDateTime.now(), -100L);
 
         pointRepository.save(point1);
         pointRepository.save(point2);

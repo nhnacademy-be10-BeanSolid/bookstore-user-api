@@ -55,9 +55,6 @@ public class User {
     @Column(name = "last_login_at", nullable = false)
     private LocalDateTime lastLoginAt;
 
-    @Column(name = "order_money", nullable = false)
-    private long orderMoney;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Address> address;

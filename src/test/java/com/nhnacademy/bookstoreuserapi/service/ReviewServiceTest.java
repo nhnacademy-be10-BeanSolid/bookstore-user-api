@@ -52,7 +52,6 @@ class ReviewServiceTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Review review = new Review(reviewCreateRequest, user);
@@ -80,7 +79,6 @@ class ReviewServiceTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Review review = new Review(reviewCreateRequest, user);
@@ -131,7 +129,6 @@ class ReviewServiceTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Review existingReview = new Review(new ReviewCreateRequest(5, "Great book!", "", "user123", 1L), user);
@@ -172,7 +169,6 @@ class ReviewServiceTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Review existingReview = new Review(new ReviewCreateRequest(5, "Great book!", "", "user123", 1L), user);
@@ -207,7 +203,6 @@ class ReviewServiceTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Review review = new Review(5, "Great book!", "", user, 1L);
@@ -244,7 +239,6 @@ class ReviewServiceTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGrade)
                 .build();
         Review review = new Review(5, "Great book!", "", user, bookId);

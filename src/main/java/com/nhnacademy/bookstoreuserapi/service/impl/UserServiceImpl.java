@@ -54,7 +54,6 @@ public class UserServiceImpl implements UserService {
         user.setAuth(false);
         user.setUserStatus(User.Status.ACTIVE);
         user.setUserGrade(basicGrade);
-        user.setOrderMoney(0);
 
         userRepository.save(user);
     }
@@ -134,21 +133,5 @@ public class UserServiceImpl implements UserService {
         }
 
         userRepository.deleteById(userId);
-    }
-
-    @Override
-    @Transactional
-    public void updateOrderMoney(String userId, long orderMoney) {
-        if(!userRepository.existsById(userId)){
-            throw new UserNotFoundException(userId);
-        }
-        userRepository.updateOrderMoneyByUserId(userId, orderMoney);
-
-        UserGrade updatedGrade = userGradeRepository
-                .findTopByRequiredMoneyLessThanEqualOrderByRequiredMoneyDesc(userRepository.findById(userId).get().getOrderMoney());
-
-        if (updatedGrade != null) {
-            userRepository.updateUserGrade_gradeNameByUserId(userId, updatedGrade.getGradeName());
-        }
     }
 }

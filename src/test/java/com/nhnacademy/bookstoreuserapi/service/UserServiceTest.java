@@ -65,7 +65,6 @@ class UserServiceTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGradeRepository.findByGradeName(BASIC))
                 .build();
 
@@ -91,7 +90,6 @@ class UserServiceTest {
                 .isAuth(false)
                 .userStatus(User.Status.ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
-                .orderMoney(0)
                 .userGrade(userGradeRepository.findByGradeName(BASIC))
                 .build();
 
@@ -185,23 +183,6 @@ class UserServiceTest {
 
         User updated = userRepository.findById(userId).orElseThrow();
         assertThat(updated.getUserStatus()).isEqualTo(User.Status.WITHDRAWN);
-    }
-
-    @Test
-    @DisplayName("주문 금액 업데이트")
-    @Transactional
-    void updateOrderMoney() {
-        userService.updateOrderMoney(userId, 5000);
-
-        User updated = userRepository.findById(userId).orElseThrow();
-        assertThat(updated.getOrderMoney()).isEqualTo(5000);
-    }
-
-    @Test
-    @DisplayName("주문 금액 업데이트 실패 - 존재하지 않는 사용자")
-    void updateOrderMoney_notFound() {
-        assertThatThrownBy(() -> userService.updateOrderMoney("unknown", 5000))
-                .isInstanceOf(UserNotFoundException.class);
     }
 
     @Test

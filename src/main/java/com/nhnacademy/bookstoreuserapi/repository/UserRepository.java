@@ -23,10 +23,6 @@ public interface UserRepository extends JpaRepository<User, String> {
     void updateStatusByUserId(String userId, User.Status status);
 
     @Modifying(clearAutomatically = true)
-    @Query("update User u set u.orderMoney = :orderMoney + u.orderMoney where u.userId = :userId")
-    void updateOrderMoneyByUserId(String userId, long orderMoney);
-
-    @Modifying(clearAutomatically = true)
     @Query("update User u set u.userGrade = (select ug from UserGrade ug where ug.gradeName = :gradeName) where u.userId = :userId")
     void updateUserGrade_gradeNameByUserId(String userId, UserGrade.Grade gradeName);
 }

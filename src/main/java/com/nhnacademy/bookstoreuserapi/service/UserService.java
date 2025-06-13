@@ -21,6 +21,4 @@ public interface UserService {
     void updateUserGradeName(String userId, String gradeName);
 
     void deleteUser(String userId);
-
-    void updateOrderMoney(String userId, long orderMoney);
 }

@@ -22,7 +22,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity saveUser(@Valid @RequestBody  UserCreateRequest userCreateRequest, BindingResult bindingResult) {
+    public ResponseEntity<ResponseUser> saveUser(@Valid @RequestBody  UserCreateRequest userCreateRequest, BindingResult bindingResult) {
 
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
@@ -45,13 +45,13 @@ public class UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<ResponseUser> getUser(@PathVariable String userId) {
 
-        User user = userService.findById(userId).get();
-
+        User user = userService.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
         return ResponseEntity.ok(new ResponseUser(user));
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity deleteUser(@PathVariable String userId) {
+    public ResponseEntity<ResponseUser> deleteUser(@PathVariable String userId) {
 
         userService.deleteUser(userId);
 

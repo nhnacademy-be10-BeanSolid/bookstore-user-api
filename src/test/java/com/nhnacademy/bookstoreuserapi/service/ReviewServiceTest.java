@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.service.impl;
+package com.nhnacademy.bookstoreuserapi.service;
 
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.Review;
@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-class ReviewServiceImplTest {
+class ReviewServiceTest {
     @Mock
     ReviewRepository reviewRepository;
 
@@ -34,7 +34,7 @@ class ReviewServiceImplTest {
     UserRepository userRepository;
 
     @InjectMocks
-    ReviewServiceImpl reviewService;
+    ReviewService reviewService;
 
     @Test
     void addReview() {

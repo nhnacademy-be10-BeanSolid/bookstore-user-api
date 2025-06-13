@@ -5,6 +5,7 @@ import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.exception.UserGradeAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.UserGradeNotFoundException;
+import com.nhnacademy.bookstoreuserapi.service.UserGradeService;
 import com.nhnacademy.bookstoreuserapi.service.impl.UserGradeServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -25,7 +26,7 @@ class UserGradeControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private UserGradeServiceImpl userGradeService;
+    private UserGradeService userGradeService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

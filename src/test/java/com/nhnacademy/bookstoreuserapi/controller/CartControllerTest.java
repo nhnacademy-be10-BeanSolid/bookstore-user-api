@@ -5,6 +5,7 @@ import com.nhnacademy.bookstoreuserapi.domain.request.CartUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.CartCreateRequest;
 import com.nhnacademy.bookstoreuserapi.exception.CartAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.CartNotFoundException;
+import com.nhnacademy.bookstoreuserapi.service.CartService;
 import com.nhnacademy.bookstoreuserapi.service.impl.CartServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -27,7 +28,7 @@ class CartControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private CartServiceImpl cartService;
+    private CartService cartService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

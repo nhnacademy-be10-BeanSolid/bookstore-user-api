@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.service.impl;
+package com.nhnacademy.bookstoreuserapi.service;
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.Address;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-class AddressServiceImplTest {
+class AddressServiceTest {
 
     @Mock
     AddressRepository addressRepository;
@@ -32,7 +32,7 @@ class AddressServiceImplTest {
     UserRepository userRepository;
 
     @InjectMocks
-    AddressServiceImpl addressService;
+    AddressService addressService;
 
     @Test
     void saveAddress() {

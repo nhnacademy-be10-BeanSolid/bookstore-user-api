@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.service.impl;
+package com.nhnacademy.bookstoreuserapi.service;
 
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
@@ -18,12 +18,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
-class UserGradeServiceImplTest {
+class UserGradeServiceTest {
     @Mock
     UserGradeRepository userGradeRepository;
 
     @InjectMocks
-    UserGradeServiceImpl userGradeService;
+    UserGradeService userGradeService;
 
     @Test
     void saveUserGrade() {

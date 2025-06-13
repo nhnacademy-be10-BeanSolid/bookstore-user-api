@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.service.impl;
+package com.nhnacademy.bookstoreuserapi.service;
 
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.Cart;
@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-class CartServiceImplTest {
+class CartServiceTest {
 
     @Mock
     CartRepository cartRepository;
@@ -35,7 +35,7 @@ class CartServiceImplTest {
     UserRepository userRepository;
 
     @InjectMocks
-    CartServiceImpl cartService;
+    CartService cartService;
 
     @Test
     void addCart(){

@@ -1,19 +1,17 @@
 package com.nhnacademy.bookstoreuserapi.domain.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class PointCreateRequest {
-
-    private String userId;
-    private Long typeId;
-    private Long paymentId;
-    private LocalDateTime earnedAndUsedAt;
-    private Long earnedAndUsedPoint;
+public record PointCreateRequest (@NotBlank @Size(max = 20) String userId,
+                                  @NotNull @Min(1) Long typeId,
+                                  @Min(1) Long paymentId,
+                                  @NotNull LocalDateTime earnedAndUsedAt,
+                                  @NotNull @Min(0) Long earnedAndUsedPoint){
 }

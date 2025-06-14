@@ -1,18 +1,12 @@
 package com.nhnacademy.bookstoreuserapi.domain.request;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.*;
 
+public record ReviewCreateRequest (@Min(1) @Max(5) int evaluationScore,
+                                   @NotBlank @Size(max = 255) String reviewContent,
+                                   @Size(max = 255) String reviewPhoto,
+                                   @NotBlank @Size(max = 20) String userId,
+                                   @Min(1) long bookId){
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class ReviewCreateRequest {
-    private int evaluationScore;
-    private String reviewContent;
-    private String reviewPhoto;
-    private String userId;
-    private long bookId;
 }

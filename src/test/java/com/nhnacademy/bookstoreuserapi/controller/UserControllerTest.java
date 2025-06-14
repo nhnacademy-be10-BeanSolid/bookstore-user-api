@@ -6,6 +6,7 @@ import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.exception.UserNotFoundException;
+import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import java.util.Optional;
 
 import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASIC;
 import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.ROYAL;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -49,6 +51,20 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("회원 등록 실패 - 유효성 검사")
+    void registerUser_fail() throws Exception {
+        UserCreateRequest request = new UserCreateRequest(
+                "", "password", "홍길동", "01012345678",
+                "asdf", LocalDate.of(1990, 1, 1));
+        mockMvc.perform(post("/users/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(result ->
+                        assertThat(result.getResolvedException()).isInstanceOf(ValidationFailedException.class));
     }
 
     @Test
@@ -104,6 +120,20 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userName").value("이수정"));
+    }
+
+    @Test
+    @DisplayName("개인정보 수정 실패 - 유효성 검사")
+    void updatePersonalInfo_fail() throws Exception {
+        UserUpdateRequest request = new UserUpdateRequest(
+                "", "newPassword", "이수정", "01011112222",
+                "", LocalDate.of(1995, 5, 5));
+        mockMvc.perform(put("/users/user123/personalinformation")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(result ->
+                        assertThat(result.getResolvedException()).isInstanceOf(ValidationFailedException.class));
     }
 
     @Test

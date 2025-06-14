@@ -126,6 +126,17 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("개인정보 수정 실패 - 존재하지 않는 사용자")
+    void updatePersonalInformation_notFound() {
+        User user = new User();
+        user.setUserId("notExists");
+        user.setUserName("수정된이름");
+
+        assertThatThrownBy(() -> userService.updatePersonalInformation(user))
+                .isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
     @DisplayName("로그인 시간 업데이트")
     @Transactional
     void updateLastLoginAt() {
@@ -136,6 +147,13 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("로그인 시간 업데이트 실패 - 존재하지 않는 사용자")
+    void updateLastLoginAt_notFound() {
+        assertThatThrownBy(() -> userService.updateLastLoginAt("notExists"))
+                .isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
     @DisplayName("포인트 업데이트")
     @Transactional
     void updatePoint() {
@@ -143,6 +161,13 @@ class UserServiceTest {
 
         User updated = userRepository.findById(userId).orElseThrow();
         assertThat(updated.getUserPoint()).isEqualTo(1500);
+    }
+
+    @Test
+    @DisplayName("포인트 업데이트 실패 - 존재하지 않는 사용자")
+    void updatePoint_notFound() {
+        assertThatThrownBy(() -> userService.updatePoint("notExists", 1000))
+                .isInstanceOf(UserNotFoundException.class);
     }
 
     @Test
@@ -183,6 +208,13 @@ class UserServiceTest {
 
         User updated = userRepository.findById(userId).orElseThrow();
         assertThat(updated.getUserStatus()).isEqualTo(User.Status.WITHDRAWN);
+    }
+
+    @Test
+    @DisplayName("상태 업데이트 실패 - 존재하지 않는 사용자")
+    void updateUserStatus_notFound() {
+        assertThatThrownBy(() -> userService.updateUserStatus("unknown", User.Status.WITHDRAWN))
+                .isInstanceOf(UserNotFoundException.class);
     }
 
     @Test

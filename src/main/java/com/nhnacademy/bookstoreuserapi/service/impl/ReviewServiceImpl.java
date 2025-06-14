@@ -26,17 +26,12 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ResponseReview addReview(ReviewCreateRequest review){
-        if(review == null
-                || review.getUserId() == null
-                || review.getBookId() <= 0L) {
-            throw new InvalidDataException("Invalid review data");
-        }
-        Review findReview = reviewRepository.findByUser_UserIdAndBookId(review.getUserId(), review.getBookId());
+        Review findReview = reviewRepository.findByUser_UserIdAndBookId(review.userId(), review.bookId());
         if (findReview != null) {
-            throw new ReviewAlreadyExistsBookException(review.getUserId(), review.getBookId());
+            throw new ReviewAlreadyExistsBookException(review.userId(), review.bookId());
         }
-        User user = userRepository.findById(review.getUserId())
-                .orElseThrow(() -> new UserNotFoundException(review.getUserId()));
+        User user = userRepository.findById(review.userId())
+                .orElseThrow(() -> new UserNotFoundException(review.userId()));
         Review savedReview = reviewRepository.save(new Review(review, user));
         return new ResponseReview(
                 savedReview.getReviewId(),
@@ -56,9 +51,9 @@ public class ReviewServiceImpl implements ReviewService {
         if (findReview == null) {
             throw new ReviewNotFoundException(reviewId);
         }
-        findReview.setEvaluationScore(review.getEvaluationScore());
-        findReview.setReviewContent(review.getReviewContent());
-        findReview.setReviewPhoto(review.getReviewPhoto());
+        findReview.setEvaluationScore(review.evaluationScore());
+        findReview.setReviewContent(review.reviewContent());
+        findReview.setReviewPhoto(review.reviewPhoto());
         findReview.setUpdatedAt(LocalDateTime.now());
 
         Review updatedReview = reviewRepository.save(findReview);
@@ -94,9 +89,6 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<ResponseReview> getReviewsByUserId(String userId) {
-        if (userId == null || userId.isEmpty()) {
-            throw new InvalidDataException("Invalid user ID");
-        }
         List<Review> reviews = reviewRepository.findAllByUser_UserId(userId);
         return reviews.stream()
                 .map(review -> new ResponseReview(
@@ -113,9 +105,6 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<ResponseReview> getReviewsByBookId(long bookId) {
-        if (bookId <= 0) {
-            throw new InvalidDataException("Invalid book ID");
-        }
         List<Review> reviews = reviewRepository.findAllByBookId(bookId);
         return reviews.stream()
                 .map(review -> new ResponseReview(

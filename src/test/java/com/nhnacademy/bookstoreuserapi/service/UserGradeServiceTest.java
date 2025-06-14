@@ -4,7 +4,6 @@ package com.nhnacademy.bookstoreuserapi.service;
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeCreateRequest;
-import com.nhnacademy.bookstoreuserapi.exception.InvalidDataException;
 import com.nhnacademy.bookstoreuserapi.exception.UserGradeAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.repository.UserGradeRepository;
 import com.nhnacademy.bookstoreuserapi.service.impl.UserGradeServiceImpl;
@@ -50,12 +49,6 @@ class UserGradeServiceTest {
     }
 
     @Test
-    void saveUserGradeFailNegativeMoney() {
-        UserGradeCreateRequest userGradeCreateRequest = new UserGradeCreateRequest("BASIC", -100L);
-        Assertions.assertThrows(InvalidDataException.class, ()-> userGradeService.saveUserGrade(userGradeCreateRequest));
-    }
-
-    @Test
     void updateUserGrade(){
         String gradeName = "BASIC";
         UserGrade existingUserGrade = new UserGrade(new UserGradeCreateRequest(gradeName, 0L));
@@ -67,17 +60,6 @@ class UserGradeServiceTest {
 
         Mockito.verify(userGradeRepository, Mockito.times(1)).existsByGradeName(UserGrade.Grade.BASIC);
         Mockito.verify(userGradeRepository, Mockito.times(1)).findById(UserGrade.Grade.BASIC);
-    }
-
-    @Test
-    void updateUserGradeFailNegativeMoney() {
-        String gradeName = "BASIC";
-        UserGrade existingUserGrade = new UserGrade(new UserGradeCreateRequest(gradeName, 0L));
-
-        Mockito.when(userGradeRepository.findById(UserGrade.Grade.BASIC)).thenReturn(java.util.Optional.of(existingUserGrade));
-        UserGradeUpdateRequest userGradeUpdateRequest = new UserGradeUpdateRequest(gradeName, -100L);
-
-        Assertions.assertThrows(InvalidDataException.class, () -> userGradeService.updateUserGrade(gradeName, userGradeUpdateRequest));
     }
 
     @Test

@@ -1,15 +1,10 @@
 package com.nhnacademy.bookstoreuserapi.domain.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class AddressCreateRequest {
-    private String addressNickName;
-    private String addressDetail;
-    private String userId;
+public record AddressCreateRequest (
+     @NotBlank @Size(max = 30) String addressNickName,
+     @NotBlank @Size(max = 255) String addressDetail,
+     @NotBlank @Size(max = 20) String userId){
 }

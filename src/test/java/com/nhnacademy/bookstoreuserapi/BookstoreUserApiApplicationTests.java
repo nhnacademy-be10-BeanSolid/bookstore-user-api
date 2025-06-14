@@ -8,6 +8,7 @@ class BookstoreUserApiApplicationTests {
 
 	@Test
 	void contextLoads() {
+		BookstoreUserApiApplication.main(new String[] {});
 	}
 
 }

@@ -30,24 +30,20 @@ public class PointServiceImpl implements PointService {
     @Transactional
     public ResponsePoint savePoint(PointCreateRequest pointCreateRequest) {
 
-        if(userRepository.findById(pointCreateRequest.getUserId()).isEmpty()) {
-            throw new UserNotFoundException(pointCreateRequest.getUserId());
-        }
 
+        User user = userRepository.findById(pointCreateRequest.userId())
+                .orElseThrow(() -> new UserNotFoundException(pointCreateRequest.userId()));
         Point point = new Point();
-        User user = userRepository.findById(pointCreateRequest.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException(pointCreateRequest.getUserId()));
         point.setUser(user);
-        point.setPaymentId(pointCreateRequest.getPaymentId());
+        point.setPaymentId(pointCreateRequest.paymentId());
 
-        PointType pointType = pointTypeRepository.findById(pointCreateRequest.getTypeId())
-                .orElseThrow(() -> new PointTypeNotFoundException(pointCreateRequest.getTypeId()));
+        PointType pointType = pointTypeRepository.findById(pointCreateRequest.typeId())
+                .orElseThrow(() -> new PointTypeNotFoundException(pointCreateRequest.typeId()));
+
 
         point.setPointType(pointType);
-
-        point.setEarnedAndUsedAt(pointCreateRequest.getEarnedAndUsedAt());
-        point.setEarnedAndUsedPoint(pointCreateRequest.getEarnedAndUsedPoint());
-
+        point.setEarnedAndUsedAt(pointCreateRequest.earnedAndUsedAt());
+        point.setEarnedAndUsedPoint(pointCreateRequest.earnedAndUsedPoint());
         Point savedPoint = pointRepository.save(point);
 
         return new ResponsePoint(

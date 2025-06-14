@@ -1,13 +1,9 @@
 package com.nhnacademy.bookstoreuserapi.domain.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class UserGradeCreateRequest {
-    private String gradeName;
-    private long requiredMoney;
+public record UserGradeCreateRequest (@NotBlank @Size(max = 10) String gradeName,
+                                      @Min(0) long requiredMoney){
 }

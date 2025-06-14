@@ -1,15 +1,14 @@
 package com.nhnacademy.bookstoreuserapi.domain.request;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import org.springframework.data.annotation.CreatedDate;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
-public record UserCreateRequest (@NotBlank String userId,
-                                 @NotBlank String userPassword,
-                                 @NotBlank String userName,
-                                 @NotBlank String userPhoneNumber,
-                                 @Email String userEmail,
-                                 @CreatedDate LocalDate userBirth){
+//후에 다른 api와 필드명이 다르다?? -> @JsonProperty("바꿀필드명") 등으로 변경
+public record UserCreateRequest (@NotBlank @Size(max = 20) String userId,
+                                 @NotBlank @Size(max = 255) String userPassword,
+                                 @NotBlank @Size(max = 20) String userName,
+                                 @NotBlank @Size(max = 15) String userPhoneNumber,
+                                 @NotBlank @Email @Size(max = 50) String userEmail,
+                                 @NotNull @Past LocalDate userBirth){
 }

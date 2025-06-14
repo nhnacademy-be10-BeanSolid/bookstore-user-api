@@ -5,7 +5,6 @@ import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
 import com.nhnacademy.bookstoreuserapi.domain.request.PointTypeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePointType;
 import com.nhnacademy.bookstoreuserapi.exception.PointTypeNotFoundException;
-import com.nhnacademy.bookstoreuserapi.exception.UserGradeNotFoundException;
 import com.nhnacademy.bookstoreuserapi.repository.PointTypeRepository;
 import com.nhnacademy.bookstoreuserapi.repository.UserGradeRepository;
 import com.nhnacademy.bookstoreuserapi.service.PointTypeService;
@@ -28,15 +27,11 @@ public class PointTypeServiceImpl implements PointTypeService {
     public void savePointType(PointTypeCreateRequest request) {
 
         PointType pointType = new PointType();
-        pointType.setTypeName(request.getTypeName());
-        pointType.setEarningPoint(request.getEarningPoint());
-        pointType.setEarningRate(request.getEarningRate());
+        pointType.setTypeName(request.typeName());
+        pointType.setEarningPoint(request.earningPoint());
+        pointType.setEarningRate(request.earningRate());
 
-        UserGrade userGrade = userGradeRepository.findByGradeName(UserGrade.Grade.valueOf(request.getGradeName()));
-
-        if(userGrade == null) {
-            throw new UserGradeNotFoundException(request.getGradeName());
-        }
+        UserGrade userGrade = userGradeRepository.findByGradeName(UserGrade.Grade.valueOf(request.gradeName()));
 
         pointType.setUserGrade(userGrade);
 

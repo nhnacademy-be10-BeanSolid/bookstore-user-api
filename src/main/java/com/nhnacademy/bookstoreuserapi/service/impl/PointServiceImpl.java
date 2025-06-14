@@ -36,19 +36,14 @@ public class PointServiceImpl implements PointService {
         Point point = new Point();
         point.setUser(user);
         point.setPaymentId(pointCreateRequest.paymentId());
-        point.setTypeId(pointCreateRequest.typeId());
-        point.setEarnedAndUsedAt(pointCreateRequest.earnedAndUsedAt());
-        point.setEarnedAndUsedPoint(pointCreateRequest.earnedAndUsedPoint());
-        point.setPaymentId(pointCreateRequest.paymentId());
 
         PointType pointType = pointTypeRepository.findById(pointCreateRequest.typeId())
                 .orElseThrow(() -> new PointTypeNotFoundException(pointCreateRequest.typeId()));
 
-        point.setPointType(pointType);
 
+        point.setPointType(pointType);
         point.setEarnedAndUsedAt(pointCreateRequest.earnedAndUsedAt());
         point.setEarnedAndUsedPoint(pointCreateRequest.earnedAndUsedPoint());
-
         Point savedPoint = pointRepository.save(point);
 
         return new ResponsePoint(

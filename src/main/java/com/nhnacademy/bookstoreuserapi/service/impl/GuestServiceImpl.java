@@ -2,6 +2,7 @@ package com.nhnacademy.bookstoreuserapi.service.impl;
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.Guest;
 import com.nhnacademy.bookstoreuserapi.domain.request.GuestCreateRequest;
+import com.nhnacademy.bookstoreuserapi.domain.request.GuestUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseGuest;
 import com.nhnacademy.bookstoreuserapi.exception.GuestNotFoundException;
 import com.nhnacademy.bookstoreuserapi.repository.GuestRepository;
@@ -19,15 +20,15 @@ public class GuestServiceImpl implements GuestService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public ResponseGuest getGuestByguestEmailAndGuestPassword(String guestEmail, String guestPassword) {
+    public ResponseGuest getGuest(String guestEmail) {
 
-        Guest guest = guestRepository.findByGuestEmailAndGuestPassword(guestEmail, guestPassword);
+        Guest guest = guestRepository.findByGuestEmail(guestEmail);
 
         if(guest == null) {
             throw new GuestNotFoundException(guestEmail);
         }
 
-        return new ResponseGuest(
+       return new ResponseGuest(
                 guest.getGuestPassword(),
                 guest.getGuestName(),
                 guest.getGuestPhoneNumber(),
@@ -66,5 +67,35 @@ public class GuestServiceImpl implements GuestService {
         }
 
         guestRepository.delete(guest);
+    }
+
+    @Override
+    @Transactional
+    public ResponseGuest updateGuest(String guestEmail, GuestUpdateRequest guestUpdateRequest) {
+
+        Guest guest = guestRepository.findByGuestEmail(guestEmail);
+
+        if(guest == null) {
+            throw new GuestNotFoundException(guestEmail);
+        }
+
+        guest.setGuestPassword(passwordEncoder.encode(guestUpdateRequest.guestPassword()));
+        guest.setGuestName(guestUpdateRequest.guestName());
+        guest.setGuestPhoneNumber(guestUpdateRequest.guestPhoneNumber());
+        guest.setGuestAddress(guestUpdateRequest.guestAddress());
+
+        guestRepository.updateGuest(guest.getGuestPassword(),
+                                    guest.getGuestName(),
+                                    guest.getGuestPhoneNumber(),
+                                    guest.getGuestAddress(),
+                                    guestEmail);
+
+        return new ResponseGuest(
+                guest.getGuestPassword(),
+                guest.getGuestName(),
+                guest.getGuestPhoneNumber(),
+                guest.getGuestAddress(),
+                guestEmail
+        );
     }
 }

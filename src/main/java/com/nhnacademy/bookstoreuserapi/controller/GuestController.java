@@ -1,10 +1,16 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
 import com.nhnacademy.bookstoreuserapi.domain.request.GuestCreateRequest;
+import com.nhnacademy.bookstoreuserapi.domain.request.GuestUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseGuest;
 import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.service.GuestService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import jakarta.ws.rs.DELETE;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -25,5 +31,29 @@ public class GuestController {
         }
 
         return ResponseEntity.ok().body(guestService.addGuest(guest));
+    }
+
+    @GetMapping("/{guestEmail}")
+    public ResponseEntity<ResponseGuest> getGuest(@PathVariable String guestEmail) {
+
+        return ResponseEntity.ok().body(guestService.getGuest(guestEmail));
+    }
+
+    @DeleteMapping("/{guestEmail}")
+    public ResponseEntity<String> deleteGuest(@PathVariable String guestEmail){
+
+        guestService.deleteGuest(guestEmail);
+
+        return ResponseEntity.ok().body("성공적으로 삭제하였습니다.");
+    }
+
+    @PutMapping("/{guestEmail}")
+    public ResponseEntity<ResponseGuest> updateGuest(@PathVariable String guestEmail, @Valid @RequestBody GuestUpdateRequest guestUpdateRequest, BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) {
+            throw new ValidationFailedException(bindingResult);
+        }
+
+        return ResponseEntity.ok().body(guestService.updateGuest(guestEmail, guestUpdateRequest));
     }
 }

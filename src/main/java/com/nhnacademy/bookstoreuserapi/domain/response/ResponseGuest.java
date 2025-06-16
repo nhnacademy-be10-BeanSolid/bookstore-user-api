@@ -12,6 +12,6 @@ public class ResponseGuest {
     private String guestPassword;
     private String guestName;
     private String guestPhoneNumber;
-    private String guestEmail;
     private String guestAddress;
+    private String guestEmail;
 }

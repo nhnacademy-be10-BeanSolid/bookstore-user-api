@@ -1,13 +1,8 @@
 package com.nhnacademy.bookstoreuserapi.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nhnacademy.bookstoreorderapi.order.domain.entity.Order;
 import com.nhnacademy.bookstoreuserapi.domain.request.GuestCreateRequest;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.List;
 
 @Entity
 @Table(name = "guests")

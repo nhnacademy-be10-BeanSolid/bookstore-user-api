@@ -29,7 +29,7 @@ public class Guest {
     @Column(name = "guest_address", nullable = false)
     private String guestAddress;
 
-    @Column(name = "guest_email", nullable = false)
+    @Column(name = "guest_email", nullable = false, unique = true)
     private String guestEmail;
 
     public Guest(GuestCreateRequest guestCreateRequest) {

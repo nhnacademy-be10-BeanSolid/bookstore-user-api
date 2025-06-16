@@ -66,7 +66,7 @@ public class GuestServiceImpl implements GuestService {
             throw new GuestNotFoundException(guestEmail);
         }
 
-        guestRepository.delete(guest);
+        guestRepository.deleteByGuestEmail(guestEmail);
     }
 
     @Override

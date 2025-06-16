@@ -13,4 +13,6 @@ public interface GuestRepository extends JpaRepository<Guest, Long> {
     @Query("update Guest g set g.guestPassword = :password, g.guestName = :guestName, g.guestPhoneNumber = :guestPhoneNumber," +
             "g.guestAddress = :guestAddress where g.guestEmail = :guestEmail")
     void updateGuest(String password, String guestName, String guestPhoneNumber, String guestAddress, String guestEmail);
+
+    void deleteByGuestEmail(String guestEmail);
 }

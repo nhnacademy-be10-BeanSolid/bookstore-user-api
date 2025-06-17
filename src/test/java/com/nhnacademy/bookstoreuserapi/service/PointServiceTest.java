@@ -7,6 +7,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDateTime;
@@ -26,7 +28,9 @@ class PointServiceTest {
     @Test
     @DisplayName("포인트 전체 조회 성공")
     void testFindAllPointsByUserId() {
-        List<ResponsePoint> points = pointService.findAll(userId);
+        Pageable pageable = PageRequest.of(0, 10);
+
+        List<ResponsePoint> points = pointService.findAll(userId, pageable).getContent();
 
         assertThat(points).hasSize(2);
         assertThat(points)
@@ -37,7 +41,9 @@ class PointServiceTest {
     @Test
     @DisplayName("존재하지 않는 사용자 포인트 조회 실패")
     void testFindAllPointsByInvalidUserId() {
-        assertThatThrownBy(() -> pointService.findAll("unknown"))
+        Pageable pageable = PageRequest.of(0, 10);
+
+        assertThatThrownBy(() -> pointService.findAll("unknown", pageable).getContent())
                 .isInstanceOf(UserNotFoundException.class);
     }
 
@@ -58,9 +64,11 @@ class PointServiceTest {
         assertThat(response.getUserId()).isEqualTo(userId);
         assertThat(response.getPaymentId()).isEqualTo(2L);
         assertThat(response.getEarnedAndUsedPoint()).isEqualTo(1000L);
+        Pageable pageable = PageRequest.of(0, 10);
+
 
         // 저장 후 조회 시 개수가 3개인지 확인
-        List<ResponsePoint> points = pointService.findAll(userId);
+        List<ResponsePoint> points = pointService.findAll(userId, pageable).getContent();
         assertThat(points).hasSize(3);
     }
 

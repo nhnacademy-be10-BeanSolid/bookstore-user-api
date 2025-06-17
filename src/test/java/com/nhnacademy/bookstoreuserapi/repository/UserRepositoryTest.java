@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.repository;
 
+import com.nhnacademy.bookstoreuserapi.config.QuerydslConfig;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User.Status;
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.context.annotation.Import;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("dev")
+@Import(QuerydslConfig.class)
 class UserRepositoryTest {
 
     @Autowired
@@ -60,7 +63,6 @@ class UserRepositoryTest {
         assertThat(updated).isPresent();
         assertThat(updated.get().getLastLoginAt().truncatedTo(ChronoUnit.SECONDS)).isEqualTo(now);
     }
-
 
     @Test
     @DisplayName("포인트 추가")

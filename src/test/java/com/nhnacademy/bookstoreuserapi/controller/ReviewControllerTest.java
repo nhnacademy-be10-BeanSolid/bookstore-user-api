@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -121,20 +123,22 @@ class ReviewControllerTest {
     @Test
     void getReviewByUserId() throws Exception {
         String userId = "user123";
-        Mockito.when(reviewService.getReviewsByUserId(userId)).thenReturn(null);
+        Pageable pageable = PageRequest.of(0, 20);
+        Mockito.when(reviewService.getReviewsByUserId(userId, pageable)).thenReturn(null);
         mockMvc.perform(MockMvcRequestBuilders.get("/reviews/user/" + userId)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
-        Mockito.verify(reviewService, Mockito.times(1)).getReviewsByUserId(userId);
+        Mockito.verify(reviewService, Mockito.times(1)).getReviewsByUserId(userId, pageable);
     }
 
     @Test
     void getReviewByBookId() throws Exception {
         long bookId = 1L;
-        Mockito.when(reviewService.getReviewsByBookId(bookId)).thenReturn(null);
+        Pageable pageable = PageRequest.of(0, 20);
+        Mockito.when(reviewService.getReviewsByBookId(bookId, pageable)).thenReturn(null);
         mockMvc.perform(MockMvcRequestBuilders.get("/reviews/book/" + bookId)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
-        Mockito.verify(reviewService, Mockito.times(1)).getReviewsByBookId(bookId);
+        Mockito.verify(reviewService, Mockito.times(1)).getReviewsByBookId(bookId, pageable);
     }
 }

@@ -12,6 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -21,6 +25,8 @@ import java.util.List;
 
 import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.GOLD;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(PointTypeController.class)
@@ -43,8 +49,10 @@ class PointTypeControllerTest {
                 new ResponsePointType(1L, "신규가입", 100L, 5, "GOLD"),
                 new ResponsePointType(2L, "리뷰작성", 200L, 10, "GOLD")
         );
+        Pageable pageable = PageRequest.of(0, 20);
+        Page<ResponsePointType> mockPage = new PageImpl<>(mockList, pageable, mockList.size());
 
-        Mockito.when(pointTypeService.getAllPointTypes()).thenReturn(mockList);
+        Mockito.when(pointTypeService.getAllPointTypes(any(Pageable.class))).thenReturn(mockPage);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/users/pointType"))
                 .andExpect(status().isOk())
@@ -53,20 +61,27 @@ class PointTypeControllerTest {
         String content = result.getResponse().getContentAsString();
 
         assertThat(content).contains("신규가입", "리뷰작성");
-        Mockito.verify(pointTypeService, Mockito.times(1)).getAllPointTypes();
+        Mockito.verify(pointTypeService, Mockito.times(1)).getAllPointTypes(pageable);
     }
 
     @Test
     @DisplayName("등급명으로 포인트 타입 조회 성공")
     void getPointTypeByGradeName() throws Exception {
-        Mockito.when(pointTypeService.getPointTypeByGradeName(GOLD))
-                .thenReturn(List.of(new ResponsePointType(1L, "가입", 100L, 5, "GOLD")));
+        Pageable pageable = PageRequest.of(0, 20);
+
+        List<ResponsePointType> mockList = List.of(
+                new ResponsePointType(1L, "가입", 100L, 5, "GOLD")
+        );
+        Page<ResponsePointType> mockPage = new PageImpl<>(mockList, pageable, mockList.size());
+
+        Mockito.when(pointTypeService.getPointTypeByGradeName(eq(GOLD), any(Pageable.class)))
+                .thenReturn(mockPage);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/users/pointType")
                         .param("gradeName", "GOLD"))
                 .andExpect(status().isOk());
 
-        Mockito.verify(pointTypeService).getPointTypeByGradeName(GOLD);
+        Mockito.verify(pointTypeService).getPointTypeByGradeName(eq(GOLD), any(Pageable.class));
     }
 
     @Test

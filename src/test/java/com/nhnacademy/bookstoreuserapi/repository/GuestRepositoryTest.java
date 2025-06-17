@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.repository;
 
+import com.nhnacademy.bookstoreuserapi.config.QuerydslConfig;
 import com.nhnacademy.bookstoreuserapi.domain.entity.Guest;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.context.annotation.Import;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -16,6 +18,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("dev")
 @Transactional
+@Import(QuerydslConfig.class)
 class GuestRepositoryTest {
 
     @Autowired

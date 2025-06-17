@@ -1,17 +1,14 @@
 package com.nhnacademy.bookstoreuserapi.repository;
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.PointType;
-import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
+import com.nhnacademy.bookstoreuserapi.repository.queryfactory.PointTypeRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
 
-public interface PointTypeRepository extends JpaRepository<PointType, Long> {
+public interface PointTypeRepository extends JpaRepository<PointType, Long>, PointTypeRepositoryCustom {
 
-    @Query("select p from PointType p where p.userGrade.gradeName = :gradeName")
-    List<PointType> findPointTypeByGradeName(UserGrade.Grade gradeName);
 
     @Modifying(clearAutomatically = true)
     @Query("update PointType p set p.earningPoint = :point where p.typeId = :typeId")

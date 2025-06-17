@@ -4,6 +4,7 @@ import com.nhnacademy.bookstoreuserapi.domain.entity.Address;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
 import com.nhnacademy.bookstoreuserapi.domain.request.AddressCreateRequest;
+import com.nhnacademy.bookstoreuserapi.domain.response.ResponseAddress;
 import com.nhnacademy.bookstoreuserapi.exception.AddressAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.AddressLimitExceededException;
 import com.nhnacademy.bookstoreuserapi.exception.AddressNotFoundException;
@@ -151,10 +152,12 @@ class AddressServiceTest {
                 .build();
         Address address = new Address(1L, "Home", "123 Main St", user);
 
-        Mockito.when(addressRepository.findAllByUser_UserId(userId)).thenReturn(List.of(address));
+        Mockito.when(addressRepository.findAllByUserId(userId)).thenReturn(List.of(
+                new ResponseAddress(address.getAddressId(), address.getAddressNickName(), address.getAddressDetail(), userId)
+        ));
 
         addressService.getAllAddresses(userId);
-        Mockito.verify(addressRepository, Mockito.times(1)).findAllByUser_UserId(userId);
+        Mockito.verify(addressRepository, Mockito.times(1)).findAllByUserId(userId);
     }
 
     @Test

@@ -1,15 +1,11 @@
 package com.nhnacademy.bookstoreuserapi.repository;
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.Review;
+import com.nhnacademy.bookstoreuserapi.repository.queryfactory.ReviewRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 
-
-public interface ReviewRepository extends JpaRepository<Review, Long> {
+public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRepositoryCustom {
     Review findByUser_UserIdAndBookId(String userId, long bookId);
 
-    List<Review> findAllByUser_UserId(String userId);
-
-    List<Review> findAllByBookId(long bookId);
 }

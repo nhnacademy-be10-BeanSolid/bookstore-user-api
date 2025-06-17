@@ -12,7 +12,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -67,17 +66,7 @@ public class AddressServiceImpl implements AddressService {
     // 주소 리스트 조회 (유저 ID로 조회)
     @Override
     public List<ResponseAddress> getAllAddresses(String userId) {
-        List<Address> addresses = addressRepository.findAllByUser_UserId(userId);
-        List<ResponseAddress> responseAddresses = new ArrayList<>();
-        for (Address address : addresses) {
-            responseAddresses.add(new ResponseAddress(
-                    address.getAddressId(),
-                    address.getAddressNickName(),
-                    address.getAddressDetail(),
-                    address.getUser().getUserId()
-            ));
-        }
-        return responseAddresses;
+        return addressRepository.findAllByUserId(userId);
     }
 
     // 주소 삭제

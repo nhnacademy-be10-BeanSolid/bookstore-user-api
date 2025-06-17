@@ -11,6 +11,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -48,8 +50,8 @@ public class CartController {
     }
 
     @GetMapping("/user/{userId}")
-    public List<ResponseCart> getCartByUserId(@PathVariable @NotBlank @Size(max = 20) String userId) {
-        return cartService.getCartsByUserId(userId);
+    public Page<ResponseCart> getCartByUserId(@PathVariable @NotBlank @Size(max = 20) String userId, Pageable pageable) {
+        return cartService.getCartsByUserId(userId, pageable);
     }
 
     @DeleteMapping("/{cartId}")

@@ -1,10 +1,12 @@
 package com.nhnacademy.bookstoreuserapi.repository;
 
+import com.nhnacademy.bookstoreuserapi.config.QuerydslConfig;
 import com.nhnacademy.bookstoreuserapi.domain.entity.Point;
 import com.nhnacademy.bookstoreuserapi.domain.entity.PointType;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User.Status;
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
+import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePoint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("dev")
+@Import(QuerydslConfig.class)
 class PointRepositoryTest {
 
     @Autowired
@@ -76,7 +82,9 @@ class PointRepositoryTest {
     @Test
     @DisplayName("사용자 ID로 포인트 조회")
     void testFindPointByUserId() {
-        List<Point> points = pointRepository.findPointByUserId(userId);
+        Pageable pageable = PageRequest.of(0, 10);
+
+        List<ResponsePoint> points = pointRepository.findPointByUserId(userId, pageable).getContent();
 
         assertThat(points).hasSize(2);
         assertThat(points)

@@ -3,7 +3,9 @@ package com.nhnacademy.bookstoreuserapi.service;
 import com.nhnacademy.bookstoreuserapi.domain.request.ReviewUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.ReviewCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseReview;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 
 public interface ReviewService {
 
@@ -13,8 +15,8 @@ public interface ReviewService {
 
     ResponseReview getReview(long reviewId);
 
-    List<ResponseReview> getReviewsByUserId(String userId);
+    Page<ResponseReview> getReviewsByUserId(String userId, Pageable pageable);
 
-    List<ResponseReview> getReviewsByBookId(long bookId);
+    Page<ResponseReview> getReviewsByBookId(long bookId, Pageable pageable);
 
 }

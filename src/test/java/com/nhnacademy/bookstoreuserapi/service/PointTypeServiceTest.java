@@ -8,9 +8,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
-
-import java.util.List;
 
 import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.GOLD;
 import static org.assertj.core.api.Assertions.*;
@@ -26,7 +27,9 @@ class PointTypeServiceTest {
     @Test
     @DisplayName("포인트 타입 전체 조회 성공")
     void testGetAllPointTypes() {
-        List<ResponsePointType> list = pointTypeService.getAllPointTypes();
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Page<ResponsePointType> list = pointTypeService.getAllPointTypes(pageable);
 
         assertThat(list).isNotEmpty();
         assertThat(list)
@@ -37,7 +40,8 @@ class PointTypeServiceTest {
     @Test
     @DisplayName("등급명으로 포인트 타입 조회 성공")
     void testGetPointTypeByGradeName() {
-        List<ResponsePointType> list = pointTypeService.getPointTypeByGradeName(GOLD);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<ResponsePointType> list = pointTypeService.getPointTypeByGradeName(GOLD, pageable);
 
         assertThat(list)
                 .isNotEmpty()
@@ -55,8 +59,9 @@ class PointTypeServiceTest {
         );
 
         pointTypeService.savePointType(request);
+        Pageable pageable = PageRequest.of(0, 10);
 
-        List<ResponsePointType> list = pointTypeService.getAllPointTypes();
+        Page<ResponsePointType> list = pointTypeService.getAllPointTypes(pageable);
 
         assertThat(list)
                 .extracting(ResponsePointType::getTypeName)
@@ -91,8 +96,10 @@ class PointTypeServiceTest {
     void testDeletePointType() {
         // typeId = 1이 존재한다고 가정
         pointTypeService.deletePointType(1L);
+        Pageable pageable = PageRequest.of(0, 10);
 
-        List<ResponsePointType> list = pointTypeService.getAllPointTypes();
+
+        Page<ResponsePointType> list = pointTypeService.getAllPointTypes(pageable);
         assertThat(list).noneMatch(pt -> pt.getTypeId().equals(1L));
     }
 

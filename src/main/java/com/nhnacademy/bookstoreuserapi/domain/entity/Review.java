@@ -50,14 +50,4 @@ public class Review {
         this.user = user;
         this.bookId = review.bookId();
     }
-
-    public Review(int evaluationScore, String reviewContent, String reviewPhoto, User user, long bookId) {
-        this.evaluationScore = evaluationScore;
-        this.reviewContent = reviewContent;
-        this.reviewPhoto = reviewPhoto;
-        this.reviewedAt = LocalDateTime.now();
-        this.updatedAt = null;
-        this.user = user;
-        this.bookId = bookId;
-    }
 }

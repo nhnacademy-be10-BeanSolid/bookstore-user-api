@@ -3,6 +3,9 @@ package com.nhnacademy.bookstoreuserapi.service;
 import com.nhnacademy.bookstoreuserapi.domain.request.CartUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.CartCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseCart;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +17,7 @@ public interface CartService {
 
     ResponseCart getCart(long cartId);
 
-    List<ResponseCart> getCartsByUserId(String userId);
+    Page<ResponseCart> getCartsByUserId(String userId, Pageable pageable);
 
     void deleteCart(long cartId);
 

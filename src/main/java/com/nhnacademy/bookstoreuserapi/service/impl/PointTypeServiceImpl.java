@@ -10,9 +10,11 @@ import com.nhnacademy.bookstoreuserapi.repository.UserGradeRepository;
 import com.nhnacademy.bookstoreuserapi.service.PointTypeService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,41 +41,26 @@ public class PointTypeServiceImpl implements PointTypeService {
     }
 
     @Override
-    public List<ResponsePointType> getAllPointTypes() {
+    public Page<ResponsePointType> getAllPointTypes(Pageable pageable) {
+        Page<PointType> pointTypes = pointTypeRepository.findAll(pageable);
 
-        List<PointType> pointTypes = pointTypeRepository.findAll();
+        List<ResponsePointType> dtoList = pointTypes
+                .stream()
+                .map(pt -> new ResponsePointType(
+                        pt.getTypeId(),
+                        pt.getTypeName(),
+                        pt.getEarningPoint(),
+                        pt.getEarningRate(),
+                        pt.getUserGrade().getGradeName().toString()
+                ))
+                .toList();
 
-        List<ResponsePointType> responsePointTypes = new ArrayList<>();
-
-        for(PointType pointType : pointTypes) {
-            responsePointTypes.add(new ResponsePointType(
-                    pointType.getTypeId(),
-                    pointType.getTypeName(),
-                    pointType.getEarningPoint(),
-                    pointType.getEarningRate(),
-                    pointType.getUserGrade().getGradeName().toString()
-            ));
-        }
-        return responsePointTypes;
+        return new PageImpl<>(dtoList, pageable, pointTypes.getTotalElements());
     }
 
     @Override
-    public List<ResponsePointType> getPointTypeByGradeName(UserGrade.Grade gradeName) {
-
-        List<PointType> pointTypes = pointTypeRepository.findPointTypeByGradeName(gradeName);
-
-        List<ResponsePointType> responsePointTypes = new ArrayList<>();
-
-        for(PointType pointType : pointTypes) {
-            responsePointTypes.add(new ResponsePointType(
-                    pointType.getTypeId(),
-                    pointType.getTypeName(),
-                    pointType.getEarningPoint(),
-                    pointType.getEarningRate(),
-                    pointType.getUserGrade().getGradeName().toString()
-                    ));
-        }
-        return responsePointTypes;
+    public Page<ResponsePointType> getPointTypeByGradeName(UserGrade.Grade gradeName, Pageable pageable) {
+        return pointTypeRepository.findPointTypeByGradeName(gradeName, pageable);
     }
 
     @Override

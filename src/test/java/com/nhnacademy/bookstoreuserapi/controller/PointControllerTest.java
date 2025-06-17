@@ -12,6 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -20,6 +24,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(PointController.class)
@@ -40,8 +46,11 @@ class PointControllerTest {
         ResponsePoint responsePoint1 = new ResponsePoint(1L, "userId123", 1L, 1L, LocalDateTime.now(), 500L);
         ResponsePoint responsePoint2 = new ResponsePoint(2L, "userId123", 2L, 2L, LocalDateTime.now(), 300L);
 
-        Mockito.when(pointService.findAll("userId123"))
-                .thenReturn(List.of(responsePoint1, responsePoint2));
+        List<ResponsePoint> pointList = List.of(responsePoint1, responsePoint2);
+        Page<ResponsePoint> page = new PageImpl<>(pointList, PageRequest.of(0, 10), pointList.size());
+
+        Mockito.when(pointService.findAll(eq("userId123"), any()))
+                .thenReturn(page);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/users/point/{userId}", "userId123"))
                 .andExpect(status().is2xxSuccessful())
@@ -52,7 +61,7 @@ class PointControllerTest {
         Assertions.assertTrue(content.contains("userId123"));
         Assertions.assertTrue(content.contains("500"));
 
-        Mockito.verify(pointService, Mockito.times(1)).findAll("userId123");
+        Mockito.verify(pointService, Mockito.times(1)).findAll(eq("userId123"), any());
     }
 
     @Test

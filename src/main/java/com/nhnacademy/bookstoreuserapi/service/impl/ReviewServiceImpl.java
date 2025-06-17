@@ -12,10 +12,11 @@ import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
 import com.nhnacademy.bookstoreuserapi.service.ReviewService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -88,35 +89,13 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<ResponseReview> getReviewsByUserId(String userId) {
-        List<Review> reviews = reviewRepository.findAllByUser_UserId(userId);
-        return reviews.stream()
-                .map(review -> new ResponseReview(
-                        review.getReviewId(),
-                        review.getEvaluationScore(),
-                        review.getReviewContent(),
-                        review.getReviewPhoto(),
-                        review.getReviewedAt(),
-                        review.getUpdatedAt(),
-                        review.getUser().getUserId(),
-                        review.getBookId()))
-                .toList();
+    public Page<ResponseReview> getReviewsByUserId(String userId, Pageable pageable) {
+        return reviewRepository.findAllByUserId(userId, pageable);
     }
 
     @Override
-    public List<ResponseReview> getReviewsByBookId(long bookId) {
-        List<Review> reviews = reviewRepository.findAllByBookId(bookId);
-        return reviews.stream()
-                .map(review -> new ResponseReview(
-                        review.getReviewId(),
-                        review.getEvaluationScore(),
-                        review.getReviewContent(),
-                        review.getReviewPhoto(),
-                        review.getReviewedAt(),
-                        review.getUpdatedAt(),
-                        review.getUser().getUserId(),
-                        review.getBookId()))
-                .toList();
+    public Page<ResponseReview> getReviewsByBookId(long bookId, Pageable pageable) {
+        return reviewRepository.findAllByBookId(bookId, pageable);
     }
 
 }

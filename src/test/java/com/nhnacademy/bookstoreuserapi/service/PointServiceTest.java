@@ -45,7 +45,7 @@ class PointServiceTest {
     void testFindAllPointsByInvalidUserId() {
         Pageable pageable = PageRequest.of(0, 10);
 
-        assertThatThrownBy(() -> pointService.findAll("unknown", pageable).getContent())
+        assertThatThrownBy(() -> pointService.findAll("unknown", pageable))
                 .isInstanceOf(UserNotFoundException.class);
     }
 

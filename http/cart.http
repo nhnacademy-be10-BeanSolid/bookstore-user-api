@@ -14,7 +14,7 @@ POST http://localhost:10348/carts
 Content-Type: application/json
 
 {
-  "userId": "test",
+  "userId": "admin",
   "bookId": 3,
   "quantity": 1
 }

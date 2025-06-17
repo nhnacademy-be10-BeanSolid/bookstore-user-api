@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "userId": "test",
-  "typeId": 1,
+  "typeId": 3,
   "paymentId": 1,
   "earnedAndUsedAt": "2012-02-14 14:51:05",
   "earnedAndUsedPoint": 5000

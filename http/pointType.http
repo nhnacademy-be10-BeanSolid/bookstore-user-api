@@ -3,8 +3,8 @@ POST http://localhost:10348/users/pointType
 Content-Type: application/json
 
 {
-  "typeName": "리뷰작성",
-  "earningPoint": 500,
+  "typeName": "회원가입",
+  "earningPoint": 5000,
   "earningRate": 0,
   "gradeName": "PLATINUM"
 }

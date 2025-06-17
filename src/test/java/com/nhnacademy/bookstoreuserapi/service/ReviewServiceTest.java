@@ -26,12 +26,9 @@ import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
-import static com.mysema.commons.lang.Assert.assertThat;
-import static com.nhnacademy.bookstoreuserapi.domain.entity.QReview.review;
 
 @ExtendWith(MockitoExtension.class)
 class ReviewServiceTest {

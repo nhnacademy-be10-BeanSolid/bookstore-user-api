@@ -13,11 +13,11 @@ import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -27,11 +27,11 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping
-    public ResponseCart addCart(@Valid @RequestBody CartCreateRequest cart, BindingResult bindingResult){
+    public ResponseEntity<ResponseCart> addCart(@Valid @RequestBody CartCreateRequest cart, BindingResult bindingResult){
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
         }
-        return cartService.addCart(cart);
+        return ResponseEntity.status(HttpStatus.CREATED).body(cartService.addCart(cart));
     }
 
     @PutMapping("/{cartId}")
@@ -45,13 +45,13 @@ public class CartController {
     }
 
     @GetMapping("/{cartId}")
-    public ResponseCart getCart(@PathVariable @NotNull @Min(1) Long cartId) {
-        return cartService.getCart(cartId);
+    public ResponseEntity<ResponseCart> getCart(@PathVariable @NotNull @Min(1) Long cartId) {
+        return ResponseEntity.ok().body(cartService.getCart(cartId));
     }
 
     @GetMapping("/user/{userId}")
-    public Page<ResponseCart> getCartByUserId(@PathVariable @NotBlank @Size(max = 20) String userId, Pageable pageable) {
-        return cartService.getCartsByUserId(userId, pageable);
+    public ResponseEntity<Page<ResponseCart>> getCartByUserId(@PathVariable @NotBlank @Size(max = 20) String userId, Pageable pageable) {
+        return ResponseEntity.ok().body(cartService.getCartsByUserId(userId, pageable));
     }
 
     @DeleteMapping("/{cartId}")

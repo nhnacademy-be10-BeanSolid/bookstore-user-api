@@ -10,6 +10,8 @@ import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,17 +22,17 @@ public class PointController {
 
     private final PointService pointService;
     @GetMapping("/{userId}")
-    public Page<ResponsePoint> getPoint(@PathVariable @NotBlank @Size(max = 20) String userId, Pageable pageable) {
+    public ResponseEntity<Page<ResponsePoint>> getPoint(@PathVariable @NotBlank @Size(max = 20) String userId, Pageable pageable) {
 
-        return pointService.findAll(userId, pageable);
+        return ResponseEntity.ok().body(pointService.findAll(userId, pageable));
     }
 
     @PostMapping
-    public ResponsePoint savePoint(@Valid @RequestBody PointCreateRequest pointCreateRequest, BindingResult bindingResult) {
+    public ResponseEntity<ResponsePoint> savePoint(@Valid @RequestBody PointCreateRequest pointCreateRequest, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
         }
-        return pointService.savePoint(pointCreateRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(pointService.savePoint(pointCreateRequest));
 
     }
 }

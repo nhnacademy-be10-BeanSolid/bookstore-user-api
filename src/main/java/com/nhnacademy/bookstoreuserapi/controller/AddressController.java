@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -22,11 +23,11 @@ public class AddressController {
     private final AddressService addressService;
 
     @PostMapping
-    public ResponseAddress addAddress(@Valid @RequestBody AddressCreateRequest address, BindingResult bindingResult){
+    public ResponseEntity<ResponseAddress> addAddress(@Valid @RequestBody AddressCreateRequest address, BindingResult bindingResult){
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
         }
-        return addressService.save(address);
+        return ResponseEntity.status(HttpStatus.CREATED).body(addressService.save(address));
     }
     @DeleteMapping("/{addressId}")
     public ResponseEntity<Void> deleteAddress(@PathVariable @Min(1) long addressId) {
@@ -35,12 +36,12 @@ public class AddressController {
     }
 
     @GetMapping("/{addressId}")
-    public ResponseAddress getAddress(@PathVariable @Min(1) long addressId) {
-        return addressService.getAddress(addressId);
+    public ResponseEntity<ResponseAddress> getAddress(@PathVariable @Min(1) long addressId) {
+        return ResponseEntity.ok().body(addressService.getAddress(addressId));
     }
 
     @GetMapping("/user/{userId}")
-    public List<ResponseAddress> getAllAddresses(@PathVariable @NotBlank @Size(max = 20) String userId) {
-        return addressService.getAllAddresses(userId);
+    public ResponseEntity<List<ResponseAddress>> getAllAddresses(@PathVariable @NotBlank @Size(max = 20) String userId) {
+        return ResponseEntity.ok().body(addressService.getAllAddresses(userId));
     }
 }

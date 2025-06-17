@@ -92,7 +92,7 @@ class PointTypeControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/users/pointType")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         Mockito.verify(pointTypeService).savePointType(request);
     }
@@ -113,7 +113,7 @@ class PointTypeControllerTest {
     @DisplayName("포인트 타입 삭제 성공")
     void deletePointType() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/users/pointType/{typeId}", 1L))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         Mockito.verify(pointTypeService).deletePointType(1L);
     }

@@ -10,6 +10,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,36 +24,37 @@ public class UserGradeController {
     private final UserGradeService userGradeService;
 
     @PostMapping
-    public ResponseUserGrade addUserGrade(@Valid @RequestBody UserGradeCreateRequest userGrade, BindingResult bindingResult) {
+    public ResponseEntity<ResponseUserGrade> addUserGrade(@Valid @RequestBody UserGradeCreateRequest userGrade, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
         }
-        return userGradeService.saveUserGrade(userGrade);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userGradeService.saveUserGrade(userGrade));
     }
 
     @PutMapping("/{gradeName}")
-    public ResponseUserGrade updateUserGrade(@PathVariable @NotBlank @Size(max = 10) String gradeName, @Valid @RequestBody UserGradeUpdateRequest userGrade, BindingResult bindingResult) {
+    public ResponseEntity<ResponseUserGrade> updateUserGrade(@PathVariable @NotBlank @Size(max = 10) String gradeName, @Valid @RequestBody UserGradeUpdateRequest userGrade, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
         }
-        return userGradeService.updateUserGrade(gradeName, userGrade);
+        return ResponseEntity.ok().body(userGradeService.updateUserGrade(gradeName, userGrade));
     }
 
 
     @GetMapping("/{gradeName}")
-    public ResponseUserGrade getUserGrade(@PathVariable @NotBlank @Size(max = 10) String gradeName) {
-        return userGradeService.getUserGrade(gradeName);
+    public ResponseEntity<ResponseUserGrade> getUserGrade(@PathVariable @NotBlank @Size(max = 10) String gradeName) {
+        return ResponseEntity.ok().body(userGradeService.getUserGrade(gradeName));
     }
 
 
     @DeleteMapping("/{gradeName}")
-    public void deleteUserGrade(@PathVariable @NotBlank @Size(max = 10) String gradeName) {
+    public ResponseEntity<Void> deleteUserGrade(@PathVariable @NotBlank @Size(max = 10) String gradeName) {
         userGradeService.deleteUserGrade(gradeName);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/all")
-    public List<ResponseUserGrade> getAllUserGrades() {
-        return userGradeService.getAllUserGrades();
+    public ResponseEntity<List<ResponseUserGrade>> getAllUserGrades() {
+        return ResponseEntity.ok().body(userGradeService.getAllUserGrades());
     }
 
 

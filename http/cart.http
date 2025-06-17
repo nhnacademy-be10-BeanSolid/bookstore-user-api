@@ -6,7 +6,7 @@ Content-Type: application/json
 {
   "userId": "test",
   "bookId": 1,
-  "stock": 2
+  "quantity": 2
 }
 
 ### 장바구니 추가2
@@ -15,7 +15,7 @@ Content-Type: application/json
 
 {
   "userId": "test",
-  "bookId": 2,
+  "bookId": 3,
   "quantity": 1
 }
 

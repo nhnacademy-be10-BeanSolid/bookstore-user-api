@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record PointTypeCreateRequest (@NotBlank @Size(max = 20) String typeName,
-                                      @NotNull @Min(0) Long earningPoint,
-                                      @Min(1) Integer earningRate,
+                                      @Min(0) Long earningPoint,
+                                      Integer earningRate,
                                       @Size(max = 10) String gradeName){
 }

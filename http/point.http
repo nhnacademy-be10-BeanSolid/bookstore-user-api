@@ -7,7 +7,7 @@ Content-Type: application/json
   "typeId": 1,
   "paymentId": 1,
   "earnedAndUsedAt": "2012-02-14 14:51:05",
-  "earnedAndUsedPoint": 500
+  "earnedAndUsedPoint": 5000
 }
 
 ### 해당 유저의 포인트 내역 조회

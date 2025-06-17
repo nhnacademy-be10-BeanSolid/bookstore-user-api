@@ -49,7 +49,7 @@ public class PointTypeController {
         return pointTypeService.updateEarningPoint(point, typeId);
     }
     @PutMapping("/{typeId}/rate")
-    public ResponsePointType updateRatePoint(@PathVariable @NotNull @Min(1) Long typeId, @RequestParam @Min(1) int rate) {
+    public ResponsePointType updateRatePoint(@PathVariable @NotNull @Min(1) Long typeId, @RequestParam int rate) {
 
         return pointTypeService.updateEarningRate(rate, typeId);
     }

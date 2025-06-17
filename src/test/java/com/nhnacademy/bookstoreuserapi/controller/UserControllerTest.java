@@ -161,7 +161,7 @@ class UserControllerTest {
         user.setUserGrade(userGrade);
         Mockito.when(userService.findById("user123")).thenReturn(Optional.of(user));
 
-        mockMvc.perform(put("/users/user123")
+        mockMvc.perform(put("/users/user123/point")
                         .param("point", "2000"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userPoint").value(2000));

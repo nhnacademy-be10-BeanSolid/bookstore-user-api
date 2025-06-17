@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
 
         user.setUserPassword(encodedPassword);
         user.setLastLoginAt(LocalDateTime.now());
-        user.setUserPoint(0);
+        user.setUserPoint(5000);
         user.setAuth(false);
         user.setUserStatus(User.Status.ACTIVE);
         user.setUserGrade(basicGrade);

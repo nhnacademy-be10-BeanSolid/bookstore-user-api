@@ -3,10 +3,10 @@ POST http://localhost:10348/users/pointType
 Content-Type: application/json
 
 {
-  "typeName": "회원가입",
-  "earningPoint": 5000,
-  "earningRate": 1,
-  "gradeName": "BASIC"
+  "typeName": "리뷰작성",
+  "earningPoint": 500,
+  "earningRate": 0,
+  "gradeName": "PLATINUM"
 }
 
 ### 유형별 적립포인트 등록 2
@@ -26,9 +26,9 @@ Content-Type: application/json
 
 {
   "typeName": "순수금액별 포인트 적립",
-  "earningPoint": 500,
-  "earningRate": 2,
-  "gradeName": "ROYAL"
+  "earningPoint": 0,
+  "earningRate": 4,
+  "gradeName": "PLATINUM"
 }
 
 ### 유형별 적립포인트 조회
@@ -45,4 +45,4 @@ DELETE http://localhost:10348/users/pointType/3
 PUT http://localhost:10348/users/pointType/1/point?point=300
 
 ### 유형에 따른 적립포인트 적립률 수정
-PUT http://localhost:10348/users/pointType/1/rate?rate=15
+PUT http://localhost:10348/users/pointType/1/rate?rate=0

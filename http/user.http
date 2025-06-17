@@ -3,12 +3,12 @@ POST http://localhost:10348/users/register
 Content-Type: application/json
 
 {
-  "userId": "withdrawnUser",
+  "userId": "test",
   "userPassword": "12345",
-  "userName": "탈퇴한유저",
-  "userPhoneNumber": "010-4321-8765",
-  "userEmail": "test123@test123.com",
-  "userBirth": "2025-06-16"
+  "userName": "test",
+  "userPhoneNumber": "010-3333-2222",
+  "userEmail": "test@test.com",
+  "userBirth": "2020-03-12"
 }
 
 ### 회원 조회

@@ -6,8 +6,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -16,6 +18,8 @@ import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASI
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ActiveProfiles("dev")
 class PointTypeRepositoryTest {
 
     @Autowired
@@ -29,9 +33,9 @@ class PointTypeRepositoryTest {
     @BeforeEach
     void setUp() {
         PointType pointType = new PointType();
-        pointType.setTypeName("회원가입 포인트");
+        pointType.setTypeName("순수금액");
         pointType.setEarningPoint(100L);
-        pointType.setEarningRate(10);
+        pointType.setEarningRate(1);
 
         UserGrade userGrade = new UserGrade();
         userGrade.setGradeName(BASIC);
@@ -49,7 +53,7 @@ class PointTypeRepositoryTest {
         List<PointType> result = pointTypeRepository.findPointTypeByGradeName(BASIC);
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getTypeName()).isEqualTo("회원가입 포인트");
+        assertThat(result.get(0).getTypeName()).isEqualTo("순수금액");
     }
 
     @Test

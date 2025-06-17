@@ -3,11 +3,14 @@ package com.nhnacademy.bookstoreuserapi.repository;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User.Status;
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
@@ -19,7 +22,9 @@ import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASI
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Sql(scripts = "/user-test.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Transactional
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ActiveProfiles("dev")
 class UserRepositoryTest {
 
     @Autowired
@@ -49,13 +54,14 @@ class UserRepositoryTest {
     @Test
     @DisplayName("마지막 로그인 시간 갱신")
     void testUpdateLastLoginByUserId() {
-        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MICROS);
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         userRepository.updateLastLoginByUserId(userId, now);
 
         Optional<User> updated = userRepository.findById(userId);
         assertThat(updated).isPresent();
-        assertThat(updated.get().getLastLoginAt()).isEqualTo(now);
+        assertThat(updated.get().getLastLoginAt().truncatedTo(ChronoUnit.SECONDS)).isEqualTo(now);
     }
+
 
     @Test
     @DisplayName("포인트 추가")

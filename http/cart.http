@@ -6,7 +6,7 @@ Content-Type: application/json
 {
   "userId": "test",
   "bookId": 1,
-  "quantity": 2
+  "stock": 2
 }
 
 ### 장바구니 추가2

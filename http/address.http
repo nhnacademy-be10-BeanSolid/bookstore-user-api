@@ -3,9 +3,9 @@ POST http://localhost:10348/users/address
 Content-Type: application/json
 
 {
-  "addressNickName": "주소1",
-  "addressDetail": "광주광역시 상무대로 123",
-  "userId": "test"
+  "addressNickName": "직장",
+  "addressDetail": "nhn아카데미",
+  "userId": "admin"
 }
 
 ### 주소 조회

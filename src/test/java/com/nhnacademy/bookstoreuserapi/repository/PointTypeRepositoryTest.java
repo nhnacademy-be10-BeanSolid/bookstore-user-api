@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASIC;
@@ -21,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Import(QuerydslConfig.class)
+@ActiveProfiles("test")
 class PointTypeRepositoryTest {
 
     @Autowired
@@ -34,9 +36,9 @@ class PointTypeRepositoryTest {
     @BeforeEach
     void setUp() {
         PointType pointType = new PointType();
-        pointType.setTypeName("회원가입 포인트");
+        pointType.setTypeName("순수금액");
         pointType.setEarningPoint(100L);
-        pointType.setEarningRate(10);
+        pointType.setEarningRate(1);
 
         UserGrade userGrade = new UserGrade();
         userGrade.setGradeName(BASIC);
@@ -55,7 +57,7 @@ class PointTypeRepositoryTest {
         Page<ResponsePointType> result = pointTypeRepository.findPointTypeByGradeName(BASIC, pageable);
 
         assertThat(result).hasSize(1);
-        assertThat(result.getContent().get(0).getTypeName()).isEqualTo("회원가입 포인트");
+        assertThat(result.getContent().getFirst().getTypeName()).isEqualTo("순수금액");
     }
 
     @Test

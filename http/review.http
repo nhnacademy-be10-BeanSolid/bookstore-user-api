@@ -22,7 +22,7 @@ Content-Type: application/json
   "reviewContent": "정말 슴슴해요!",
   "reviewPhoto": "",
   "userId": "test",
-  "bookId": 1
+  "bookId": 2
 }
 
 ### 리뷰등록3

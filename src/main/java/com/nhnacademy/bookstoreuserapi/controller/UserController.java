@@ -91,7 +91,7 @@ public class UserController {
         return ResponseEntity.ok(new ResponseUser(user));
     }
 
-    @PutMapping("/{userId}")
+    @PutMapping("/{userId}/point")
     public ResponseEntity<ResponseUser> updatePoint(@PathVariable @NotBlank @Size(max = 20) String userId, @RequestParam @Min(0) int point){
 
         userService.updatePoint(userId, point);

@@ -15,7 +15,7 @@ Content-Type: application/json
 
 {
   "userId": "test",
-  "bookId": 2,
+  "bookId": 3,
   "quantity": 1
 }
 

@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "guestPassword": "1234",
-  "guestName": "테스트",
+  "guestName": "비회원",
   "guestPhoneNumber": "010-1234-5678",
   "guestAddress": "조선대학교",
   "guestEmail": "test@test.com"

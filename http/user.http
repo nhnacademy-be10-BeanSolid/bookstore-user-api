@@ -3,12 +3,12 @@ POST http://localhost:10348/users/register
 Content-Type: application/json
 
 {
-  "userId": "test",
+  "userId": "withdrawnUser",
   "userPassword": "12345",
-  "userName": "test",
-  "userPhoneNumber": "010-1234-5678",
-  "userEmail": "test@test.com",
-  "userBirth": "2025-06-09"
+  "userName": "탈퇴한유저",
+  "userPhoneNumber": "010-4321-8765",
+  "userEmail": "test123@test123.com",
+  "userBirth": "2025-06-16"
 }
 
 ### 회원 조회
@@ -23,7 +23,7 @@ PUT http://localhost:10348/users/test/personalinformation
 Content-Type: application/json
 
 {
-  "userId": "test",
+  "userId": "새로운유저생성",
   "userPassword": "12345",
   "userName": "test",
   "userPhoneNumber": "010-1234-5678",
@@ -35,15 +35,15 @@ Content-Type: application/json
 PUT http://localhost:10348/users/test/lastloginat
 
 ### 회원 포인트 수정
-PUT http://localhost:10348/users/test?point=500
+PUT http://localhost:10348/users/test/point?point=10000
 Content-Type: application/json
 
 ### 회원 상태 수정
-PUT http://localhost:10348/users/test/status?status=WITHDRAWN
+PUT http://localhost:10348/users/withdrawnUser/status?status=WITHDRAWN
 Content-Type: application/json
 
 ### 회원 등급 수정
-PUT http://localhost:10348/users/test/grade?gradeName=ROYAL
+PUT http://localhost:10348/users/admin/grade?gradeName=PLATINUM
 Content-Type: application/json
 
 

@@ -1,5 +1,8 @@
+delete from cart;
 delete from point;
 delete from point_type;
+delete from address;
+delete from review;
 delete from users;
 delete from user_grade;
 

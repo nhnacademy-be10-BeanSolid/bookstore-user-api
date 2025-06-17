@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.context.annotation.Import;
@@ -24,13 +23,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Transactional
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 @Import(QuerydslConfig.class)
 class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserGradeRepository userGradeRepository;
 
     private final String userId = "testUser";
 
@@ -48,6 +49,9 @@ class UserRepositoryTest {
         user.setUserPoint(100);
         user.setLastLoginAt(LocalDateTime.now().minusDays(1));
         UserGrade userGrade = new UserGrade(BASIC, 0L);
+
+        userGradeRepository.save(userGrade);
+
         user.setUserGrade(userGrade);
 
         userRepository.save(user);

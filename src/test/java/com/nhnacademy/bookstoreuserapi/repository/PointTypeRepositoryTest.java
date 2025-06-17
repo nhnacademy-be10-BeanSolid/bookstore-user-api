@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
@@ -18,15 +17,12 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASIC;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Import(QuerydslConfig.class)
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 class PointTypeRepositoryTest {
 
     @Autowired
@@ -61,7 +57,7 @@ class PointTypeRepositoryTest {
         Page<ResponsePointType> result = pointTypeRepository.findPointTypeByGradeName(BASIC, pageable);
 
         assertThat(result).hasSize(1);
-        assertThat(result.getContent().get(0).getTypeName()).isEqualTo("순수금액");
+        assertThat(result.getContent().getFirst().getTypeName()).isEqualTo("순수금액");
     }
 
     @Test

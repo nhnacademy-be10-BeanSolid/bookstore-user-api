@@ -7,6 +7,7 @@ import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User.Status;
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePoint;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,8 +26,7 @@ import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASI
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 @Import(QuerydslConfig.class)
 class PointRepositoryTest {
 
@@ -90,5 +90,10 @@ class PointRepositoryTest {
         assertThat(points)
                 .extracting("earnedAndUsedPoint")
                 .containsExactlyInAnyOrder(50L, -100L);
+    }
+
+    @AfterEach
+    void tearDown() {
+        pointRepository.deleteAll();
     }
 }

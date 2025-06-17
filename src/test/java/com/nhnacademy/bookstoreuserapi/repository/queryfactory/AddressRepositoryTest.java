@@ -59,8 +59,9 @@ class AddressRepositoryTest {
 
         List<ResponseAddress> result = addressRepository.findAllByUserId(userId);
 
-        assertThat(result).isNotEmpty();
-        assertThat(result).hasSize(1);
+        assertThat(result)
+                .isNotEmpty()
+                .hasSize(1);
         assertThat(result.get(0).getUserId()).isEqualTo(userId);
     }
 }

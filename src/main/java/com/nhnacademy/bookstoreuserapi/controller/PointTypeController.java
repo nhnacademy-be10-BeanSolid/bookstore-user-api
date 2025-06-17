@@ -10,10 +10,11 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/users/pointType")
@@ -22,13 +23,13 @@ public class PointTypeController {
 
     private final PointTypeService pointTypeService;
     @GetMapping
-    public List<ResponsePointType> getPointTypeByGradeName(@RequestParam(name = "gradeName", required = false) @Size(max = 10) String gradeName) {
+    public Page<ResponsePointType> getPointTypeByGradeName(@RequestParam(name = "gradeName", required = false) @Size(max = 10) String gradeName, Pageable pageable) {
 
         if(gradeName == null) {
-            return pointTypeService.getAllPointTypes();
+            return pointTypeService.getAllPointTypes(pageable);
         }
 
-        return pointTypeService.getPointTypeByGradeName(UserGrade.Grade.valueOf(gradeName));
+        return pointTypeService.getPointTypeByGradeName(UserGrade.Grade.valueOf(gradeName), pageable);
     }
 
     @PostMapping

@@ -1,12 +1,18 @@
 package com.nhnacademy.bookstoreuserapi.repository;
 
+import com.nhnacademy.bookstoreuserapi.config.QuerydslConfig;
 import com.nhnacademy.bookstoreuserapi.domain.entity.PointType;
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
+import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePointType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +22,7 @@ import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASI
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
+@Import(QuerydslConfig.class)
 class PointTypeRepositoryTest {
 
     @Autowired
@@ -46,10 +53,11 @@ class PointTypeRepositoryTest {
     @Test
     @DisplayName("등급 이름으로 PointType 조회")
     void testFindByGradeName() {
-        List<PointType> result = pointTypeRepository.findPointTypeByGradeName(BASIC);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<ResponsePointType> result = pointTypeRepository.findPointTypeByGradeName(BASIC, pageable);
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getTypeName()).isEqualTo("회원가입 포인트");
+        assertThat(result.getContent().get(0).getTypeName()).isEqualTo("회원가입 포인트");
     }
 
     @Test

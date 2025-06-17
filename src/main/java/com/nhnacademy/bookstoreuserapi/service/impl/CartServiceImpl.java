@@ -13,6 +13,8 @@ import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
 import com.nhnacademy.bookstoreuserapi.service.CartService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,9 +27,11 @@ public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
 
+
+
     @Override
     public ResponseCart addCart(CartCreateRequest cart){
-        Cart findCart = cartRepository.findByUser_UserIdAndBookId(cart.userId(), cart.bookId());
+        ResponseCart findCart = cartRepository.findByUserIdAndBookId(cart.userId(), cart.bookId());
         if (findCart != null) {
             throw new CartAlreadyExistException(cart.userId(), cart.bookId());
         }
@@ -72,17 +76,10 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<ResponseCart> getCartsByUserId(String userId) {
+    public Page<ResponseCart> getCartsByUserId(String userId, Pageable pageable) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
-        List<Cart> carts = cartRepository.findAllByUser_UserId(userId);
-        return carts.stream()
-                .map(cart -> new ResponseCart(
-                        cart.getCartId(),
-                        cart.getBookId(),
-                        cart.getUser().getUserId(),
-                        cart.getQuantity()))
-                .toList();
+        return cartRepository.findAllByUserId(userId, pageable);
     }
 
     @Override

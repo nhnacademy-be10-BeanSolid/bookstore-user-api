@@ -13,10 +13,10 @@ import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
 import com.nhnacademy.bookstoreuserapi.service.PointService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -57,24 +57,11 @@ public class PointServiceImpl implements PointService {
     }
 
     @Override
-    public List<ResponsePoint> findAll(String userId) {
+    public Page<ResponsePoint> findAll(String userId, Pageable pageable) {
         if (userRepository.findById(userId).isEmpty()) {
             throw new UserNotFoundException(userId);
         }
-
-        List<Point> points = pointRepository.findPointByUserId(userId);
-        List<ResponsePoint> responsePoints = new ArrayList<>();
-        for (Point point : points) {
-            responsePoints.add(new ResponsePoint(
-                    point.getPointId(),
-                    point.getUser().getUserId(),
-                    point.getPointType().getTypeId(),
-                    point.getPaymentId(),
-                    point.getEarnedAndUsedAt(),
-                    point.getEarnedAndUsedPoint()
-            ));
-        }
-        return responsePoints;
+        return pointRepository.findPointByUserId(userId, pageable);
     }
 
 }

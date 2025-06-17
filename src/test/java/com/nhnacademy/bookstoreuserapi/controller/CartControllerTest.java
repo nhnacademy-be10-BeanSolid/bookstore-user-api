@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -111,10 +113,11 @@ class CartControllerTest {
     @Test
     void getCartsByUserId() throws Exception {
         String userId = "user123";
-        Mockito.when(cartService.getCartsByUserId(userId)).thenReturn(null);
+        Pageable pageable = PageRequest.of(0,20);
+        Mockito.when(cartService.getCartsByUserId(userId, pageable)).thenReturn(null);
         mockMvc.perform(MockMvcRequestBuilders.get("/carts/user/" + userId))
                 .andExpect(status().is2xxSuccessful());
-        Mockito.verify(cartService, Mockito.times(1)).getCartsByUserId(userId);
+        Mockito.verify(cartService, Mockito.times(1)).getCartsByUserId(userId, pageable);
     }
 
     @Test

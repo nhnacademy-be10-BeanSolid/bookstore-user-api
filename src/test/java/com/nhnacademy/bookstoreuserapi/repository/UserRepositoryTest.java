@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.repository;
 
+import com.nhnacademy.bookstoreuserapi.config.QuerydslConfig;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User.Status;
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
@@ -20,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Sql(scripts = "/user-test.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Import(QuerydslConfig.class)
 class UserRepositoryTest {
 
     @Autowired

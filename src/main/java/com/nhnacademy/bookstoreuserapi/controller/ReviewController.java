@@ -11,6 +11,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,13 +46,13 @@ public class ReviewController {
     }
 
     @GetMapping("/user/{userId}")
-    public List<ResponseReview> getReviewByUserId(@PathVariable @NotBlank @Size(max = 20) String userId) {
-        return reviewService.getReviewsByUserId(userId);
+    public Page<ResponseReview> getReviewByUserId(@PathVariable @NotBlank @Size(max = 20) String userId, Pageable pageable) {
+        return reviewService.getReviewsByUserId(userId, pageable);
     }
 
     @GetMapping("/book/{bookId}")
-    public List<ResponseReview> getReviewByBookId(@PathVariable @Min(1) long bookId) {
-        return reviewService.getReviewsByBookId(bookId);
+    public Page<ResponseReview> getReviewByBookId(@PathVariable @Min(1) long bookId, Pageable pageable) {
+        return reviewService.getReviewsByBookId(bookId, pageable);
     }
 
 }

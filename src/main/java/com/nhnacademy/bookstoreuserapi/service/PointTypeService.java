@@ -3,16 +3,16 @@ package com.nhnacademy.bookstoreuserapi.service;
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
 import com.nhnacademy.bookstoreuserapi.domain.request.PointTypeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePointType;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface PointTypeService {
 
     void savePointType(PointTypeCreateRequest request);
 
-    List<ResponsePointType> getAllPointTypes();
+    Page<ResponsePointType> getAllPointTypes(Pageable pageable);
 
-    List<ResponsePointType> getPointTypeByGradeName(UserGrade.Grade gradeName);
+    Page<ResponsePointType> getPointTypeByGradeName(UserGrade.Grade gradeName, Pageable pageable);
 
     void deletePointType(Long id);
 

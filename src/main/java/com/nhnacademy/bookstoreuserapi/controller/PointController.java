@@ -8,10 +8,10 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,9 +20,9 @@ public class PointController {
 
     private final PointService pointService;
     @GetMapping("/{userId}")
-    public List<ResponsePoint> getPoint(@PathVariable @NotBlank @Size(max = 20) String userId) {
+    public Page<ResponsePoint> getPoint(@PathVariable @NotBlank @Size(max = 20) String userId, Pageable pageable) {
 
-        return pointService.findAll(userId);
+        return pointService.findAll(userId, pageable);
     }
 
     @PostMapping

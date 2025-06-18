@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUser;
+import com.nhnacademy.bookstoreuserapi.exception.InvalidHeaderException;
 import com.nhnacademy.bookstoreuserapi.exception.UserNotFoundException;
 import com.nhnacademy.bookstoreuserapi.service.UserService;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
@@ -54,19 +55,43 @@ public class UserController {
         return ResponseEntity.ok(new ResponseUser(user));
     }
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<ResponseUser> deleteUser(@PathVariable @NotBlank @Size(max = 20) String userId) {
+    @GetMapping("/me")
+    public ResponseEntity<ResponseUser> getUserInfo(@RequestHeader("X-USER-ID") String userId) {
+        if (userId == null || userId.isBlank()) {
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
+        }
+        if (userId.length() > 20) {
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
+        }
+        User user = userService.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+        return ResponseEntity.ok(new ResponseUser(user));
+    }
 
+    @DeleteMapping
+    public ResponseEntity<ResponseUser> deleteUser(@RequestHeader("X-USER-ID") String userId) {
+        if (userId == null || userId.isBlank()) {
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
+        }
+        if (userId.length() > 20) {
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
+        }
         userService.deleteUser(userId);
 
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{userId}/personalinformation")
-    public ResponseEntity<ResponseUser> updatePersonalInformation(@PathVariable @NotBlank @Size(max = 20) String userId, @Valid @RequestBody UserUpdateRequest userUpdateRequest, BindingResult bindingResult){
+    @PutMapping("/me/personalinformation")
+    public ResponseEntity<ResponseUser> updatePersonalInformation(@RequestHeader("X-USER-ID") String userId, @Valid @RequestBody UserUpdateRequest userUpdateRequest, BindingResult bindingResult){
 
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
+        }
+        if (userId == null || userId.isBlank()) {
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
+        }
+        if (userId.length() > 20) {
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
         }
 
         User user = userService.findById(userId)
@@ -81,8 +106,15 @@ public class UserController {
         return ResponseEntity.ok(new ResponseUser(user));
     }
 
-    @PutMapping("/{userId}/lastloginat")
-    public ResponseEntity<ResponseUser> updateLastLoginAt(@PathVariable @NotBlank @Size(max = 20) String userId){
+    @PutMapping("/me/lastloginat")
+    public ResponseEntity<ResponseUser> updateLastLoginAt(@RequestHeader("X-USER-ID") String userId){
+
+        if (userId == null || userId.isBlank()) {
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
+        }
+        if (userId.length() > 20) {
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
+        }
 
         userService.updateLastLoginAt(userId);
 
@@ -91,9 +123,15 @@ public class UserController {
         return ResponseEntity.ok(new ResponseUser(user));
     }
 
-    @PutMapping("/{userId}/point")
-    public ResponseEntity<ResponseUser> updatePoint(@PathVariable @NotBlank @Size(max = 20) String userId, @RequestParam @Min(0) int point){
+    @PutMapping("/me/point")
+    public ResponseEntity<ResponseUser> updatePoint(@RequestHeader("X-USER-ID") String userId, @RequestParam @Min(0) int point){
 
+        if (userId == null || userId.isBlank()) {
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
+        }
+        if (userId.length() > 20) {
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
+        }
         userService.updatePoint(userId, point);
 
         User user = userService.findById(userId)
@@ -101,9 +139,15 @@ public class UserController {
         return ResponseEntity.ok(new ResponseUser(user));
     }
 
-    @PutMapping("/{userId}/status")
-    public ResponseEntity<ResponseUser> updateStatus(@PathVariable @NotBlank @Size(max = 20) String userId, @RequestParam User.Status status){
+    @PutMapping("/me/status")
+    public ResponseEntity<ResponseUser> updateStatus(@RequestHeader("X-USER-ID") String userId, @RequestParam User.Status status){
 
+        if (userId == null || userId.isBlank()) {
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
+        }
+        if (userId.length() > 20) {
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
+        }
         userService.updateUserStatus(userId, status);
 
         User user = userService.findById(userId)
@@ -111,9 +155,15 @@ public class UserController {
         return ResponseEntity.ok(new ResponseUser(user));
     }
 
-    @PutMapping("/{userId}/grade")
-    public ResponseEntity<ResponseUser> updateUserGradeName(@PathVariable @NotBlank @Size(max = 20) String userId, @RequestParam @NotBlank @Size(max = 10) String gradeName) {
+    @PutMapping("/me/grade")
+    public ResponseEntity<ResponseUser> updateUserGradeName(@RequestHeader("X-USER-ID") String userId, @RequestParam @NotBlank @Size(max = 10) String gradeName) {
 
+        if (userId == null || userId.isBlank()) {
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
+        }
+        if (userId.length() > 20) {
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
+        }
         userService.updateUserGradeName(userId, gradeName);
 
         User user = userService.findById(userId)

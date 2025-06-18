@@ -5,7 +5,7 @@ Content-Type: application/json
 {
   "addressNickName": "집",
   "addressDetail": "광주 광역시 지산동",
-  "userId": "withdrawnUser"
+  "userId": "test"
 }
 
 ### 주소 조회
@@ -13,8 +13,9 @@ GET http://localhost:10348/users/address/1
 Content-Type: application/json
 
 ### 주소 조회(회원별)
-GET http://localhost:10348/users/address/user/test
+GET http://localhost:10348/users/address/me
 Content-Type: application/json
+X-USER-ID: test
 
 ### 주소 삭제
 DELETE http://localhost:10348/users/address/1

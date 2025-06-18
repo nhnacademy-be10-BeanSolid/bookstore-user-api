@@ -102,7 +102,8 @@ class AddressControllerTest {
         Mockito.when(addressService.getAllAddresses("userId123"))
                 .thenReturn(List.of(responseAddress, responseAddress2));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/users/address/user/{userId}", "userId123"))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/users/address/me")
+                        .header("X-USER-ID", "userId123"))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
 

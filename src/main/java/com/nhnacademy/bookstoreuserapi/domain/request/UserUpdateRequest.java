@@ -10,6 +10,6 @@ public record UserUpdateRequest (
                                 @NotBlank String userPassword,
                                 @NotBlank String userName,
                                 @NotBlank String userPhoneNumber,
-                                @Email String userEmail,
+                                @NotBlank @Email String userEmail,
                                 @CreatedDate LocalDate userBirth){
 }

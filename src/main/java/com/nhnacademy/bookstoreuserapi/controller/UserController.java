@@ -2,7 +2,6 @@ package com.nhnacademy.bookstoreuserapi.controller;
 
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUser;
 import com.nhnacademy.bookstoreuserapi.exception.InvalidHeaderException;
-import com.nhnacademy.bookstoreuserapi.exception.UserNotFoundException;
 import com.nhnacademy.bookstoreuserapi.service.UserService;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
@@ -17,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/users")
@@ -33,26 +31,13 @@ public class UserController {
             throw new ValidationFailedException(bindingResult);
         }
 
-        String userId = userCreateRequest.userId();
-        String userPassword = userCreateRequest.userPassword();
-        String username = userCreateRequest.userName();
-        String userPhoneNumber = userCreateRequest.userPhoneNumber();
-        String userEmail = userCreateRequest.userEmail();
-        LocalDate userBirth = userCreateRequest.userBirth();
-
-        User user = new User(userId, userPassword, username, userPhoneNumber, userEmail, userBirth);
-
-        userService.saveUser(user);
-
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(userCreateRequest));
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<ResponseUser> getUser(@PathVariable String userId) {
 
-        User user = userService.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-        return ResponseEntity.ok(new ResponseUser(user));
+        return ResponseEntity.ok(userService.getUser(userId));
     }
 
     @GetMapping("/me")
@@ -63,9 +48,8 @@ public class UserController {
         if (userId.length() > 20) {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
         }
-        User user = userService.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-        return ResponseEntity.ok(new ResponseUser(user));
+
+        return ResponseEntity.ok(userService.getUser(userId));
     }
 
     @DeleteMapping
@@ -94,16 +78,7 @@ public class UserController {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
         }
 
-        User user = userService.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-        user.setUserName(userUpdateRequest.userName());
-        user.setUserPassword(userUpdateRequest.userPassword());
-        user.setUserBirth(userUpdateRequest.userBirth());
-        user.setUserPhoneNumber(userUpdateRequest.userPhoneNumber());
-        user.setUserEmail(userUpdateRequest.userEmail());
-        userService.updatePersonalInformation(user);
-
-        return ResponseEntity.ok(new ResponseUser(user));
+        return ResponseEntity.ok().body(userService.updatePersonalInformation(userId, userUpdateRequest));
     }
 
     @PutMapping("/me/lastloginat")
@@ -116,11 +91,7 @@ public class UserController {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
         }
 
-        userService.updateLastLoginAt(userId);
-
-        User user = userService.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-        return ResponseEntity.ok(new ResponseUser(user));
+        return ResponseEntity.ok(userService.updateLastLoginAt(userId));
     }
 
     @PutMapping("/me/point")
@@ -132,11 +103,8 @@ public class UserController {
         if (userId.length() > 20) {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
         }
-        userService.updatePoint(userId, point);
 
-        User user = userService.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-        return ResponseEntity.ok(new ResponseUser(user));
+        return ResponseEntity.ok(userService.updatePoint(userId, point));
     }
 
     @PutMapping("/me/status")
@@ -148,11 +116,8 @@ public class UserController {
         if (userId.length() > 20) {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
         }
-        userService.updateUserStatus(userId, status);
 
-        User user = userService.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-        return ResponseEntity.ok(new ResponseUser(user));
+        return ResponseEntity.ok(userService.updateUserStatus(userId, status));
     }
 
     @PutMapping("/me/grade")
@@ -164,12 +129,7 @@ public class UserController {
         if (userId.length() > 20) {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
         }
-        userService.updateUserGradeName(userId, gradeName);
 
-        User user = userService.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-        return ResponseEntity.ok(new ResponseUser(user));
+        return ResponseEntity.ok(userService.updateUserGradeName(userId, gradeName));
     }
-
-
 }

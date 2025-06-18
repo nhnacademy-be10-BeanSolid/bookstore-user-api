@@ -5,6 +5,7 @@ import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUser;
 import com.nhnacademy.bookstoreuserapi.exception.UserNotFoundException;
 import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.service.UserService;
@@ -18,11 +19,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASIC;
 import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.ROYAL;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -75,7 +77,7 @@ class UserControllerTest {
         user.setUserStatus(User.Status.ACTIVE);
         UserGrade userGrade = new UserGrade(BASIC, 0L);
         user.setUserGrade(userGrade);
-        Mockito.when(userService.findById("user123")).thenReturn(Optional.of(user));
+        Mockito.when(userService.getUser("user123")).thenReturn(new ResponseUser(user));
 
         mockMvc.perform(get("/users/user123"))
                 .andExpect(status().isOk())
@@ -91,7 +93,7 @@ class UserControllerTest {
         user.setUserStatus(User.Status.ACTIVE);
         UserGrade userGrade = new UserGrade(BASIC, 0L);
         user.setUserGrade(userGrade);
-        Mockito.when(userService.findById("user123")).thenReturn(Optional.of(user));
+        Mockito.when(userService.getUser("user123")).thenReturn(new ResponseUser(user));
 
         mockMvc.perform(get("/users/me")
                         .header("X-USER-ID", "user123"))
@@ -103,7 +105,7 @@ class UserControllerTest {
     @Test
     @DisplayName("회원 조회 실패 - 없는 사용자")
     void getUser_notFound() throws Exception {
-        Mockito.when(userService.findById("notExist")).thenThrow(new UserNotFoundException("notExist"));
+        Mockito.when(userService.getUser("notExist")).thenThrow(new UserNotFoundException("notExist"));
 
         mockMvc.perform(get("/users/notExist"))
                 .andExpect(status().isNotFound());
@@ -111,7 +113,7 @@ class UserControllerTest {
     @Test
     @DisplayName("회원 조회 실패 - 없는 사용자")
     void getUserInfo_notFound() throws Exception {
-        Mockito.when(userService.findById("notExist")).thenThrow(new UserNotFoundException("notExist"));
+        Mockito.when(userService.getUser("notExist")).thenThrow(new UserNotFoundException("notExist"));
 
         mockMvc.perform(get("/users/me")
                         .header("X-USER-ID", "notExist"))
@@ -161,17 +163,18 @@ class UserControllerTest {
     @DisplayName("개인정보 수정")
     void updatePersonalInfo() throws Exception {
         UserUpdateRequest request = new UserUpdateRequest(
-                "user123", "newPassword", "이수정", "01011112222",
+                "newPassword", "이수정", "01011112222",
                 "lee@test.com", LocalDate.of(1995, 5, 5)
         );
-        User updatedUser = new User("user123", "newPassword", "김철수", "01011112222",
+        User updatedUser = new User("user123", "newPassword", "이수정", "01011112222",
                 "lee@test.com", LocalDate.of(1995, 5, 5));
 
         updatedUser.setUserStatus(User.Status.ACTIVE);
         UserGrade userGrade = new UserGrade(BASIC, 0L);
         updatedUser.setUserGrade(userGrade);
 
-        Mockito.when(userService.findById("user123")).thenReturn(Optional.of(updatedUser));
+        Mockito.when(userService.updatePersonalInformation(eq("user123"), any(UserUpdateRequest.class)))
+                .thenReturn(new ResponseUser(updatedUser));
 
         mockMvc.perform(put("/users/me/personalinformation")
                         .header("X-USER-ID", "user123")
@@ -185,7 +188,7 @@ class UserControllerTest {
     @DisplayName("개인정보 수정 실패 - 유효성 검사")
     void updatePersonalInfo_fail() throws Exception {
         UserUpdateRequest request = new UserUpdateRequest(
-                "", "newPassword", "이수정", "01011112222",
+                "newPassword", "이수정", "01011112222",
                 "", LocalDate.of(1995, 5, 5));
         mockMvc.perform(put("/users/me/personalinformation")
                         .header("X-USER-ID", "user123")
@@ -200,7 +203,7 @@ class UserControllerTest {
     @DisplayName("회원 정보 수정 - 실패 - 없는 사용자")
     void updatePersonalInfo_fail_blank() throws Exception {
         UserUpdateRequest request = new UserUpdateRequest(
-                "test", "newPassword", "이수정", "01011112222",
+                 "newPassword", "이수정", "01011112222",
                 "test@test", LocalDate.of(1995, 5, 5));
         mockMvc.perform(put("/users/me/personalinformation")
                         .header("X-USER-ID", "")
@@ -213,7 +216,7 @@ class UserControllerTest {
     @DisplayName("회원 정보 수정 - 실패 - 20자 초과 사용자 ID")
     void updatePersonalInfo_fail_exceed20Letter() throws Exception {
         UserUpdateRequest request = new UserUpdateRequest(
-                "test", "newPassword", "이수정", "01011112222",
+                 "newPassword", "이수정", "01011112222",
                 "test@test", LocalDate.of(1995, 5, 5));
         mockMvc.perform(put("/users/me/personalinformation")
                         .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm")
@@ -230,7 +233,7 @@ class UserControllerTest {
         user.setUserStatus(User.Status.ACTIVE);
         UserGrade userGrade = new UserGrade(BASIC, 0L);
         user.setUserGrade(userGrade);
-        Mockito.when(userService.findById("user123")).thenReturn(Optional.of(user));
+        Mockito.when(userService.getUser("user123")).thenReturn(new ResponseUser(user));
 
         mockMvc.perform(put("/users/me/lastloginat")
                         .header("X-USER-ID", "user123"))
@@ -274,7 +277,10 @@ class UserControllerTest {
         user.setUserStatus(User.Status.ACTIVE);
         UserGrade userGrade = new UserGrade(BASIC, 0L);
         user.setUserGrade(userGrade);
-        Mockito.when(userService.findById("user123")).thenReturn(Optional.of(user));
+
+        Mockito.when(userService.updatePoint(eq("user123"), any(Integer.class)))
+                .thenReturn(new ResponseUser(user));
+
 
         mockMvc.perform(put("/users/me/point")
                         .param("point", "2000")
@@ -323,7 +329,7 @@ class UserControllerTest {
         user.setUserStatus(User.Status.WITHDRAWN);
         UserGrade userGrade = new UserGrade(BASIC, 0L);
         user.setUserGrade(userGrade);
-        Mockito.when(userService.findById("user123")).thenReturn(Optional.of(user));
+        Mockito.when(userService.updateUserStatus(eq("user123"), any(User.Status.class))).thenReturn(new ResponseUser(user));
 
         mockMvc.perform(put("/users/me/status")
                         .param("status", "WITHDRAWN")
@@ -340,6 +346,7 @@ class UserControllerTest {
         user.setUserStatus(User.Status.WITHDRAWN);
         UserGrade userGrade = new UserGrade(BASIC, 0L);
         user.setUserGrade(userGrade);
+
 
         mockMvc.perform(put("/users/me/status")
                         .param("status", "WITHDRAWN")
@@ -368,14 +375,10 @@ class UserControllerTest {
         User user = new User("user123", "pw", "홍길동", "01012345678",
                 "hong@test.com", LocalDate.of(1990, 1, 1));
         user.setUserStatus(User.Status.ACTIVE);
-        user.setUserGrade(new UserGrade(BASIC, 0L));
+        user.setUserGrade(new UserGrade(ROYAL, 100000L));
 
-        Mockito.doAnswer(invocation -> {
-            user.setUserGrade(new UserGrade(ROYAL, 100000L));
-            return null;
-        }).when(userService).updateUserGradeName("user123", "ROYAL");
-
-        Mockito.when(userService.findById("user123")).thenReturn(Optional.of(user));
+        Mockito.when(userService.updateUserGradeName("user123", ROYAL.toString()))
+                .thenReturn(new ResponseUser(user));
 
         mockMvc.perform(put("/users/me/grade")
                         .param("gradeName", "ROYAL")

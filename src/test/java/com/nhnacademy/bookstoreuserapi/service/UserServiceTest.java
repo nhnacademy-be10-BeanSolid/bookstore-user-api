@@ -1,10 +1,12 @@
 package com.nhnacademy.bookstoreuserapi.service;
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
+import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
+import com.nhnacademy.bookstoreuserapi.domain.request.UserUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUser;
 import com.nhnacademy.bookstoreuserapi.exception.UserAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.UserGradeNotFoundException;
 import com.nhnacademy.bookstoreuserapi.exception.UserNotFoundException;
-import com.nhnacademy.bookstoreuserapi.repository.UserGradeRepository;
 import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,12 +18,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Optional;
-
-import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASIC;
 import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.ROYAL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -31,6 +29,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 @Sql(scripts = "/user-test.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @ActiveProfiles("test")
+@Transactional
 class UserServiceTest {
 
     @Autowired
@@ -38,9 +37,6 @@ class UserServiceTest {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private UserGradeRepository userGradeRepository;
 
     @MockBean
     private PasswordEncoder passwordEncoder;
@@ -54,23 +50,17 @@ class UserServiceTest {
 
     @Test
     @DisplayName("사용자 저장 성공")
-    @Transactional
     void saveUser_success() {
-        User user = User.builder()
-                .userId("newUser")
-                .userPassword("plainPassword")
-                .userName("김철수")
-                .userPhoneNumber("01098765432")
-                .userEmail("kim@test.com")
-                .userBirth(LocalDate.of(1995, 6, 15))
-                .userPoint(0)
-                .isAuth(false)
-                .userStatus(User.Status.ACTIVE)
-                .lastLoginAt(LocalDateTime.now())
-                .userGrade(userGradeRepository.findByGradeName(BASIC))
-                .build();
+        UserCreateRequest request = new UserCreateRequest(
+                "newUser",
+                "plainPassword",
+                "김철수",
+                "01098765432",
+                "kim@test.com",
+                LocalDate.of(1995, 6, 15)
+        );
 
-        userService.saveUser(user);
+        userService.saveUser(request);
 
         Optional<User> savedUser = userRepository.findById("newUser");
         assertThat(savedUser).isPresent();
@@ -79,68 +69,73 @@ class UserServiceTest {
 
     @Test
     @DisplayName("중복 사용자 저장 실패")
-    @Transactional
     void saveUser_alreadyExists() {
-        User user = User.builder()
-                .userId(userId)
-                .userPassword("plainPassword")
-                .userName("김철수")
-                .userPhoneNumber("01098765432")
-                .userEmail("kim@test.com")
-                .userBirth(LocalDate.of(1995, 6, 15))
-                .userPoint(0)
-                .isAuth(false)
-                .userStatus(User.Status.ACTIVE)
-                .lastLoginAt(LocalDateTime.now())
-                .userGrade(userGradeRepository.findByGradeName(BASIC))
-                .build();
 
-        assertThatThrownBy(() -> userService.saveUser(user))
+        UserCreateRequest request = new UserCreateRequest(
+                userId,
+                "testPassword",
+                "test",
+                "01098765432",
+                "test@test.com",
+                LocalDate.of(1995, 6, 15)
+        );
+
+        assertThatThrownBy(() -> userService.saveUser(request))
                 .isInstanceOf(UserAlreadyExistException.class);
     }
 
     @Test
     @DisplayName("사용자 조회 성공")
     void findById_success() {
-        Optional<User> user = userService.findById(userId);
-        assertThat(user).isPresent();
-        assertThat(user.get().getUserId()).isEqualTo(userId);
+        ResponseUser user = userService.getUser(userId);
+        assertThat(user).isNotNull();
+        assertThat(user.getUserId()).isEqualTo(userId);
     }
 
     @Test
     @DisplayName("존재하지 않는 사용자 조회 실패")
     void findById_notFound() {
-        assertThatThrownBy(() -> userService.findById("notExists"))
+        assertThatThrownBy(() -> userService.getUser("notExists"))
                 .isInstanceOf(UserNotFoundException.class);
     }
 
     @Test
     @DisplayName("개인정보 수정")
-    @Transactional
     void updatePersonalInformation() {
-        User user = userRepository.findById(userId).orElseThrow();
-        user.setUserName("수정된이름");
+        UserUpdateRequest request = new UserUpdateRequest(
+                "newPassword",
+                "수정된이름",
+                "01012345678",
+                "updated@test.com",
+                LocalDate.of(1993, 12, 12)
+        );
 
-        userService.updatePersonalInformation(user);
+        ResponseUser updatedUser = userService.updatePersonalInformation(userId, request);
 
-        User updated = userRepository.findById(userId).orElseThrow();
-        assertThat(updated.getUserName()).isEqualTo("수정된이름");
+        assertThat(updatedUser).isNotNull();
+        assertThat(updatedUser.getUserName()).isEqualTo("수정된이름");
+        assertThat(updatedUser.getUserEmail()).isEqualTo("updated@test.com");
     }
+
 
     @Test
     @DisplayName("개인정보 수정 실패 - 존재하지 않는 사용자")
     void updatePersonalInformation_notFound() {
-        User user = new User();
-        user.setUserId("notExists");
-        user.setUserName("수정된이름");
+        UserUpdateRequest request = new UserUpdateRequest(
+                "password",
+                "수정된이름",
+                "01000000000",
+                "fail@test.com",
+                LocalDate.of(1990, 1, 1)
+        );
 
-        assertThatThrownBy(() -> userService.updatePersonalInformation(user))
+        assertThatThrownBy(() -> userService.updatePersonalInformation("notExists", request))
                 .isInstanceOf(UserNotFoundException.class);
     }
 
+
     @Test
     @DisplayName("로그인 시간 업데이트")
-    @Transactional
     void updateLastLoginAt() {
         userService.updateLastLoginAt(userId);
 
@@ -157,7 +152,6 @@ class UserServiceTest {
 
     @Test
     @DisplayName("포인트 업데이트")
-    @Transactional
     void updatePoint() {
         userService.updatePoint(userId, 1000);
 
@@ -174,7 +168,6 @@ class UserServiceTest {
 
     @Test
     @DisplayName("회원 등급 업데이트")
-    @Transactional
     void updateGrade() {
         userService.updateUserGradeName(userId, "ROYAL");
         User updated = userRepository.findById(userId).orElseThrow();
@@ -204,7 +197,6 @@ class UserServiceTest {
 
     @Test
     @DisplayName("상태 업데이트")
-    @Transactional
     void updateUserStatus() {
         userService.updateUserStatus(userId, User.Status.WITHDRAWN);
 
@@ -221,7 +213,6 @@ class UserServiceTest {
 
     @Test
     @DisplayName("사용자 삭제")
-    @Transactional
     void deleteUser() {
         userService.deleteUser(userId);
         assertThat(userRepository.findById(userId)).isNotPresent();

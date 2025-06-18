@@ -1,24 +1,25 @@
 package com.nhnacademy.bookstoreuserapi.service;
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
-
-import java.util.Optional;
+import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
+import com.nhnacademy.bookstoreuserapi.domain.request.UserUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUser;
 
 public interface UserService {
 
-    Optional<User> findById(String userId);
+    ResponseUser getUser(String userId);
 
-    void saveUser(User user);
+    ResponseUser saveUser(UserCreateRequest request);
 
-    void updatePersonalInformation(User user);
+    ResponseUser updatePersonalInformation(String userId, UserUpdateRequest request);
 
-    void updateLastLoginAt(String userId);
+    ResponseUser updateLastLoginAt(String userId);
 
-    void updatePoint(String userId, int point);
+    ResponseUser updatePoint(String userId, int point);
 
-    void updateUserStatus(String userId, User.Status status);
+    ResponseUser updateUserStatus(String userId, User.Status status);
 
-    void updateUserGradeName(String userId, String gradeName);
+    ResponseUser updateUserGradeName(String userId, String gradeName);
 
     void deleteUser(String userId);
 }

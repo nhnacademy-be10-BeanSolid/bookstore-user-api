@@ -113,4 +113,34 @@ class AddressControllerTest {
         Assertions.assertTrue(content.contains("별칭2"));
         Mockito.verify(addressService, Mockito.times(1)).getAllAddresses("userId123");
     }
+
+    @Test
+    void getAddressesFailUserIdBlank() throws Exception{
+        ResponseAddress responseAddress = new ResponseAddress(1L, "별칭", "광주광역시 도로명주소 123", "userId123");
+        ResponseAddress responseAddress2 = new ResponseAddress(2L, "별칭2", "서울특별시 도로명주소 456", "userId123");
+        Mockito.when(addressService.getAllAddresses("userId123"))
+                .thenReturn(List.of(responseAddress, responseAddress2));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/address/me")
+                        .header("X-USER-ID", ""))
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+
+        Mockito.verify(addressService, Mockito.times(0)).getAllAddresses("userId123");
+    }
+
+    @Test
+    void getAddressesFailUserIdExceed20Letter() throws Exception{
+        ResponseAddress responseAddress = new ResponseAddress(1L, "별칭", "광주광역시 도로명주소 123", "userId123");
+        ResponseAddress responseAddress2 = new ResponseAddress(2L, "별칭2", "서울특별시 도로명주소 456", "userId123");
+        Mockito.when(addressService.getAllAddresses("userId123"))
+                .thenReturn(List.of(responseAddress, responseAddress2));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/address/me")
+                        .header("X-USER-ID", "123456789012345678901234567890"))
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+
+        Mockito.verify(addressService, Mockito.times(0)).getAllAddresses("userId123");
+    }
 }

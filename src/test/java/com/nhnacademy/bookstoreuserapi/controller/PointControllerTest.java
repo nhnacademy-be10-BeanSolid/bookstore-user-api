@@ -65,6 +65,46 @@ class PointControllerTest {
     }
 
     @Test
+    void getPointsFailBlank() throws Exception {
+        ResponsePoint responsePoint1 = new ResponsePoint(1L, "userId123", 1L, 1L, LocalDateTime.now(), 500L);
+        ResponsePoint responsePoint2 = new ResponsePoint(2L, "userId123", 2L, 2L, LocalDateTime.now(), 300L);
+
+        List<ResponsePoint> pointList = List.of(responsePoint1, responsePoint2);
+        Page<ResponsePoint> page = new PageImpl<>(pointList, PageRequest.of(0, 10), pointList.size());
+
+        Mockito.when(pointService.findAll(eq("userId123"), any()))
+                .thenReturn(page);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/point/me")
+                        .header("X-USER-ID", ""))
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+
+
+        Mockito.verify(pointService, Mockito.times(0)).findAll(eq("userId123"), any());
+    }
+
+    @Test
+    void getPointsFailExceed20Letter() throws Exception {
+        ResponsePoint responsePoint1 = new ResponsePoint(1L, "userId123", 1L, 1L, LocalDateTime.now(), 500L);
+        ResponsePoint responsePoint2 = new ResponsePoint(2L, "userId123", 2L, 2L, LocalDateTime.now(), 300L);
+
+        List<ResponsePoint> pointList = List.of(responsePoint1, responsePoint2);
+        Page<ResponsePoint> page = new PageImpl<>(pointList, PageRequest.of(0, 10), pointList.size());
+
+        Mockito.when(pointService.findAll(eq("userId123"), any()))
+                .thenReturn(page);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/point/me")
+                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm"))
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+
+
+        Mockito.verify(pointService, Mockito.times(0)).findAll(eq("userId123"), any());
+    }
+
+    @Test
     void savePoint() throws Exception {
         PointCreateRequest request = new PointCreateRequest("test", 1L, 2L, LocalDateTime.of(2015, 11, 12, 5, 12, 12, 12), 500L);
         ResponsePoint response = new ResponsePoint(1L, "test", 1L, 2L, LocalDateTime.of(2015, 11, 12, 5, 12, 12, 12), 500L);

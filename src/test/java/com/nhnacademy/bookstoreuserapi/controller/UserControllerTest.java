@@ -119,11 +119,42 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("회원 조회 실패 - 빈 사용자 ID")
+    void getUserInfo_Blank() throws Exception {
+        mockMvc.perform(get("/users/me")
+                        .header("X-USER-ID", ""))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("회원 조회 실패 - 20자 초과 사용자 ID")
+    void getUserInfo_Exceed20Letter() throws Exception {
+        mockMvc.perform(get("/users/me")
+                        .header("X-USER-ID", "asfghjklqwertyuiopzxcvbnm"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     @DisplayName("회원 삭제")
     void deleteUser_success() throws Exception {
         mockMvc.perform(delete("/users")
                         .header("X-USER-ID", "user123"))
                 .andExpect(status().isNoContent());
+    }
+    @Test
+    @DisplayName("회원 삭제 - 실패 - 빈 사용자 ID")
+    void deleteUser_fail_blank() throws Exception {
+        mockMvc.perform(delete("/users")
+                        .header("X-USER-ID", ""))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("회원 삭제 - 실패 - 20자 초과 사용자 ID")
+    void deleteUser_fail_exceed20Letter() throws Exception {
+        mockMvc.perform(delete("/users")
+                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -166,6 +197,32 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("회원 정보 수정 - 실패 - 없는 사용자")
+    void updatePersonalInfo_fail_blank() throws Exception {
+        UserUpdateRequest request = new UserUpdateRequest(
+                "test", "newPassword", "이수정", "01011112222",
+                "test@test", LocalDate.of(1995, 5, 5));
+        mockMvc.perform(put("/users/me/personalinformation")
+                        .header("X-USER-ID", "")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("회원 정보 수정 - 실패 - 20자 초과 사용자 ID")
+    void updatePersonalInfo_fail_exceed20Letter() throws Exception {
+        UserUpdateRequest request = new UserUpdateRequest(
+                "test", "newPassword", "이수정", "01011112222",
+                "test@test", LocalDate.of(1995, 5, 5));
+        mockMvc.perform(put("/users/me/personalinformation")
+                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     @DisplayName("마지막 로그인 시간 갱신")
     void updateLastLoginAt() throws Exception {
         User user = new User("user123", "pw", "홍길동", "01012345678",
@@ -178,6 +235,34 @@ class UserControllerTest {
         mockMvc.perform(put("/users/me/lastloginat")
                         .header("X-USER-ID", "user123"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("마지막 로그인 시간 갱신 - 실패 - 빈 사용자 ID")
+    void updateLastLoginAtFailBlank() throws Exception {
+        User user = new User("user123", "pw", "홍길동", "01012345678",
+                "hong@test.com", LocalDate.of(1990, 1, 1));
+        user.setUserStatus(User.Status.ACTIVE);
+        UserGrade userGrade = new UserGrade(BASIC, 0L);
+        user.setUserGrade(userGrade);
+
+        mockMvc.perform(put("/users/me/lastloginat")
+                        .header("X-USER-ID", ""))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("마지막 로그인 시간 갱신 - 실패 - 20자 초과 사용자 ID")
+    void updateLastLoginAtFailExceed20Letter() throws Exception {
+        User user = new User("user123", "pw", "홍길동", "01012345678",
+                "hong@test.com", LocalDate.of(1990, 1, 1));
+        user.setUserStatus(User.Status.ACTIVE);
+        UserGrade userGrade = new UserGrade(BASIC, 0L);
+        user.setUserGrade(userGrade);
+
+        mockMvc.perform(put("/users/me/lastloginat")
+                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -199,6 +284,38 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("포인트 수정- 실패 - 빈 사용자 ID")
+    void updatePointFailBlank() throws Exception {
+        User user = new User("user123", "pw", "홍길동", "01012345678",
+                "hong@test.com", LocalDate.of(1990, 1, 1));
+        user.setUserPoint(2000);
+        user.setUserStatus(User.Status.ACTIVE);
+        UserGrade userGrade = new UserGrade(BASIC, 0L);
+        user.setUserGrade(userGrade);
+
+        mockMvc.perform(put("/users/me/point")
+                        .param("point", "2000")
+                        .header("X-USER-ID", ""))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("포인트 수정- 실패 - 20자 초과 사용자 ID")
+    void updatePointFailExceed20Letter() throws Exception {
+        User user = new User("user123", "pw", "홍길동", "01012345678",
+                "hong@test.com", LocalDate.of(1990, 1, 1));
+        user.setUserPoint(2000);
+        user.setUserStatus(User.Status.ACTIVE);
+        UserGrade userGrade = new UserGrade(BASIC, 0L);
+        user.setUserGrade(userGrade);
+
+        mockMvc.perform(put("/users/me/point")
+                        .param("point", "2000")
+                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     @DisplayName("상태 변경")
     void updateStatus() throws Exception {
         User user = new User("user123", "pw", "홍길동", "01012345678",
@@ -215,6 +332,35 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.userStatus").value("WITHDRAWN"));
     }
 
+    @Test
+    @DisplayName("상태 변경 - 실패 - 빈 사용자 ID")
+    void updateStatusFailBlank() throws Exception {
+        User user = new User("user123", "pw", "홍길동", "01012345678",
+                "hong@test.com", LocalDate.of(1990, 1, 1));
+        user.setUserStatus(User.Status.WITHDRAWN);
+        UserGrade userGrade = new UserGrade(BASIC, 0L);
+        user.setUserGrade(userGrade);
+
+        mockMvc.perform(put("/users/me/status")
+                        .param("status", "WITHDRAWN")
+                        .header("X-USER-ID", ""))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("상태 변경 - 실패 - 20자 초과 사용자 ID")
+    void updateStatusFailExceed20Letter() throws Exception {
+        User user = new User("user123", "pw", "홍길동", "01012345678",
+                "hong@test.com", LocalDate.of(1990, 1, 1));
+        user.setUserStatus(User.Status.WITHDRAWN);
+        UserGrade userGrade = new UserGrade(BASIC, 0L);
+        user.setUserGrade(userGrade);
+
+        mockMvc.perform(put("/users/me/status")
+                        .param("status", "WITHDRAWN")
+                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm"))
+                .andExpect(status().isBadRequest());
+    }
 
     @Test
     @DisplayName("회원 등급 수정")
@@ -236,6 +382,34 @@ class UserControllerTest {
                         .header("X-USER-ID", "user123"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userGradeName").value("ROYAL"));
+    }
+
+    @Test
+    @DisplayName("회원 등급 수정 - 실패 - 빈 사용자 ID")
+    void updateUserGradeFailBlank() throws Exception {
+        User user = new User("user123", "pw", "홍길동", "01012345678",
+                "hong@test.com", LocalDate.of(1990, 1, 1));
+        user.setUserStatus(User.Status.ACTIVE);
+        user.setUserGrade(new UserGrade(BASIC, 0L));
+
+        mockMvc.perform(put("/users/me/grade")
+                        .param("gradeName", "ROYAL")
+                        .header("X-USER-ID", ""))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("회원 등급 수정 - 실패 - 20자 초과 사용자 ID")
+    void updateUserGradeFailExceed20Letter() throws Exception {
+        User user = new User("user123", "pw", "홍길동", "01012345678",
+                "hong@test.com", LocalDate.of(1990, 1, 1));
+        user.setUserStatus(User.Status.ACTIVE);
+        user.setUserGrade(new UserGrade(BASIC, 0L));
+
+        mockMvc.perform(put("/users/me/grade")
+                        .param("gradeName", "ROYAL")
+                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm"))
+                .andExpect(status().isBadRequest());
     }
 }
 

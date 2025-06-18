@@ -41,7 +41,7 @@ public class AddressController {
 
     @GetMapping("/me")
     public ResponseEntity<List<ResponseAddress>> getAllAddresses(@RequestHeader("X-USER-ID") String userId) {
-        if (userId == null || userId.isBlank()) {
+        if (userId.isBlank()) {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
         }
         if (userId.length() > 20) {

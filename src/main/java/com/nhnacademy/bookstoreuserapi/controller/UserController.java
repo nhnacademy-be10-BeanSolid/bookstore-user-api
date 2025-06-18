@@ -44,7 +44,7 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<ResponseUser> getUserInfo(@RequestHeader("X-USER-ID") String userId) {
-        if (userId == null || userId.isBlank()) {
+        if (userId.isBlank()) {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
         }
         if (userId.length() > 20) {
@@ -56,7 +56,7 @@ public class UserController {
 
     @DeleteMapping
     public ResponseEntity<ResponseUser> deleteUser(@RequestHeader("X-USER-ID") String userId) {
-        if (userId == null || userId.isBlank()) {
+        if (userId.isBlank()) {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
         }
         if (userId.length() > 20) {
@@ -73,7 +73,7 @@ public class UserController {
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
         }
-        if (userId == null || userId.isBlank()) {
+        if (userId.isBlank()) {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
         }
         if (userId.length() > 20) {
@@ -86,7 +86,7 @@ public class UserController {
     @PutMapping("/me/lastloginat")
     public ResponseEntity<ResponseUser> updateLastLoginAt(@RequestHeader("X-USER-ID") String userId){
 
-        if (userId == null || userId.isBlank()) {
+        if (userId.isBlank()) {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
         }
         if (userId.length() > 20) {
@@ -103,7 +103,7 @@ public class UserController {
     @PutMapping("/me/point")
     public ResponseEntity<ResponseUser> updatePoint(@RequestHeader("X-USER-ID") String userId, @RequestParam @Min(0) int point){
 
-        if (userId == null || userId.isBlank()) {
+        if (userId.isBlank()) {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
         }
         if (userId.length() > 20) {
@@ -119,7 +119,7 @@ public class UserController {
     @PutMapping("/me/status")
     public ResponseEntity<ResponseUser> updateStatus(@RequestHeader("X-USER-ID") String userId, @RequestParam User.Status status){
 
-        if (userId == null || userId.isBlank()) {
+        if (userId.isBlank()) {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
         }
         if (userId.length() > 20) {
@@ -135,7 +135,7 @@ public class UserController {
     @PutMapping("/me/grade")
     public ResponseEntity<ResponseUser> updateUserGradeName(@RequestHeader("X-USER-ID") String userId, @RequestParam @NotBlank @Size(max = 10) String gradeName) {
 
-        if (userId == null || userId.isBlank()) {
+        if (userId.isBlank()) {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
         }
         if (userId.length() > 20) {

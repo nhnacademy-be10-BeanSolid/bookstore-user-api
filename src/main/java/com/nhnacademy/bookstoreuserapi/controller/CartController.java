@@ -50,7 +50,7 @@ public class CartController {
 
     @GetMapping("/user")
     public ResponseEntity<Page<ResponseCart>> getCartByUserId(@RequestHeader("X-USER-ID") String userId, Pageable pageable) {
-        if (userId == null || userId.isBlank()) {
+        if (userId.isBlank()) {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
         }
         if (userId.length() > 20) {
@@ -67,7 +67,7 @@ public class CartController {
 
     @DeleteMapping("/user")
     public ResponseEntity<Void> deleteCartsByUserId(@RequestHeader("X-USER-ID") String userId) {
-        if (userId == null || userId.isBlank()) {
+        if (userId.isBlank()) {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
         }
         if (userId.length() > 20) {

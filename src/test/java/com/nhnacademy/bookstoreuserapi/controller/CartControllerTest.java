@@ -122,6 +122,28 @@ class CartControllerTest {
     }
 
     @Test
+    void getCartsByUserIdFailBlank() throws Exception {
+        String userId = "user123";
+        Pageable pageable = PageRequest.of(0,20);
+        Mockito.when(cartService.getCartsByUserId(userId, pageable)).thenReturn(null);
+        mockMvc.perform(MockMvcRequestBuilders.get("/carts/user")
+                        .header("X-USER-ID", ""))
+                .andExpect(status().is4xxClientError());
+        Mockito.verify(cartService, Mockito.times(0)).getCartsByUserId(userId, pageable);
+    }
+
+    @Test
+    void getCartsByUserIdFailExceed20Letter() throws Exception {
+        String userId = "user123";
+        Pageable pageable = PageRequest.of(0,20);
+        Mockito.when(cartService.getCartsByUserId(userId, pageable)).thenReturn(null);
+        mockMvc.perform(MockMvcRequestBuilders.get("/carts/user")
+                        .header("X-USER-ID", "asfghjklqwertyuiopzxcvbnm"))
+                .andExpect(status().is4xxClientError());
+        Mockito.verify(cartService, Mockito.times(0)).getCartsByUserId(userId, pageable);
+    }
+
+    @Test
     void deleteCart() throws Exception {
         long cartId = 1L;
         Mockito.doNothing().when(cartService).deleteCart(cartId);
@@ -138,5 +160,25 @@ class CartControllerTest {
                         .header("X-USER-ID", userId))
                 .andExpect(status().is2xxSuccessful());
         Mockito.verify(cartService, Mockito.times(1)).deleteCartsByUserId(userId);
+    }
+
+    @Test
+    void deleteCartsByUserIdFailBlank() throws Exception {
+        String userId = "user123";
+        Mockito.doNothing().when(cartService).deleteCartsByUserId(userId);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/carts/user")
+                        .header("X-USER-ID", ""))
+                .andExpect(status().is4xxClientError());
+        Mockito.verify(cartService, Mockito.times(0)).deleteCartsByUserId(userId);
+    }
+
+    @Test
+    void deleteCartsByUserIdFailExceed20Letter() throws Exception {
+        String userId = "user123";
+        Mockito.doNothing().when(cartService).deleteCartsByUserId(userId);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/carts/user")
+                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm"))
+                .andExpect(status().is4xxClientError());
+        Mockito.verify(cartService, Mockito.times(0)).deleteCartsByUserId(userId);
     }
 }

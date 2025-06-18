@@ -51,7 +51,8 @@ class PointControllerTest {
         Mockito.when(pointService.findAll(eq("userId123"), any()))
                 .thenReturn(page);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/users/point/{userId}", "userId123"))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/users/point/me")
+                        .header("X-USER-ID", "userId123"))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
 

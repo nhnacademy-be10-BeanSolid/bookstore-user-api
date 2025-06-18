@@ -30,12 +30,15 @@ Content-Type: application/json
 }
 
 ### 장바구니 조회
-GET http://localhost:10348/carts/user/test
+GET http://localhost:10348/carts/user
 Content-Type: application/json
+X-USER-ID: test
+
 
 ### 장바구니 조회2
-GET http://localhost:10348/carts/user/test1
+GET http://localhost:10348/carts/user
 Content-Type: application/json
+X-USER-ID: test1
 
 ### 장바구니 수정
 PUT http://localhost:10348/carts/1
@@ -66,5 +69,6 @@ GET http://localhost:10348/carts/2
 Content-Type: application/json
 
 ### 장바구니 삭제 - 유저
-DELETE http://localhost:10348/carts/user/test
+DELETE http://localhost:10348/carts/user
 Content-Type: application/json
+X-USER-ID: test

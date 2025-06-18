@@ -11,5 +11,6 @@ Content-Type: application/json
 }
 
 ### 해당 유저의 포인트 내역 조회
-GET http://localhost:10348/users/point/test
+GET http://localhost:10348/users/point/me
 Content-Type: application/json
+X-USER-ID: test

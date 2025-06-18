@@ -2,12 +2,11 @@ package com.nhnacademy.bookstoreuserapi.controller;
 
 import com.nhnacademy.bookstoreuserapi.domain.request.AddressCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseAddress;
+import com.nhnacademy.bookstoreuserapi.exception.InvalidHeaderException;
 import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.service.AddressService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,8 +39,14 @@ public class AddressController {
         return ResponseEntity.ok().body(addressService.getAddress(addressId));
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ResponseAddress>> getAllAddresses(@PathVariable @NotBlank @Size(max = 20) String userId) {
+    @GetMapping("/me")
+    public ResponseEntity<List<ResponseAddress>> getAllAddresses(@RequestHeader("X-USER-ID") String userId) {
+        if (userId == null || userId.isBlank()) {
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
+        }
+        if (userId.length() > 20) {
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
+        }
         return ResponseEntity.ok().body(addressService.getAllAddresses(userId));
     }
 }

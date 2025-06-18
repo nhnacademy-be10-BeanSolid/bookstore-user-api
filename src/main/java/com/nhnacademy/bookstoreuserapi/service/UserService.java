@@ -13,13 +13,13 @@ public interface UserService {
 
     ResponseUser updatePersonalInformation(String userId, UserUpdateRequest request);
 
-    void updateLastLoginAt(String userId);
+    ResponseUser updateLastLoginAt(String userId);
 
-    void updatePoint(String userId, int point);
+    ResponseUser updatePoint(String userId, int point);
 
-    void updateUserStatus(String userId, User.Status status);
+    ResponseUser updateUserStatus(String userId, User.Status status);
 
-    void updateUserGradeName(String userId, String gradeName);
+    ResponseUser updateUserGradeName(String userId, String gradeName);
 
     void deleteUser(String userId);
 }

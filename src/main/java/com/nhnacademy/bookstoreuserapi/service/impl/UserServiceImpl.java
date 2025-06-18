@@ -66,6 +66,7 @@ public class UserServiceImpl implements UserService {
         user.setUserPoint(5000);
         user.setUserGrade(basicGrade);
         user.setUserStatus(User.Status.ACTIVE);
+        user.setLastLoginAt(LocalDateTime.now());
 
         User savedUser = userRepository.save(user);
 
@@ -96,40 +97,46 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateLastLoginAt(String userId) {
+    public ResponseUser updateLastLoginAt(String userId) {
 
         if(!userRepository.existsById(userId)){
             throw new UserNotFoundException(userId);
         }
 
         userRepository.updateLastLoginByUserId(userId, LocalDateTime.now());
+
+        return new ResponseUser(userRepository.findByUserId(userId));
     }
 
     @Override
     @Transactional
-    public void updatePoint(String userId, int point) {
+    public ResponseUser updatePoint(String userId, int point) {
 
         if(!userRepository.existsById(userId)){
             throw new UserNotFoundException(userId);
         }
 
         userRepository.updatePointByUserId(userId, point);
+
+        return new ResponseUser(userRepository.findByUserId(userId));
     }
 
     @Override
     @Transactional
-    public void updateUserStatus(String userId, User.Status status) {
+    public ResponseUser updateUserStatus(String userId, User.Status status) {
 
         if(!userRepository.existsById(userId)){
             throw new UserNotFoundException(userId);
         }
 
         userRepository.updateStatusByUserId(userId, status);
+
+        return new ResponseUser(userRepository.findByUserId(userId));
     }
 
     @Override
     @Transactional
-    public void updateUserGradeName(String userId, String gradeName) {
+    public ResponseUser updateUserGradeName(String userId, String gradeName) {
         if(!userRepository.existsById(userId)){
             throw new UserNotFoundException(userId);
         }
@@ -145,6 +152,8 @@ public class UserServiceImpl implements UserService {
             throw new UserGradeNotFoundException(gradeName);
         }
         userRepository.updateUserGrade_gradeNameByUserId(userId, userGrade.getGradeName());
+
+        return new ResponseUser(userRepository.findByUserId(userId));
     }
 
     @Override

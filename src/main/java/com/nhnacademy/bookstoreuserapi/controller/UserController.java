@@ -93,11 +93,7 @@ public class UserController {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
         }
 
-        userService.updateLastLoginAt(userId);
-
-        User user = userService.getUser(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-        return ResponseEntity.ok(new ResponseUser(user));
+        return ResponseEntity.ok(userService.updateLastLoginAt(userId));
     }
 
     @PutMapping("/me/point")
@@ -109,11 +105,8 @@ public class UserController {
         if (userId.length() > 20) {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
         }
-        userService.updatePoint(userId, point);
 
-        User user = userService.getUser(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-        return ResponseEntity.ok(new ResponseUser(user));
+        return ResponseEntity.ok(userService.updatePoint(userId, point));
     }
 
     @PutMapping("/me/status")
@@ -125,11 +118,8 @@ public class UserController {
         if (userId.length() > 20) {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
         }
-        userService.updateUserStatus(userId, status);
 
-        User user = userService.getUser(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-        return ResponseEntity.ok(new ResponseUser(user));
+        return ResponseEntity.ok(userService.updateUserStatus(userId, status));
     }
 
     @PutMapping("/me/grade")
@@ -141,12 +131,7 @@ public class UserController {
         if (userId.length() > 20) {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
         }
-        userService.updateUserGradeName(userId, gradeName);
 
-        User user = userService.getUser(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-        return ResponseEntity.ok(new ResponseUser(user));
+        return ResponseEntity.ok(userService.updateUserGradeName(userId, gradeName));
     }
-
-
 }

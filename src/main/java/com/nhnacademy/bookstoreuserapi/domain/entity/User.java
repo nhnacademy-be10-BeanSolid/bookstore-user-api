@@ -1,7 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
 import jakarta.persistence.*;
 import lombok.*;
 

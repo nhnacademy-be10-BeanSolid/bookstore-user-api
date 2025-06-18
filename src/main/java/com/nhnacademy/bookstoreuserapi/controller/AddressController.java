@@ -42,10 +42,10 @@ public class AddressController {
     @GetMapping("/me")
     public ResponseEntity<List<ResponseAddress>> getAllAddresses(@RequestHeader("X-USER-ID") String userId) {
         if (userId == null || userId.isBlank()) {
-            throw new InvalidHeaderException("User ID must not be null or blank");
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
         }
         if (userId.length() > 20) {
-            throw new InvalidHeaderException("User ID must not exceed 20 characters");
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
         }
         return ResponseEntity.ok().body(addressService.getAllAddresses(userId));
     }

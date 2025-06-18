@@ -58,10 +58,10 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<ResponseUser> getUserInfo(@RequestHeader("X-USER-ID") String userId) {
         if (userId == null || userId.isBlank()) {
-            throw new InvalidHeaderException("User ID must not be null or blank");
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
         }
         if (userId.length() > 20) {
-            throw new InvalidHeaderException("User ID must not exceed 20 characters");
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
         }
         User user = userService.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -71,10 +71,10 @@ public class UserController {
     @DeleteMapping
     public ResponseEntity<ResponseUser> deleteUser(@RequestHeader("X-USER-ID") String userId) {
         if (userId == null || userId.isBlank()) {
-            throw new InvalidHeaderException("User ID must not be null or blank");
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
         }
         if (userId.length() > 20) {
-            throw new InvalidHeaderException("User ID must not exceed 20 characters");
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
         }
         userService.deleteUser(userId);
 
@@ -88,10 +88,10 @@ public class UserController {
             throw new ValidationFailedException(bindingResult);
         }
         if (userId == null || userId.isBlank()) {
-            throw new InvalidHeaderException("User ID must not be null or blank");
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
         }
         if (userId.length() > 20) {
-            throw new InvalidHeaderException("User ID must not exceed 20 characters");
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
         }
 
         User user = userService.findById(userId)
@@ -110,10 +110,10 @@ public class UserController {
     public ResponseEntity<ResponseUser> updateLastLoginAt(@RequestHeader("X-USER-ID") String userId){
 
         if (userId == null || userId.isBlank()) {
-            throw new InvalidHeaderException("User ID must not be null or blank");
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
         }
         if (userId.length() > 20) {
-            throw new InvalidHeaderException("User ID must not exceed 20 characters");
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
         }
 
         userService.updateLastLoginAt(userId);
@@ -127,10 +127,10 @@ public class UserController {
     public ResponseEntity<ResponseUser> updatePoint(@RequestHeader("X-USER-ID") String userId, @RequestParam @Min(0) int point){
 
         if (userId == null || userId.isBlank()) {
-            throw new InvalidHeaderException("User ID must not be null or blank");
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
         }
         if (userId.length() > 20) {
-            throw new InvalidHeaderException("User ID must not exceed 20 characters");
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
         }
         userService.updatePoint(userId, point);
 
@@ -143,10 +143,10 @@ public class UserController {
     public ResponseEntity<ResponseUser> updateStatus(@RequestHeader("X-USER-ID") String userId, @RequestParam User.Status status){
 
         if (userId == null || userId.isBlank()) {
-            throw new InvalidHeaderException("User ID must not be null or blank");
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
         }
         if (userId.length() > 20) {
-            throw new InvalidHeaderException("User ID must not exceed 20 characters");
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
         }
         userService.updateUserStatus(userId, status);
 
@@ -159,10 +159,10 @@ public class UserController {
     public ResponseEntity<ResponseUser> updateUserGradeName(@RequestHeader("X-USER-ID") String userId, @RequestParam @NotBlank @Size(max = 10) String gradeName) {
 
         if (userId == null || userId.isBlank()) {
-            throw new InvalidHeaderException("User ID must not be null or blank");
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
         }
         if (userId.length() > 20) {
-            throw new InvalidHeaderException("User ID must not exceed 20 characters");
+            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
         }
         userService.updateUserGradeName(userId, gradeName);
 

@@ -36,6 +36,7 @@ CREATE TABLE `address` (
     UNIQUE KEY uq_user_address (user_id, address_detail)
 );
 
+
 CREATE TABLE `point_type` (
     `type_id`	BIGINT	NOT NULL AUTO_INCREMENT,
     `type_name`	VARCHAR(20)	NOT NULL	COMMENT '회원가입, 리뷰작성, 도서 구매, 3개월 이내 순수 주문금액',

@@ -23,7 +23,7 @@ public class PointController {
     private final PointService pointService;
     @GetMapping("/me")
     public ResponseEntity<Page<ResponsePoint>> getPoint(@RequestHeader("X-USER-ID") String userId, Pageable pageable) {
-        if (userId == null || userId.isBlank()) {
+        if (userId.isBlank()) {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
         }
         if (userId.length() > 20) {

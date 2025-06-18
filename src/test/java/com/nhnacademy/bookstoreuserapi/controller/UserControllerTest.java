@@ -84,6 +84,23 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("회원 정보 조회")
+    void getUserInfo_success() throws Exception {
+        User user = new User("user123", "pw", "홍길동", "01012345678",
+                "hong@test.com", LocalDate.of(1990, 1, 1));
+        user.setUserStatus(User.Status.ACTIVE);
+        UserGrade userGrade = new UserGrade(BASIC, 0L);
+        user.setUserGrade(userGrade);
+        Mockito.when(userService.findById("user123")).thenReturn(Optional.of(user));
+
+        mockMvc.perform(get("/users/me")
+                        .header("X-USER-ID", "user123"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.userId").value("user123"))
+                .andExpect(jsonPath("$.userName").value("홍길동"));
+    }
+
+    @Test
     @DisplayName("회원 조회 실패 - 없는 사용자")
     void getUser_notFound() throws Exception {
         Mockito.when(userService.findById("notExist")).thenThrow(new UserNotFoundException("notExist"));
@@ -91,11 +108,21 @@ class UserControllerTest {
         mockMvc.perform(get("/users/notExist"))
                 .andExpect(status().isNotFound());
     }
+    @Test
+    @DisplayName("회원 조회 실패 - 없는 사용자")
+    void getUserInfo_notFound() throws Exception {
+        Mockito.when(userService.findById("notExist")).thenThrow(new UserNotFoundException("notExist"));
+
+        mockMvc.perform(get("/users/me")
+                        .header("X-USER-ID", "notExist"))
+                .andExpect(status().isNotFound());
+    }
 
     @Test
     @DisplayName("회원 삭제")
     void deleteUser_success() throws Exception {
-        mockMvc.perform(delete("/users/user123"))
+        mockMvc.perform(delete("/users")
+                        .header("X-USER-ID", "user123"))
                 .andExpect(status().isNoContent());
     }
 
@@ -115,7 +142,8 @@ class UserControllerTest {
 
         Mockito.when(userService.findById("user123")).thenReturn(Optional.of(updatedUser));
 
-        mockMvc.perform(put("/users/user123/personalinformation")
+        mockMvc.perform(put("/users/me/personalinformation")
+                        .header("X-USER-ID", "user123")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -128,7 +156,8 @@ class UserControllerTest {
         UserUpdateRequest request = new UserUpdateRequest(
                 "", "newPassword", "이수정", "01011112222",
                 "", LocalDate.of(1995, 5, 5));
-        mockMvc.perform(put("/users/user123/personalinformation")
+        mockMvc.perform(put("/users/me/personalinformation")
+                        .header("X-USER-ID", "user123")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
@@ -146,7 +175,8 @@ class UserControllerTest {
         user.setUserGrade(userGrade);
         Mockito.when(userService.findById("user123")).thenReturn(Optional.of(user));
 
-        mockMvc.perform(put("/users/user123/lastloginat"))
+        mockMvc.perform(put("/users/me/lastloginat")
+                        .header("X-USER-ID", "user123"))
                 .andExpect(status().isOk());
     }
 
@@ -161,8 +191,9 @@ class UserControllerTest {
         user.setUserGrade(userGrade);
         Mockito.when(userService.findById("user123")).thenReturn(Optional.of(user));
 
-        mockMvc.perform(put("/users/user123/point")
-                        .param("point", "2000"))
+        mockMvc.perform(put("/users/me/point")
+                        .param("point", "2000")
+                .header("X-USER-ID", "user123"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userPoint").value(2000));
     }
@@ -177,8 +208,9 @@ class UserControllerTest {
         user.setUserGrade(userGrade);
         Mockito.when(userService.findById("user123")).thenReturn(Optional.of(user));
 
-        mockMvc.perform(put("/users/user123/status")
-                        .param("status", "WITHDRAWN"))
+        mockMvc.perform(put("/users/me/status")
+                        .param("status", "WITHDRAWN")
+                        .header("X-USER-ID", "user123"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userStatus").value("WITHDRAWN"));
     }
@@ -199,8 +231,9 @@ class UserControllerTest {
 
         Mockito.when(userService.findById("user123")).thenReturn(Optional.of(user));
 
-        mockMvc.perform(put("/users/user123/grade")
-                        .param("gradeName", "ROYAL"))
+        mockMvc.perform(put("/users/me/grade")
+                        .param("gradeName", "ROYAL")
+                        .header("X-USER-ID", "user123"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userGradeName").value("ROYAL"));
     }

@@ -115,7 +115,8 @@ class CartControllerTest {
         String userId = "user123";
         Pageable pageable = PageRequest.of(0,20);
         Mockito.when(cartService.getCartsByUserId(userId, pageable)).thenReturn(null);
-        mockMvc.perform(MockMvcRequestBuilders.get("/carts/user/" + userId))
+        mockMvc.perform(MockMvcRequestBuilders.get("/carts/user")
+                        .header("X-USER-ID", userId))
                 .andExpect(status().is2xxSuccessful());
         Mockito.verify(cartService, Mockito.times(1)).getCartsByUserId(userId, pageable);
     }
@@ -133,7 +134,8 @@ class CartControllerTest {
     void deleteCartsByUserId() throws Exception {
         String userId = "user123";
         Mockito.doNothing().when(cartService).deleteCartsByUserId(userId);
-        mockMvc.perform(MockMvcRequestBuilders.delete("/carts/user/" + userId))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/carts/user")
+                        .header("X-USER-ID", userId))
                 .andExpect(status().is2xxSuccessful());
         Mockito.verify(cartService, Mockito.times(1)).deleteCartsByUserId(userId);
     }

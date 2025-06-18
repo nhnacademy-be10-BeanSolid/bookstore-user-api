@@ -3,13 +3,12 @@ package com.nhnacademy.bookstoreuserapi.controller;
 import com.nhnacademy.bookstoreuserapi.domain.request.CartUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.CartCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseCart;
+import com.nhnacademy.bookstoreuserapi.exception.InvalidHeaderException;
 import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.service.CartService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,8 +48,14 @@ public class CartController {
         return ResponseEntity.ok().body(cartService.getCart(cartId));
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<Page<ResponseCart>> getCartByUserId(@PathVariable @NotBlank @Size(max = 20) String userId, Pageable pageable) {
+    @GetMapping("/user")
+    public ResponseEntity<Page<ResponseCart>> getCartByUserId(@RequestHeader("X-USER-ID") String userId, Pageable pageable) {
+        if (userId == null || userId.isBlank()) {
+            throw new InvalidHeaderException("User ID must not be null or blank");
+        }
+        if (userId.length() > 20) {
+            throw new InvalidHeaderException("User ID must not exceed 20 characters");
+        }
         return ResponseEntity.ok().body(cartService.getCartsByUserId(userId, pageable));
     }
 
@@ -60,8 +65,14 @@ public class CartController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/user/{userId}")
-    public ResponseEntity<Void> deleteCartsByUserId(@PathVariable @NotBlank @Size(max = 20) String userId) {
+    @DeleteMapping("/user")
+    public ResponseEntity<Void> deleteCartsByUserId(@RequestHeader("X-USER-ID") String userId) {
+        if (userId == null || userId.isBlank()) {
+            throw new InvalidHeaderException("User ID must not be null or blank");
+        }
+        if (userId.length() > 20) {
+            throw new InvalidHeaderException("User ID must not exceed 20 characters");
+        }
         cartService.deleteCartsByUserId(userId);
         return ResponseEntity.noContent().build();
     }

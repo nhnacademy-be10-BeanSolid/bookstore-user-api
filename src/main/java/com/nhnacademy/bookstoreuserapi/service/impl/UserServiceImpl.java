@@ -1,6 +1,9 @@
 package com.nhnacademy.bookstoreuserapi.service.impl;
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
+import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
+import com.nhnacademy.bookstoreuserapi.domain.request.UserUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUser;
 import com.nhnacademy.bookstoreuserapi.exception.UserGradeNotFoundException;
 import com.nhnacademy.bookstoreuserapi.repository.UserGradeRepository;
 import com.nhnacademy.bookstoreuserapi.service.UserService;
@@ -28,47 +31,67 @@ public class UserServiceImpl implements UserService {
     private final UserGradeRepository userGradeRepository;
 
     @Override
-    public Optional<User> findById(String userId) {
+    public ResponseUser getUser(String userId) {
 
         if(!userRepository.existsById(userId)){
             throw new UserNotFoundException(userId);
         }
 
-        return userRepository.findById(userId);
+        User user = userRepository.findByUserId(userId);
+
+        return new ResponseUser(user);
     }
 
     @Override
     @Transactional
-    public void saveUser(User user) {
+    public ResponseUser saveUser(UserCreateRequest request) {
 
-        if(userRepository.existsById(user.getUserId())){
-            throw new UserAlreadyExistException(user.getUserId());
+        if(userRepository.existsById(request.userId())){
+            throw new UserAlreadyExistException(request.userId());
         }
 
-        String encodedPassword = passwordEncoder.encode(user.getUserPassword());
+        String encodedPassword = passwordEncoder.encode(request.userPassword());
         UserGrade basicGrade = userGradeRepository.findByGradeName(BASIC);
 
-        user.setUserPassword(encodedPassword);
-        user.setLastLoginAt(LocalDateTime.now());
-        user.setUserPoint(5000);
-        user.setAuth(false);
-        user.setUserStatus(User.Status.ACTIVE);
-        user.setUserGrade(basicGrade);
+        User user = new User(
+                request.userId(),
+                encodedPassword,
+                request.userName(),
+                request.userPhoneNumber(),
+                request.userEmail(),
+                request.userBirth()
+        );
 
-        userRepository.save(user);
+        user.setAuth(false);
+        user.setUserPoint(5000);
+        user.setUserGrade(basicGrade);
+        user.setUserStatus(User.Status.ACTIVE);
+
+        User savedUser = userRepository.save(user);
+
+        return new ResponseUser(savedUser);
     }
 
     @Override
     @Transactional
-    public void updatePersonalInformation(User user) {
+    public ResponseUser updatePersonalInformation(String userId, UserUpdateRequest request) {
 
-        if(!userRepository.existsById(user.getUserId())){
-            throw new UserNotFoundException(user.getUserId());
+        if(!userRepository.existsById(userId)){
+            throw new UserNotFoundException(userId);
         }
-        String encodedPassword = passwordEncoder.encode(user.getUserPassword());
-        user.setUserPassword(encodedPassword);
 
-        userRepository.save(user);
+        User user = userRepository.findByUserId(userId);
+
+        String encodedPassword = passwordEncoder.encode(request.userPassword());
+        user.setUserPassword(encodedPassword);
+        user.setUserName(request.userName());
+        user.setUserPhoneNumber(request.userPhoneNumber());
+        user.setUserEmail(request.userEmail());
+        user.setUserBirth(request.userBirth());
+
+        User updateUser = userRepository.save(user);
+
+        return new ResponseUser(updateUser);
     }
 
     @Override

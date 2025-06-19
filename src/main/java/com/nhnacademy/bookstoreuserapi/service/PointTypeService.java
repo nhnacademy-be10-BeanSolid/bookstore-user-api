@@ -16,7 +16,7 @@ public interface PointTypeService {
 
     void deletePointType(Long id);
 
-    ResponsePointType updateEarningPoint(Long point, Long typeId);
+    ResponsePointType updateEarningPoint(int point, Long typeId);
 
     ResponsePointType updateEarningRate(int rate, Long typeId);
 }

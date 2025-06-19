@@ -8,4 +8,6 @@ public interface UserGradeRepository extends JpaRepository<UserGrade, UserGrade.
     boolean existsByGradeName(UserGrade.Grade gradeName);
 
     UserGrade findByGradeName(UserGrade.Grade grade);
+
+
 }

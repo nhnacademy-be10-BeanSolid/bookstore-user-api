@@ -9,6 +9,7 @@ import com.nhnacademy.bookstoreuserapi.domain.request.ReviewCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseReview;
 import com.nhnacademy.bookstoreuserapi.exception.ReviewAlreadyExistsBookException;
 import com.nhnacademy.bookstoreuserapi.exception.ReviewNotFoundException;
+import com.nhnacademy.bookstoreuserapi.repository.PointTypeRepository;
 import com.nhnacademy.bookstoreuserapi.repository.ReviewRepository;
 import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
 import com.nhnacademy.bookstoreuserapi.service.impl.ReviewServiceImpl;
@@ -38,6 +39,9 @@ class ReviewServiceTest {
     @Mock
     UserRepository userRepository;
 
+    @Mock
+    PointTypeRepository pointTypeRepository;
+
     @InjectMocks
     ReviewServiceImpl reviewService;
 
@@ -62,10 +66,14 @@ class ReviewServiceTest {
         Mockito.when(userRepository.findById(reviewCreateRequest.userId())).thenReturn(Optional.of(user));
         Mockito.when(reviewRepository.findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId())).thenReturn(null);
         Mockito.when(reviewRepository.save(Mockito.any(Review.class))).thenReturn(review);
+        Mockito.when(pointTypeRepository.findEarningPointByTypeName("리뷰작성")).thenReturn(500);
+
 
         reviewService.addReview(reviewCreateRequest);
         Mockito.verify(reviewRepository, Mockito.times(1)).findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId());
         Mockito.verify(reviewRepository, Mockito.times(1)).save(Mockito.any(Review.class));
+        Mockito.verify(pointTypeRepository).findEarningPointByTypeName("리뷰작성");
+        Mockito.verify(userRepository).updatePointByUserId("user123", 500);
     }
 
     @Test

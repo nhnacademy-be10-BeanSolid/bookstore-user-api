@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@Sql(scripts = {"/user-test.sql", "/point-type-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = "/user-test.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @ActiveProfiles("test")
 class PointTypeServiceTest {
 
@@ -36,7 +36,7 @@ class PointTypeServiceTest {
         assertThat(list).isNotEmpty();
         assertThat(list)
                 .extracting(ResponsePointType::getTypeName)
-                .contains("신규가입", "리뷰작성");
+                .contains("회원가입", "리뷰작성");
     }
 
     @Test
@@ -55,7 +55,7 @@ class PointTypeServiceTest {
     void testSavePointType() {
         PointTypeCreateRequest request = new PointTypeCreateRequest(
                 "순수 주문금액",
-                2000L,
+                2000,
                 20,
                 "ROYAL"
         );
@@ -73,9 +73,9 @@ class PointTypeServiceTest {
     @Test
     @DisplayName("earningPoint 업데이트 성공")
     void testUpdateEarningPoint() {
-        ResponsePointType updated = pointTypeService.updateEarningPoint(999L, 1L);
+        ResponsePointType updated = pointTypeService.updateEarningPoint(999, 1L);
 
-        assertThat(updated.getEarningPoint()).isEqualTo(999L);
+        assertThat(updated.getEarningPoint()).isEqualTo(999);
     }
 
     @Test

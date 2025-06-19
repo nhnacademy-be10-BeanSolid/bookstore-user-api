@@ -48,7 +48,7 @@ public class PointTypeController {
         return ResponseEntity.noContent().build();
     }
     @PutMapping("/{typeId}/point")
-    public ResponseEntity<ResponsePointType> updateEarningPoint(@PathVariable @NotNull @Min(1) Long typeId, @RequestParam @NotNull @Min(0) Long point) {
+    public ResponseEntity<ResponsePointType> updateEarningPoint(@PathVariable @NotNull @Min(1) Long typeId, @RequestParam @NotNull @Min(0) int point) {
 
         return ResponseEntity.ok().body(pointTypeService.updateEarningPoint(point, typeId));
     }

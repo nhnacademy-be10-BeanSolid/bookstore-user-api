@@ -18,7 +18,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
-@Sql(scripts = {"/user-test.sql", "/point-type-test.sql", "/point-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = {"/user-test.sql", "/point-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @ActiveProfiles("test")
 class PointServiceTest {
 

@@ -65,8 +65,8 @@ class PointRepositoryTest {
 
         userRepository.save(user);
 
-        PointType pointType1 = new PointType(null, "회원가입", 5000L, 1, userGrade);
-        PointType pointType2 = new PointType(null,"리뷰작성", 500L, 1, userGrade);
+        PointType pointType1 = new PointType(null, "회원가입", 5000, 1, userGrade);
+        PointType pointType2 = new PointType(null,"리뷰작성", 500, 1, userGrade);
 
         pointTypeRepository.save(pointType1);
         pointTypeRepository.save(pointType2);

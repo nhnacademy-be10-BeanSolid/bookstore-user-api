@@ -74,12 +74,12 @@ public class PointTypeServiceImpl implements PointTypeService {
     }
 
     @Override
-    public ResponsePointType updateEarningPoint(Long point, Long typeId) {
-
-        pointTypeRepository.updateEarningPoint(point, typeId);
+    public ResponsePointType updateEarningPoint(int point, Long typeId) {
 
         PointType pointType = pointTypeRepository.findById(typeId)
                 .orElseThrow(() -> new PointTypeNotFoundException(typeId));
+
+        pointType.setEarningPoint(point);
 
         return new ResponsePointType(
                 pointType.getTypeId(),
@@ -87,17 +87,16 @@ public class PointTypeServiceImpl implements PointTypeService {
                 pointType.getEarningPoint(),
                 pointType.getEarningRate(),
                 pointType.getUserGrade().getGradeName().toString()
-
         );
     }
 
     @Override
     public ResponsePointType updateEarningRate(int rate, Long typeId) {
 
-        pointTypeRepository.updateEarningRate(rate, typeId);
-
         PointType pointType = pointTypeRepository.findById(typeId)
                 .orElseThrow(() -> new PointTypeNotFoundException(typeId));
+
+        pointType.setEarningRate(rate);
 
         return new ResponsePointType(
                 pointType.getTypeId(),

@@ -7,6 +7,7 @@ import com.nhnacademy.bookstoreuserapi.domain.request.ReviewUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.ReviewCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseReview;
 import com.nhnacademy.bookstoreuserapi.exception.*;
+import com.nhnacademy.bookstoreuserapi.repository.PointTypeRepository;
 import com.nhnacademy.bookstoreuserapi.repository.ReviewRepository;
 import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
 import com.nhnacademy.bookstoreuserapi.service.ReviewService;
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
+    private final PointTypeRepository pointTypeRepository;
 
     @Override
     public ResponseReview addReview(ReviewCreateRequest review){
@@ -34,6 +36,9 @@ public class ReviewServiceImpl implements ReviewService {
         User user = userRepository.findById(review.userId())
                 .orElseThrow(() -> new UserNotFoundException(review.userId()));
         Review savedReview = reviewRepository.save(new Review(review, user));
+
+        userRepository.updatePointByUserId(review.userId(), pointTypeRepository.findEarningPointByTypeName("리뷰작성"));
+
         return new ResponseReview(
                 savedReview.getReviewId(),
                 savedReview.getEvaluationScore(),

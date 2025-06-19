@@ -37,7 +37,7 @@ class PointServiceTest {
         assertThat(points).hasSize(2);
         assertThat(points)
                 .extracting(ResponsePoint::getEarnedAndUsedPoint)
-                .containsExactlyInAnyOrder(500L, -100L);
+                .containsExactlyInAnyOrder(500, -100);
     }
 
     @Test
@@ -57,7 +57,7 @@ class PointServiceTest {
                 2L,
                 1L,
                 LocalDateTime.of(2025, 1, 1, 10, 0, 15),
-                1000L
+                1000
         );
 
         ResponsePoint response = pointService.savePoint(request);
@@ -82,7 +82,7 @@ class PointServiceTest {
                 1L,
                 1L,
                 LocalDateTime.now(),
-                200L
+                200
         );
 
         assertThatThrownBy(() -> pointService.savePoint(request))

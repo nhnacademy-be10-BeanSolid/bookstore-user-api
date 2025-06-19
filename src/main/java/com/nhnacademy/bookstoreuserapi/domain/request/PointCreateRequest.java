@@ -13,5 +13,5 @@ public record PointCreateRequest (@NotBlank @Size(max = 20) String userId,
                                   @NotNull @Min(1) Long typeId,
                                   @Min(1) Long paymentId,
                                   @NotNull LocalDateTime earnedAndUsedAt,
-                                  @NotNull @Min(0) Long earnedAndUsedPoint){
+                                  @NotNull @Min(0) int earnedAndUsedPoint){
 }

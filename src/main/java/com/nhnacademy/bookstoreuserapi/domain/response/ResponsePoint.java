@@ -16,5 +16,5 @@ public class ResponsePoint {
     private Long typeId;
     private Long paymentId;
     private LocalDateTime earnedAndUsedAt;
-    private Long earnedAndUsedPoint;
+    private int earnedAndUsedPoint;
 }

@@ -42,8 +42,8 @@ class PointControllerTest {
 
     @Test
     void getPoints() throws Exception {
-        ResponsePoint responsePoint1 = new ResponsePoint(1L, "userId123", 1L, 1L, LocalDateTime.now(), 500L);
-        ResponsePoint responsePoint2 = new ResponsePoint(2L, "userId123", 2L, 2L, LocalDateTime.now(), 300L);
+        ResponsePoint responsePoint1 = new ResponsePoint(1L, "userId123", 1L, 1L, LocalDateTime.now(), 500);
+        ResponsePoint responsePoint2 = new ResponsePoint(2L, "userId123", 2L, 2L, LocalDateTime.now(), 300);
 
         List<ResponsePoint> pointList = List.of(responsePoint1, responsePoint2);
         Page<ResponsePoint> page = new PageImpl<>(pointList, PageRequest.of(0, 10), pointList.size());
@@ -66,8 +66,8 @@ class PointControllerTest {
 
     @Test
     void getPointsFailBlank() throws Exception {
-        ResponsePoint responsePoint1 = new ResponsePoint(1L, "userId123", 1L, 1L, LocalDateTime.now(), 500L);
-        ResponsePoint responsePoint2 = new ResponsePoint(2L, "userId123", 2L, 2L, LocalDateTime.now(), 300L);
+        ResponsePoint responsePoint1 = new ResponsePoint(1L, "userId123", 1L, 1L, LocalDateTime.now(), 500);
+        ResponsePoint responsePoint2 = new ResponsePoint(2L, "userId123", 2L, 2L, LocalDateTime.now(), 300);
 
         List<ResponsePoint> pointList = List.of(responsePoint1, responsePoint2);
         Page<ResponsePoint> page = new PageImpl<>(pointList, PageRequest.of(0, 10), pointList.size());
@@ -86,8 +86,8 @@ class PointControllerTest {
 
     @Test
     void getPointsFailExceed20Letter() throws Exception {
-        ResponsePoint responsePoint1 = new ResponsePoint(1L, "userId123", 1L, 1L, LocalDateTime.now(), 500L);
-        ResponsePoint responsePoint2 = new ResponsePoint(2L, "userId123", 2L, 2L, LocalDateTime.now(), 300L);
+        ResponsePoint responsePoint1 = new ResponsePoint(1L, "userId123", 1L, 1L, LocalDateTime.now(), 500);
+        ResponsePoint responsePoint2 = new ResponsePoint(2L, "userId123", 2L, 2L, LocalDateTime.now(), 300);
 
         List<ResponsePoint> pointList = List.of(responsePoint1, responsePoint2);
         Page<ResponsePoint> page = new PageImpl<>(pointList, PageRequest.of(0, 10), pointList.size());
@@ -106,8 +106,8 @@ class PointControllerTest {
 
     @Test
     void savePoint() throws Exception {
-        PointCreateRequest request = new PointCreateRequest("test", 1L, 2L, LocalDateTime.of(2015, 11, 12, 5, 12, 12, 12), 500L);
-        ResponsePoint response = new ResponsePoint(1L, "test", 1L, 2L, LocalDateTime.of(2015, 11, 12, 5, 12, 12, 12), 500L);
+        PointCreateRequest request = new PointCreateRequest("test", 1L, 2L, LocalDateTime.of(2015, 11, 12, 5, 12, 12, 12), 500);
+        ResponsePoint response = new ResponsePoint(1L, "test", 1L, 2L, LocalDateTime.of(2015, 11, 12, 5, 12, 12, 12), 500);
 
         Mockito.when(pointService.savePoint(request)).thenReturn(response);
 
@@ -121,7 +121,7 @@ class PointControllerTest {
 
     @Test
     void savePointValidationFail() throws Exception {
-        PointCreateRequest request = new PointCreateRequest("", 0L, 0L, LocalDateTime.now(), 0L);
+        PointCreateRequest request = new PointCreateRequest("", 0L, 0L, LocalDateTime.now(), 0);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/users/point")
                         .contentType(MediaType.APPLICATION_JSON)

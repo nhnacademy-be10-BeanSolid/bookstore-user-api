@@ -18,7 +18,7 @@ X-USER-ID: newTest
 
 ### 회원 삭제
 DELETE http://localhost:10348/users
-X-USER-ID: newTest123
+X-USER-ID: newTest12345
 
 ### 회원 인적사항 수정
 PUT http://localhost:10348/users/me/personalinformation

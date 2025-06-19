@@ -3,6 +3,7 @@ package com.nhnacademy.bookstoreuserapi.service.impl;
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.Review;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
+import com.nhnacademy.bookstoreuserapi.domain.request.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.ReviewUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.ReviewCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseReview;
@@ -10,6 +11,7 @@ import com.nhnacademy.bookstoreuserapi.exception.*;
 import com.nhnacademy.bookstoreuserapi.repository.PointTypeRepository;
 import com.nhnacademy.bookstoreuserapi.repository.ReviewRepository;
 import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
+import com.nhnacademy.bookstoreuserapi.service.PointService;
 import com.nhnacademy.bookstoreuserapi.service.ReviewService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final PointTypeRepository pointTypeRepository;
+    private final PointService pointService;
 
     @Override
     public ResponseReview addReview(String userId, ReviewCreateRequest review){
@@ -40,7 +43,19 @@ public class ReviewServiceImpl implements ReviewService {
                 .orElseThrow(() -> new UserNotFoundException(review.userId()));
         Review savedReview = reviewRepository.save(new Review(review, user));
 
-        userRepository.updatePointByUserId(review.userId(), pointTypeRepository.findEarningPointByTypeName("리뷰작성"));
+        int reviewPoint = pointTypeRepository.findEarningPointByTypeName("리뷰작성");
+
+        userRepository.updatePointByUserId(review.userId(), reviewPoint);
+
+        PointCreateRequest pointCreateRequest = new PointCreateRequest(
+                userId,
+                2L,
+                null,
+                LocalDateTime.now(),
+                reviewPoint
+        );
+
+        pointService.savePoint(userId,pointCreateRequest);
 
         return new ResponseReview(
                 savedReview.getReviewId(),

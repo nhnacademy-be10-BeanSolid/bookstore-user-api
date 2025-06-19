@@ -37,5 +37,5 @@ public class Point {
     private LocalDateTime earnedAndUsedAt;
 
     @Column(name = "earned_and_used_point", nullable = false)
-    private Long earnedAndUsedPoint;
+    private int earnedAndUsedPoint;
 }

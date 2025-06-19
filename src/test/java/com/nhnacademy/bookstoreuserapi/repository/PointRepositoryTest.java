@@ -71,8 +71,8 @@ class PointRepositoryTest {
         pointTypeRepository.save(pointType1);
         pointTypeRepository.save(pointType2);
 
-        Point point1 = new Point(null, user, pointType1, 1L, LocalDateTime.now(), 50L);
-        Point point2 = new Point(null, user, pointType2, 2L, LocalDateTime.now(), -100L);
+        Point point1 = new Point(null, user, pointType1, 1L, LocalDateTime.now(), 50);
+        Point point2 = new Point(null, user, pointType2, 2L, LocalDateTime.now(), -100);
 
         pointRepository.save(point1);
         pointRepository.save(point2);
@@ -88,7 +88,7 @@ class PointRepositoryTest {
         assertThat(points).hasSize(2);
         assertThat(points)
                 .extracting("earnedAndUsedPoint")
-                .containsExactlyInAnyOrder(50L, -100L);
+                .containsExactlyInAnyOrder(50, -100);
     }
 
     @AfterEach

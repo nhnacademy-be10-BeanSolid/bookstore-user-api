@@ -1,12 +1,14 @@
 package com.nhnacademy.bookstoreuserapi.service.impl;
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
+import com.nhnacademy.bookstoreuserapi.domain.request.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUser;
 import com.nhnacademy.bookstoreuserapi.exception.UserGradeNotFoundException;
 import com.nhnacademy.bookstoreuserapi.repository.PointTypeRepository;
 import com.nhnacademy.bookstoreuserapi.repository.UserGradeRepository;
+import com.nhnacademy.bookstoreuserapi.service.PointService;
 import com.nhnacademy.bookstoreuserapi.service.UserService;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.exception.UserAlreadyExistException;
@@ -30,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserGradeRepository userGradeRepository;
     private final PointTypeRepository pointTypeRepository;
+    private final PointService pointService;
 
     @Override
     public ResponseUser getUser(String userId) {
@@ -44,7 +47,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public ResponseUser saveUser(UserCreateRequest request) {
 
         if(userRepository.existsById(request.userId())){
@@ -66,7 +68,9 @@ public class UserServiceImpl implements UserService {
         user.setAuth(false);
 
         // 유형별 적립테이블의 회원가입 값에 따라 포인트 적립 액수가 달라짐
-        user.setUserPoint(pointTypeRepository.findEarningPointByTypeName("회원가입"));
+        int welcomePoint = pointTypeRepository.findEarningPointByTypeName("회원가입");
+
+        user.setUserPoint(welcomePoint);
 
         user.setUserGrade(basicGrade);
         user.setUserStatus(User.Status.ACTIVE);
@@ -74,11 +78,20 @@ public class UserServiceImpl implements UserService {
 
         User savedUser = userRepository.save(user);
 
+        PointCreateRequest pointCreateRequest = new PointCreateRequest(
+                request.userId(),
+                1L,
+                null,
+                LocalDateTime.now(),
+                welcomePoint
+        );
+
+        pointService.savePoint(request.userId(),pointCreateRequest);
+
         return new ResponseUser(savedUser);
     }
 
     @Override
-    @Transactional
     public ResponseUser updatePersonalInformation(String userId, UserUpdateRequest request) {
 
         if(!userRepository.existsById(userId)){
@@ -98,7 +111,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public ResponseUser updateLastLoginAt(String userId) {
 
         if(!userRepository.existsById(userId)){
@@ -111,7 +123,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public ResponseUser updatePoint(String userId, int point) {
 
         if(!userRepository.existsById(userId)){
@@ -124,7 +135,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public ResponseUser updateUserStatus(String userId, User.Status status) {
 
         if(!userRepository.existsById(userId)){
@@ -137,7 +147,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public ResponseUser updateUserGradeName(String userId, String gradeName) {
         if(!userRepository.existsById(userId)){
             throw new UserNotFoundException(userId);
@@ -159,7 +168,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public void deleteUser(String userId) {
 
         if(!userRepository.existsById(userId)){

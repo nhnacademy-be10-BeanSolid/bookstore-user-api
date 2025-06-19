@@ -42,6 +42,9 @@ class ReviewServiceTest {
     @Mock
     PointTypeRepository pointTypeRepository;
 
+    @Mock
+    PointService pointService;
+
     @InjectMocks
     ReviewServiceImpl reviewService;
 
@@ -69,11 +72,22 @@ class ReviewServiceTest {
         Mockito.when(pointTypeRepository.findEarningPointByTypeName("리뷰작성")).thenReturn(500);
 
 
+
         reviewService.addReview("user123", reviewCreateRequest);
         Mockito.verify(reviewRepository, Mockito.times(1)).findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId());
         Mockito.verify(reviewRepository, Mockito.times(1)).save(Mockito.any(Review.class));
         Mockito.verify(pointTypeRepository).findEarningPointByTypeName("리뷰작성");
         Mockito.verify(userRepository).updatePointByUserId("user123", 500);
+
+        Mockito.verify(pointService).savePoint(
+                Mockito.eq("user123"),
+                Mockito.argThat(request ->
+                        request.userId().equals("user123") &&
+                                request.typeId().equals(2L) &&
+                                request.paymentId() == null &&
+                                request.earnedAndUsedPoint() == 500
+                )
+        );
     }
 
     @Test

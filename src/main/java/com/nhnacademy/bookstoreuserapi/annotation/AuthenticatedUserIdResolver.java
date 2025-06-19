@@ -21,7 +21,7 @@ public class AuthenticatedUserIdResolver implements HandlerMethodArgumentResolve
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String userId = webRequest.getHeader("X-USER-ID");
-        if (userId.isBlank()) {
+        if (userId == null || userId.isBlank()) {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
         }
         if (userId.length() > 20) {

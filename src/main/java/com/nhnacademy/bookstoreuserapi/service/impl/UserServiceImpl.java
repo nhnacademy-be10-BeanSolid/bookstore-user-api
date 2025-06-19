@@ -5,6 +5,7 @@ import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUser;
 import com.nhnacademy.bookstoreuserapi.exception.UserGradeNotFoundException;
+import com.nhnacademy.bookstoreuserapi.repository.PointTypeRepository;
 import com.nhnacademy.bookstoreuserapi.repository.UserGradeRepository;
 import com.nhnacademy.bookstoreuserapi.service.UserService;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
@@ -28,6 +29,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserGradeRepository userGradeRepository;
+    private final PointTypeRepository pointTypeRepository;
 
     @Override
     public ResponseUser getUser(String userId) {
@@ -62,7 +64,10 @@ public class UserServiceImpl implements UserService {
         );
 
         user.setAuth(false);
-        user.setUserPoint(5000);
+
+        // 유형별 적립테이블의 회원가입 값에 따라 포인트 적립 액수가 달라짐
+        user.setUserPoint(pointTypeRepository.findEarningPointByTypeName("회원가입"));
+
         user.setUserGrade(basicGrade);
         user.setUserStatus(User.Status.ACTIVE);
         user.setLastLoginAt(LocalDateTime.now());

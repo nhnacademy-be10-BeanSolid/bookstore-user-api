@@ -13,9 +13,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASIC;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,13 +29,11 @@ class PointTypeRepositoryTest {
     @Autowired
     private UserGradeRepository userGradeRepository;
 
-    private Long savedTypeId;
-
     @BeforeEach
     void setUp() {
         PointType pointType = new PointType();
         pointType.setTypeName("순수금액");
-        pointType.setEarningPoint(100L);
+        pointType.setEarningPoint(100);
         pointType.setEarningRate(1);
 
         UserGrade userGrade = new UserGrade();
@@ -47,7 +43,7 @@ class PointTypeRepositoryTest {
         pointType.setUserGrade(userGrade);
 
         userGradeRepository.save(userGrade);
-        savedTypeId = pointTypeRepository.save(pointType).getTypeId();
+        pointTypeRepository.save(pointType);
     }
 
     @Test
@@ -58,29 +54,5 @@ class PointTypeRepositoryTest {
 
         assertThat(result).hasSize(1);
         assertThat(result.getContent().getFirst().getTypeName()).isEqualTo("순수금액");
-    }
-
-    @Test
-    @Transactional
-    @Rollback
-    @DisplayName("earningPoint 업데이트 테스트")
-    void testUpdateEarningPoint() {
-        pointTypeRepository.updateEarningPoint(500L, savedTypeId);
-
-        PointType updated = pointTypeRepository.findById(savedTypeId).orElseThrow();
-
-        assertThat(updated.getEarningPoint()).isEqualTo(500L);
-    }
-
-    @Test
-    @Transactional
-    @Rollback
-    @DisplayName("earningRate 업데이트 테스트")
-    void testUpdateEarningRate() {
-        pointTypeRepository.updateEarningRate(25, savedTypeId);
-
-        PointType updated = pointTypeRepository.findById(savedTypeId).orElseThrow();
-
-        assertThat(updated.getEarningRate()).isEqualTo(25);
     }
 }

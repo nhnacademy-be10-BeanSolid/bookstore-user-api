@@ -3,7 +3,7 @@ POST http://localhost:10348/users/register
 Content-Type: application/json
 
 {
-  "userId": "newTest",
+  "userId": "newTest12345",
   "userPassword": "12345",
   "userName": "test",
   "userPhoneNumber": "010-3333-2222",
@@ -17,8 +17,8 @@ Accept: application/json
 X-USER-ID: newTest
 
 ### 회원 삭제
-DELETE http://localhost:10348/users/me
-X-USER-ID: newTest
+DELETE http://localhost:10348/users
+X-USER-ID: newTest123
 
 ### 회원 인적사항 수정
 PUT http://localhost:10348/users/me/personalinformation

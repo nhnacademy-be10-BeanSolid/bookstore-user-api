@@ -23,12 +23,12 @@ public class PointType {
     private String typeName;
 
     @Column(name = "earning_point")
-    private Long earningPoint;
+    private int earningPoint;
 
     @Column(name = "earning_rate")
     private int earningRate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "grade_name", nullable = false)
+    @JoinColumn(name = "grade_name")
     private UserGrade userGrade;
 }

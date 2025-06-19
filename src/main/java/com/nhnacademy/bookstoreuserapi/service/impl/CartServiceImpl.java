@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static com.nhnacademy.bookstoreuserapi.util.OwnerShipValidator.validate;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -30,7 +32,8 @@ public class CartServiceImpl implements CartService {
 
 
     @Override
-    public ResponseCart addCart(CartCreateRequest cart){
+    public ResponseCart addCart(String userId, CartCreateRequest cart){
+        validate(userId, cart.userId());
         ResponseCart findCart = cartRepository.findByUserIdAndBookId(cart.userId(), cart.bookId());
         if (findCart != null) {
             throw new CartAlreadyExistException(cart.userId(), cart.bookId());
@@ -47,11 +50,12 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Optional<ResponseCart> editCart(long cartId, CartUpdateRequest cart) {
+    public Optional<ResponseCart> editCart(String userId, long cartId, CartUpdateRequest cart) {
         Cart findCart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new CartNotFoundException(cartId));
+        validate(userId, findCart.getUser().getUserId());
         if (cart.quantity() == 0) {
-            deleteCart(cartId);
+            deleteCart(userId, cartId);
             return Optional.empty();
         }
         findCart.setQuantity(cart.quantity());
@@ -64,9 +68,10 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public ResponseCart getCart(long cartId) {
+    public ResponseCart getCart(String userId, long cartId) {
         Cart findCart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new CartNotFoundException(cartId));
+        validate(userId, findCart.getUser().getUserId());
         return new ResponseCart(
                 findCart.getCartId(),
                 findCart.getBookId(),
@@ -83,9 +88,10 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void deleteCart(long cartId) {
+    public void deleteCart(String userId, long cartId) {
         Cart findCart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new CartNotFoundException(cartId));
+        validate(userId, findCart.getUser().getUserId());
         cartRepository.delete(findCart);
     }
 

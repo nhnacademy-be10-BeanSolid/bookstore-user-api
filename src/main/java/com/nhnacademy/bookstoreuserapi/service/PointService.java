@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface PointService {
 
-    ResponsePoint savePoint(PointCreateRequest pointcreaterequest);
+    ResponsePoint savePoint(String userId, PointCreateRequest pointcreaterequest);
 
     Page<ResponsePoint> findAll(String userId, Pageable pageable);
 }

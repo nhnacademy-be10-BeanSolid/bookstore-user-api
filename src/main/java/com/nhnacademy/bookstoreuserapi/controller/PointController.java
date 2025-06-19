@@ -1,8 +1,8 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
+import com.nhnacademy.bookstoreuserapi.annotation.AuthenticatedUserId;
 import com.nhnacademy.bookstoreuserapi.domain.request.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePoint;
-import com.nhnacademy.bookstoreuserapi.exception.InvalidHeaderException;
 import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.service.PointService;
 import jakarta.validation.Valid;
@@ -17,27 +17,20 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users/point")
+@RequestMapping("/users/me/point")
 public class PointController {
 
     private final PointService pointService;
-    @GetMapping("/me")
-    public ResponseEntity<Page<ResponsePoint>> getPoint(@RequestHeader("X-USER-ID") String userId, Pageable pageable) {
-        if (userId.isBlank()) {
-            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
-        }
-        if (userId.length() > 20) {
-            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
-        }
+    @GetMapping
+    public ResponseEntity<Page<ResponsePoint>> getPoint(@AuthenticatedUserId String userId, Pageable pageable) {
         return ResponseEntity.ok().body(pointService.findAll(userId, pageable));
     }
 
     @PostMapping
-    public ResponseEntity<ResponsePoint> savePoint(@Valid @RequestBody PointCreateRequest pointCreateRequest, BindingResult bindingResult) {
+    public ResponseEntity<ResponsePoint> savePoint(@AuthenticatedUserId String userId, @Valid @RequestBody PointCreateRequest pointCreateRequest, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(pointService.savePoint(pointCreateRequest));
-
+        return ResponseEntity.status(HttpStatus.CREATED).body(pointService.savePoint(userId, pointCreateRequest));
     }
 }

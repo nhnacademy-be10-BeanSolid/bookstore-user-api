@@ -37,31 +37,34 @@ class ReviewControllerTest {
     @Test
     void addReview() throws Exception {
         ReviewCreateRequest review = new ReviewCreateRequest(5, "Great book!", "", "user123", 1L);
-        Mockito.when(reviewService.addReview(review)).thenReturn(null);
+        Mockito.when(reviewService.addReview("user123", review)).thenReturn(null);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/reviews")
-                    .contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(MockMvcRequestBuilders.post("/reviews/me")
+                        .header("X-USER-ID", "user123")
+                        .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(review)))
                 .andExpect(status().is2xxSuccessful());
-        Mockito.verify(reviewService, Mockito.times(1)).addReview(review);
+        Mockito.verify(reviewService, Mockito.times(1)).addReview("user123", review);
     }
 
     @Test
     void addReviewFailAlreadyExist() throws Exception {
         ReviewCreateRequest review = new ReviewCreateRequest(5, "Great book!", "", "user123", 1L);
-        Mockito.when(reviewService.addReview(review)).thenThrow(new ReviewAlreadyExistsBookException("user123", 1L));
+        Mockito.when(reviewService.addReview("user123", review)).thenThrow(new ReviewAlreadyExistsBookException("user123", 1L));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/reviews")
-                    .contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(MockMvcRequestBuilders.post("/reviews/me")
+                        .header("X-USER-ID", "user123")
+                        .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(review)))
                 .andExpect(status().isConflict());
-        Mockito.verify(reviewService, Mockito.times(1)).addReview(review);
+        Mockito.verify(reviewService, Mockito.times(1)).addReview("user123", review);
     }
 
     @Test
     void addReviewFailValidation() throws Exception {
         ReviewCreateRequest review = new ReviewCreateRequest(0, "", "", "", 0);
-        mockMvc.perform(MockMvcRequestBuilders.post("/reviews")
+        mockMvc.perform(MockMvcRequestBuilders.post("/reviews/me")
+                        .header("X-USER-ID", "user123")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(review)))
                 .andExpect(status().isBadRequest())
@@ -73,26 +76,28 @@ class ReviewControllerTest {
     void editReview() throws Exception {
         long reviewId = 1L;
         ReviewUpdateRequest review = new ReviewUpdateRequest(5, "Updated review", "");
-        Mockito.when(reviewService.editReview(reviewId, review)).thenReturn(null);
+        Mockito.when(reviewService.editReview("user123", reviewId, review)).thenReturn(null);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/reviews/" + reviewId)
+        mockMvc.perform(MockMvcRequestBuilders.put("/reviews/me/" + reviewId)
+                        .header("X-USER-ID", "user123")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(review)))
                 .andExpect(status().is2xxSuccessful());
-        Mockito.verify(reviewService, Mockito.times(1)).editReview(reviewId, review);
+        Mockito.verify(reviewService, Mockito.times(1)).editReview("user123", reviewId, review);
     }
 
     @Test
     void editReviewFailNotFound() throws Exception {
         long reviewId = 1L;
         ReviewUpdateRequest review = new ReviewUpdateRequest(5, "Updated review", "");
-        Mockito.when(reviewService.editReview(reviewId, review)).thenThrow(new ReviewNotFoundException(1L));
+        Mockito.when(reviewService.editReview("user123", reviewId, review)).thenThrow(new ReviewNotFoundException(1L));
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/reviews/" + reviewId)
+        mockMvc.perform(MockMvcRequestBuilders.put("/reviews/me/" + reviewId)
+                        .header("X-USER-ID", "user123")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(review)))
                 .andExpect(status().isNotFound());
-        Mockito.verify(reviewService, Mockito.times(1)).editReview(reviewId, review);
+        Mockito.verify(reviewService, Mockito.times(1)).editReview("user123", reviewId, review);
     }
 
     @Test
@@ -100,7 +105,8 @@ class ReviewControllerTest {
         long reviewId = 1L;
         ReviewUpdateRequest review = new ReviewUpdateRequest(0, "", "");
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/reviews/" + reviewId)
+        mockMvc.perform(MockMvcRequestBuilders.put("/reviews/me/" + reviewId)
+                        .header("X-USER-ID", "user123")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(review)))
                 .andExpect(status().isBadRequest())

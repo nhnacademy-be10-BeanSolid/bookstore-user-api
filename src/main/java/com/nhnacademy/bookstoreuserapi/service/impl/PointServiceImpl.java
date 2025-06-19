@@ -17,6 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import static com.nhnacademy.bookstoreuserapi.util.OwnerShipValidator.validate;
+
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +30,8 @@ public class PointServiceImpl implements PointService {
 
     @Override
     @Transactional
-    public ResponsePoint savePoint(PointCreateRequest pointCreateRequest) {
-
+    public ResponsePoint savePoint(String userId, PointCreateRequest pointCreateRequest) {
+        validate(userId, pointCreateRequest.userId());
 
         User user = userRepository.findById(pointCreateRequest.userId())
                 .orElseThrow(() -> new UserNotFoundException(pointCreateRequest.userId()));

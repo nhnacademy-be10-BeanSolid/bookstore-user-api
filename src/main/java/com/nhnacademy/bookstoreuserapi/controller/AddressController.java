@@ -1,8 +1,8 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
+import com.nhnacademy.bookstoreuserapi.annotation.AuthenticatedUserId;
 import com.nhnacademy.bookstoreuserapi.domain.request.AddressCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseAddress;
-import com.nhnacademy.bookstoreuserapi.exception.InvalidHeaderException;
 import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.service.AddressService;
 import jakarta.validation.Valid;
@@ -17,36 +17,30 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users/address")
+@RequestMapping("/users/me/address")
 public class AddressController {
     private final AddressService addressService;
 
     @PostMapping
-    public ResponseEntity<ResponseAddress> addAddress(@Valid @RequestBody AddressCreateRequest address, BindingResult bindingResult){
+    public ResponseEntity<ResponseAddress> addAddress(@AuthenticatedUserId String userId, @Valid @RequestBody AddressCreateRequest address, BindingResult bindingResult){
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(addressService.save(address));
+        return ResponseEntity.status(HttpStatus.CREATED).body(addressService.save(userId, address));
     }
     @DeleteMapping("/{addressId}")
-    public ResponseEntity<Void> deleteAddress(@PathVariable @Min(1) long addressId) {
-        addressService.deleteAddress(addressId);
+    public ResponseEntity<Void> deleteAddress(@AuthenticatedUserId String userId, @PathVariable @Min(1) long addressId) {
+        addressService.deleteAddress(userId, addressId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{addressId}")
-    public ResponseEntity<ResponseAddress> getAddress(@PathVariable @Min(1) long addressId) {
-        return ResponseEntity.ok().body(addressService.getAddress(addressId));
+    public ResponseEntity<ResponseAddress> getAddress(@AuthenticatedUserId String userId, @PathVariable @Min(1) long addressId) {
+        return ResponseEntity.ok().body(addressService.getAddress(userId, addressId));
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<List<ResponseAddress>> getAllAddresses(@RequestHeader("X-USER-ID") String userId) {
-        if (userId.isBlank()) {
-            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
-        }
-        if (userId.length() > 20) {
-            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
-        }
+    @GetMapping
+    public ResponseEntity<List<ResponseAddress>> getAllAddresses(@AuthenticatedUserId String userId) {
         return ResponseEntity.ok().body(addressService.getAllAddresses(userId));
     }
 }

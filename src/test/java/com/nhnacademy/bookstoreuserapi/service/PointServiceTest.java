@@ -60,7 +60,7 @@ class PointServiceTest {
                 1000L
         );
 
-        ResponsePoint response = pointService.savePoint(request);
+        ResponsePoint response = pointService.savePoint(userId, request);
 
         assertThat(response).isNotNull();
         assertThat(response.getUserId()).isEqualTo(userId);
@@ -85,7 +85,7 @@ class PointServiceTest {
                 200L
         );
 
-        assertThatThrownBy(() -> pointService.savePoint(request))
+        assertThatThrownBy(() -> pointService.savePoint("unknownUser", request))
                 .isInstanceOf(UserNotFoundException.class);
     }
 }

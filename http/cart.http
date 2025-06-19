@@ -1,7 +1,8 @@
 ### 장바구니 추가
 
-POST http://localhost:10348/carts
+POST http://localhost:10348/carts/me
 Content-Type: application/json
+X-USER-ID: test
 
 {
   "userId": "test",
@@ -10,8 +11,9 @@ Content-Type: application/json
 }
 
 ### 장바구니 추가2
-POST http://localhost:10348/carts
+POST http://localhost:10348/carts/me
 Content-Type: application/json
+X-USER-ID: admin
 
 {
   "userId": "admin",
@@ -20,8 +22,9 @@ Content-Type: application/json
 }
 
 ### 장바구니 추가3
-POST http://localhost:10348/carts
+POST http://localhost:10348/carts/me
 Content-Type: application/json
+X-USER-ID: test1
 
 {
   "userId": "test1",
@@ -30,45 +33,51 @@ Content-Type: application/json
 }
 
 ### 장바구니 조회
-GET http://localhost:10348/carts/user
+GET http://localhost:10348/carts/me
 Content-Type: application/json
 X-USER-ID: test
 
 
 ### 장바구니 조회2
-GET http://localhost:10348/carts/user
+GET http://localhost:10348/carts/me
 Content-Type: application/json
 X-USER-ID: test1
 
 ### 장바구니 수정
-PUT http://localhost:10348/carts/1
+PUT http://localhost:10348/carts/me/1
 Content-Type: application/json
+X-USER-ID: test
 
 {
   "quantity": 5
 }
 
 ### 장바구니 삭제
-DELETE http://localhost:10348/carts/1
+DELETE http://localhost:10348/carts/me/1
 Content-Type: application/json
+X-USER-ID: test
 
 ### 장바구니 삭제2
-DELETE http://localhost:10348/carts/2
+DELETE http://localhost:10348/carts/me/2
 Content-Type: application/json
+X-USER-ID: admin
 
 ### 장바구니 삭제3
-DELETE http://localhost:10348/carts/3
+DELETE http://localhost:10348/carts/me/3
 Content-Type: application/json
+X-USER-ID: test1
 
 ### 장바구니 조회(단건)
-GET http://localhost:10348/carts/1
+GET http://localhost:10348/carts/me/1
 Content-Type: application/json
+X-USER-ID: test
 
 ### 장바구니 조회(단건2)
-GET http://localhost:10348/carts/2
+GET http://localhost:10348/carts/me/2
 Content-Type: application/json
+X-USER-ID: admin
 
 ### 장바구니 삭제 - 유저
-DELETE http://localhost:10348/carts/user
+DELETE http://localhost:10348/carts/me
 Content-Type: application/json
 X-USER-ID: test

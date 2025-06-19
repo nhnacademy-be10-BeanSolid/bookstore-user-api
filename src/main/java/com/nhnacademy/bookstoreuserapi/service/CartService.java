@@ -10,15 +10,15 @@ import java.util.Optional;
 
 public interface CartService {
 
-    ResponseCart addCart(CartCreateRequest cart);
+    ResponseCart addCart(String userId, CartCreateRequest cart);
 
-    Optional<ResponseCart> editCart(long cartId, CartUpdateRequest cart);
+    Optional<ResponseCart> editCart(String userId, long cartId, CartUpdateRequest cart);
 
-    ResponseCart getCart(long cartId);
+    ResponseCart getCart(String userId, long cartId);
 
     Page<ResponseCart> getCartsByUserId(String userId, Pageable pageable);
 
-    void deleteCart(long cartId);
+    void deleteCart(String userId, long cartId);
 
     void deleteCartsByUserId(String userId);
 

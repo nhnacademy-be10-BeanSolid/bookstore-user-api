@@ -7,12 +7,12 @@ import java.util.List;
 
 public interface AddressService {
 
-    ResponseAddress save(AddressCreateRequest address);
+    ResponseAddress save(String userId, AddressCreateRequest address);
 
-    ResponseAddress getAddress(long addressId);
+    ResponseAddress getAddress(String userId, long addressId);
 
     List<ResponseAddress> getAllAddresses(String userId);
 
-    void deleteAddress(long addressId);
+    void deleteAddress(String userId, long addressId);
 
 }

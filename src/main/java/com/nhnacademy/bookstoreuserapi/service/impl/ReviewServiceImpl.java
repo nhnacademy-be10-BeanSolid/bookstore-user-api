@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+import static com.nhnacademy.bookstoreuserapi.util.OwnerShipValidator.validate;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -26,11 +28,12 @@ public class ReviewServiceImpl implements ReviewService {
     private final UserRepository userRepository;
 
     @Override
-    public ResponseReview addReview(ReviewCreateRequest review){
+    public ResponseReview addReview(String userId, ReviewCreateRequest review){
         Review findReview = reviewRepository.findByUser_UserIdAndBookId(review.userId(), review.bookId());
         if (findReview != null) {
             throw new ReviewAlreadyExistsBookException(review.userId(), review.bookId());
         }
+        validate(userId, review.userId());
         User user = userRepository.findById(review.userId())
                 .orElseThrow(() -> new UserNotFoundException(review.userId()));
         Review savedReview = reviewRepository.save(new Review(review, user));
@@ -47,11 +50,12 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ResponseReview editReview(long reviewId, ReviewUpdateRequest review) {
+    public ResponseReview editReview(String userId, long reviewId, ReviewUpdateRequest review) {
         Review findReview = reviewRepository.findById(reviewId).orElse(null);
         if (findReview == null) {
             throw new ReviewNotFoundException(reviewId);
         }
+        validate(userId, findReview.getUser().getUserId());
         findReview.setEvaluationScore(review.evaluationScore());
         findReview.setReviewContent(review.reviewContent());
         findReview.setReviewPhoto(review.reviewPhoto());

@@ -38,30 +38,33 @@ class CartControllerTest {
     @Test
     void addCart() throws Exception {
         CartCreateRequest cart = new CartCreateRequest(1, "user123", 3);
-        Mockito.when(cartService.addCart(cart)).thenReturn(null);
-        mockMvc.perform(MockMvcRequestBuilders.post("/carts")
+        Mockito.when(cartService.addCart("user123", cart)).thenReturn(null);
+        mockMvc.perform(MockMvcRequestBuilders.post("/carts/me")
+                        .header("X-USER-ID", "user123")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(cart)))
                 .andExpect(status().is2xxSuccessful());
-        Mockito.verify(cartService, Mockito.times(1)).addCart(cart);
+        Mockito.verify(cartService, Mockito.times(1)).addCart("user123", cart);
     }
 
     @Test
     void addCartFailAlreadyExist() throws Exception {
         CartCreateRequest cart = new CartCreateRequest(1, "user123", 3);
-        Mockito.when(cartService.addCart(cart)).thenThrow(new CartAlreadyExistException("user123", 1L));
-        mockMvc.perform(MockMvcRequestBuilders.post("/carts")
+        Mockito.when(cartService.addCart("user123", cart)).thenThrow(new CartAlreadyExistException("user123", 1L));
+        mockMvc.perform(MockMvcRequestBuilders.post("/carts/me")
+                        .header("X-USER-ID", "user123")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(cart)))
                 .andExpect(status().isConflict());
-        Mockito.verify(cartService, Mockito.times(1)).addCart(cart);
+        Mockito.verify(cartService, Mockito.times(1)).addCart("user123", cart);
     }
 
     @Test
     void addCartFailValidation() throws Exception {
         CartCreateRequest cart = new CartCreateRequest(0, "", 0);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/carts")
+        mockMvc.perform(MockMvcRequestBuilders.post("/carts/me")
+                        .header("X-USER-ID", "user123")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(cart)))
                 .andExpect(result ->
@@ -72,12 +75,13 @@ class CartControllerTest {
     void editCart() throws Exception {
         long cartId = 1L;
         CartUpdateRequest cart = new CartUpdateRequest(5);
-        Mockito.when(cartService.editCart(cartId, cart)).thenReturn(Optional.empty());
-        mockMvc.perform(MockMvcRequestBuilders.put("/carts/" + cartId)
+        Mockito.when(cartService.editCart("user123", cartId, cart)).thenReturn(Optional.empty());
+        mockMvc.perform(MockMvcRequestBuilders.put("/carts/me/" + cartId)
+                        .header("X-USER-ID", "user123")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(cart)))
                 .andExpect(status().is2xxSuccessful());
-        Mockito.verify(cartService, Mockito.times(1)).editCart(cartId, cart);
+        Mockito.verify(cartService, Mockito.times(1)).editCart("user123", cartId, cart);
     }
 
     @Test
@@ -85,7 +89,8 @@ class CartControllerTest {
         long cartId = 1L;
         CartUpdateRequest cart = new CartUpdateRequest(-1);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/carts/" + cartId)
+        mockMvc.perform(MockMvcRequestBuilders.put("/carts/me/" + cartId)
+                        .header("X-USER-ID", "user123")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(cart)))
                 .andExpect(result ->
@@ -95,19 +100,21 @@ class CartControllerTest {
     @Test
     void getCart() throws Exception {
         long cartId = 1L;
-        Mockito.when(cartService.getCart(cartId)).thenReturn(null);
-        mockMvc.perform(MockMvcRequestBuilders.get("/carts/" + cartId))
+        Mockito.when(cartService.getCart("user123", cartId)).thenReturn(null);
+        mockMvc.perform(MockMvcRequestBuilders.get("/carts/me/" + cartId)
+                        .header("X-USER-ID", "user123"))
                 .andExpect(status().is2xxSuccessful());
-        Mockito.verify(cartService, Mockito.times(1)).getCart(cartId);
+        Mockito.verify(cartService, Mockito.times(1)).getCart("user123", cartId);
     }
 
     @Test
     void getCartFailNotFound() throws Exception {
         long cartId = 1L;
-        Mockito.when(cartService.getCart(cartId)).thenThrow(new CartNotFoundException(cartId));
-        mockMvc.perform(MockMvcRequestBuilders.get("/carts/" + cartId))
+        Mockito.when(cartService.getCart("user123", cartId)).thenThrow(new CartNotFoundException(cartId));
+        mockMvc.perform(MockMvcRequestBuilders.get("/carts/me/" + cartId)
+                        .header("X-USER-ID", "user123"))
                 .andExpect(status().isNotFound());
-        Mockito.verify(cartService, Mockito.times(1)).getCart(cartId);
+        Mockito.verify(cartService, Mockito.times(1)).getCart("user123", cartId);
     }
 
     @Test
@@ -115,7 +122,7 @@ class CartControllerTest {
         String userId = "user123";
         Pageable pageable = PageRequest.of(0,20);
         Mockito.when(cartService.getCartsByUserId(userId, pageable)).thenReturn(null);
-        mockMvc.perform(MockMvcRequestBuilders.get("/carts/user")
+        mockMvc.perform(MockMvcRequestBuilders.get("/carts/me")
                         .header("X-USER-ID", userId))
                 .andExpect(status().is2xxSuccessful());
         Mockito.verify(cartService, Mockito.times(1)).getCartsByUserId(userId, pageable);
@@ -126,7 +133,7 @@ class CartControllerTest {
         String userId = "user123";
         Pageable pageable = PageRequest.of(0,20);
         Mockito.when(cartService.getCartsByUserId(userId, pageable)).thenReturn(null);
-        mockMvc.perform(MockMvcRequestBuilders.get("/carts/user")
+        mockMvc.perform(MockMvcRequestBuilders.get("/carts/me")
                         .header("X-USER-ID", ""))
                 .andExpect(status().is4xxClientError());
         Mockito.verify(cartService, Mockito.times(0)).getCartsByUserId(userId, pageable);
@@ -137,7 +144,7 @@ class CartControllerTest {
         String userId = "user123";
         Pageable pageable = PageRequest.of(0,20);
         Mockito.when(cartService.getCartsByUserId(userId, pageable)).thenReturn(null);
-        mockMvc.perform(MockMvcRequestBuilders.get("/carts/user")
+        mockMvc.perform(MockMvcRequestBuilders.get("/carts/me")
                         .header("X-USER-ID", "asfghjklqwertyuiopzxcvbnm"))
                 .andExpect(status().is4xxClientError());
         Mockito.verify(cartService, Mockito.times(0)).getCartsByUserId(userId, pageable);
@@ -146,17 +153,18 @@ class CartControllerTest {
     @Test
     void deleteCart() throws Exception {
         long cartId = 1L;
-        Mockito.doNothing().when(cartService).deleteCart(cartId);
-        mockMvc.perform(MockMvcRequestBuilders.delete("/carts/" + cartId))
+        Mockito.doNothing().when(cartService).deleteCart("user123", cartId);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/carts/me/" + cartId)
+                        .header("X-USER-ID", "user123"))
                 .andExpect(status().is2xxSuccessful());
-        Mockito.verify(cartService, Mockito.times(1)).deleteCart(cartId);
+        Mockito.verify(cartService, Mockito.times(1)).deleteCart("user123", cartId);
     }
 
     @Test
     void deleteCartsByUserId() throws Exception {
         String userId = "user123";
         Mockito.doNothing().when(cartService).deleteCartsByUserId(userId);
-        mockMvc.perform(MockMvcRequestBuilders.delete("/carts/user")
+        mockMvc.perform(MockMvcRequestBuilders.delete("/carts/me")
                         .header("X-USER-ID", userId))
                 .andExpect(status().is2xxSuccessful());
         Mockito.verify(cartService, Mockito.times(1)).deleteCartsByUserId(userId);
@@ -166,7 +174,7 @@ class CartControllerTest {
     void deleteCartsByUserIdFailBlank() throws Exception {
         String userId = "user123";
         Mockito.doNothing().when(cartService).deleteCartsByUserId(userId);
-        mockMvc.perform(MockMvcRequestBuilders.delete("/carts/user")
+        mockMvc.perform(MockMvcRequestBuilders.delete("/carts/me")
                         .header("X-USER-ID", ""))
                 .andExpect(status().is4xxClientError());
         Mockito.verify(cartService, Mockito.times(0)).deleteCartsByUserId(userId);
@@ -176,7 +184,7 @@ class CartControllerTest {
     void deleteCartsByUserIdFailExceed20Letter() throws Exception {
         String userId = "user123";
         Mockito.doNothing().when(cartService).deleteCartsByUserId(userId);
-        mockMvc.perform(MockMvcRequestBuilders.delete("/carts/user")
+        mockMvc.perform(MockMvcRequestBuilders.delete("/carts/me")
                         .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm"))
                 .andExpect(status().is4xxClientError());
         Mockito.verify(cartService, Mockito.times(0)).deleteCartsByUserId(userId);

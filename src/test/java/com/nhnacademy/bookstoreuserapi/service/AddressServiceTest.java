@@ -17,11 +17,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class AddressServiceTest {
@@ -59,7 +62,8 @@ class AddressServiceTest {
         Mockito.when(addressRepository.save(address)).thenReturn(address);
         Mockito.when(userRepository.findById(addressCreateRequest.userId())).thenReturn(Optional.of(address.getUser()));
 
-        addressService.save(addressCreateRequest);
+        addressService.save("user123", addressCreateRequest);
+        assertAccessDenied(() -> addressService.save("anotherUser", addressCreateRequest));
         Mockito.verify(addressRepository, Mockito.times(1)).countByUser_UserId(addressCreateRequest.userId());
         Mockito.verify(addressRepository, Mockito.times(1)).existsByUser_UserIdAndAddressDetail(addressCreateRequest.userId(), addressCreateRequest.addressDetail());
         Mockito.verify(addressRepository, Mockito.times(1)).save(address);
@@ -73,7 +77,7 @@ class AddressServiceTest {
         Mockito.when(addressRepository.existsByUser_UserIdAndAddressDetail(addressCreateRequest.userId(), addressCreateRequest.addressDetail())).thenReturn(true);
 
         try {
-            addressService.save(addressCreateRequest);
+            addressService.save("user123", addressCreateRequest);
         } catch (Exception e) {
             assert e instanceof AddressAlreadyExistException;
         }
@@ -86,7 +90,7 @@ class AddressServiceTest {
         AddressCreateRequest addressCreateRequest = new AddressCreateRequest("Home", "123 Main St", "user123");
         Mockito.when(addressRepository.countByUser_UserId(addressCreateRequest.userId())).thenReturn(10L);
         try {
-            addressService.save(addressCreateRequest);
+            addressService.save("user123", addressCreateRequest);
         } catch (Exception e) {
             assert e instanceof AddressLimitExceededException;
         }
@@ -114,7 +118,7 @@ class AddressServiceTest {
 
         Mockito.when(addressRepository.findById(addressId)).thenReturn(Optional.of(address));
 
-        addressService.getAddress(addressId);
+        addressService.getAddress("test", addressId);
         Mockito.verify(addressRepository, Mockito.times(1)).findById(addressId);
     }
 
@@ -125,7 +129,7 @@ class AddressServiceTest {
         Mockito.when(addressRepository.findById(addressId)).thenReturn(Optional.empty());
 
         try {
-            addressService.getAddress(addressId);
+            addressService.getAddress("user123",addressId);
         } catch (Exception e) {
             assert e instanceof AddressNotFoundException;
         }
@@ -182,7 +186,7 @@ class AddressServiceTest {
         Mockito.when(addressRepository.findById(addressId)).thenReturn(Optional.of(address));
         Mockito.doNothing().when(addressRepository).delete(address);
 
-        addressService.deleteAddress(addressId);
+        addressService.deleteAddress("test", addressId);
         Mockito.verify(addressRepository, Mockito.times(1)).findById(addressId);
         Mockito.verify(addressRepository, Mockito.times(1)).delete(address);
     }
@@ -194,11 +198,14 @@ class AddressServiceTest {
         Mockito.when(addressRepository.findById(addressId)).thenReturn(Optional.empty());
 
         try {
-            addressService.deleteAddress(addressId);
+            addressService.deleteAddress("user123", addressId);
         } catch (Exception e) {
             assert e instanceof AddressNotFoundException;
         }
 
         Mockito.verify(addressRepository, Mockito.times(1)).findById(addressId);
+    }
+    void assertAccessDenied(Runnable action) {
+        assertThrows(AccessDeniedException.class, action::run);
     }
 }

@@ -51,7 +51,7 @@ class PointControllerTest {
         Mockito.when(pointService.findAll(eq("userId123"), any()))
                 .thenReturn(page);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/users/point/me")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/users/me/point")
                         .header("X-USER-ID", "userId123"))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
@@ -75,7 +75,7 @@ class PointControllerTest {
         Mockito.when(pointService.findAll(eq("userId123"), any()))
                 .thenReturn(page);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/point/me")
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/me/point")
                         .header("X-USER-ID", ""))
                 .andExpect(status().is4xxClientError())
                 .andReturn();
@@ -95,7 +95,7 @@ class PointControllerTest {
         Mockito.when(pointService.findAll(eq("userId123"), any()))
                 .thenReturn(page);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/point/me")
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/me/point")
                         .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm"))
                 .andExpect(status().is4xxClientError())
                 .andReturn();
@@ -109,21 +109,23 @@ class PointControllerTest {
         PointCreateRequest request = new PointCreateRequest("test", 1L, 2L, LocalDateTime.of(2015, 11, 12, 5, 12, 12, 12), 500L);
         ResponsePoint response = new ResponsePoint(1L, "test", 1L, 2L, LocalDateTime.of(2015, 11, 12, 5, 12, 12, 12), 500L);
 
-        Mockito.when(pointService.savePoint(request)).thenReturn(response);
+        Mockito.when(pointService.savePoint("test", request)).thenReturn(response);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/users/point")
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/me/point")
+                        .header("X-USER-ID", "test")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().is2xxSuccessful());
 
-        Mockito.verify(pointService, Mockito.times(1)).savePoint(request);
+        Mockito.verify(pointService, Mockito.times(1)).savePoint("test", request);
     }
 
     @Test
     void savePointValidationFail() throws Exception {
         PointCreateRequest request = new PointCreateRequest("", 0L, 0L, LocalDateTime.now(), 0L);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/users/point")
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/me/point")
+                        .header("X-USER-ID", "test")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(result ->

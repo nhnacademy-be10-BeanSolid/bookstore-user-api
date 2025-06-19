@@ -1,9 +1,9 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
+import com.nhnacademy.bookstoreuserapi.annotation.AuthenticatedUserId;
 import com.nhnacademy.bookstoreuserapi.domain.request.CartUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.CartCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseCart;
-import com.nhnacademy.bookstoreuserapi.exception.InvalidHeaderException;
 import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.service.CartService;
 import jakarta.validation.Valid;
@@ -21,58 +21,46 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/carts")
+@RequestMapping("/carts/me")
 public class CartController {
     private final CartService cartService;
 
     @PostMapping
-    public ResponseEntity<ResponseCart> addCart(@Valid @RequestBody CartCreateRequest cart, BindingResult bindingResult){
+    public ResponseEntity<ResponseCart> addCart(@AuthenticatedUserId  String userId, @Valid @RequestBody CartCreateRequest cart, BindingResult bindingResult){
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(cartService.addCart(cart));
+        return ResponseEntity.status(HttpStatus.CREATED).body(cartService.addCart(userId, cart));
     }
 
     @PutMapping("/{cartId}")
-    public ResponseEntity<ResponseCart> updateCart(@PathVariable @NotNull @Min(1) Long cartId, @Valid @RequestBody CartUpdateRequest cart, BindingResult bindingResult){
+    public ResponseEntity<ResponseCart> updateCart(@AuthenticatedUserId String userId, @PathVariable @NotNull @Min(1) Long cartId, @Valid @RequestBody CartUpdateRequest cart, BindingResult bindingResult){
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
         }
-        Optional<ResponseCart> result = cartService.editCart(cartId, cart);
+        Optional<ResponseCart> result = cartService.editCart(userId, cartId, cart);
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @GetMapping("/{cartId}")
-    public ResponseEntity<ResponseCart> getCart(@PathVariable @NotNull @Min(1) Long cartId) {
-        return ResponseEntity.ok().body(cartService.getCart(cartId));
+    public ResponseEntity<ResponseCart> getCart(@AuthenticatedUserId String userId, @PathVariable @NotNull @Min(1) Long cartId) {
+        return ResponseEntity.ok().body(cartService.getCart(userId, cartId));
     }
 
-    @GetMapping("/user")
-    public ResponseEntity<Page<ResponseCart>> getCartByUserId(@RequestHeader("X-USER-ID") String userId, Pageable pageable) {
-        if (userId.isBlank()) {
-            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
-        }
-        if (userId.length() > 20) {
-            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
-        }
+    @GetMapping
+    public ResponseEntity<Page<ResponseCart>> getCartByUserId(@AuthenticatedUserId String userId, Pageable pageable) {
         return ResponseEntity.ok().body(cartService.getCartsByUserId(userId, pageable));
     }
 
     @DeleteMapping("/{cartId}")
-    public ResponseEntity<Void> deleteCart(@PathVariable @NotNull @Min(1) Long cartId) {
-        cartService.deleteCart(cartId);
+    public ResponseEntity<Void> deleteCart(@AuthenticatedUserId String userId, @PathVariable @NotNull @Min(1) Long cartId) {
+        cartService.deleteCart(userId, cartId);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/user")
-    public ResponseEntity<Void> deleteCartsByUserId(@RequestHeader("X-USER-ID") String userId) {
-        if (userId.isBlank()) {
-            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
-        }
-        if (userId.length() > 20) {
-            throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
-        }
+    @DeleteMapping
+    public ResponseEntity<Void> deleteCartsByUserId(@AuthenticatedUserId String userId) {
         cartService.deleteCartsByUserId(userId);
         return ResponseEntity.noContent().build();
     }

@@ -1,7 +1,8 @@
 ### 리뷰등록
 
-POST http://localhost:10348/reviews
+POST http://localhost:10348/reviews/me
 Content-Type: application/json
+X-USER-ID: test
 
 {
   "evaluationScore": 5,
@@ -14,8 +15,9 @@ Content-Type: application/json
 
 ### 리뷰등록2
 
-POST http://localhost:10348/reviews
+POST http://localhost:10348/reviews/me
 Content-Type: application/json
+X-USER-ID: test
 
 {
   "evaluationScore": 3,
@@ -27,8 +29,9 @@ Content-Type: application/json
 
 ### 리뷰등록3
 
-POST http://localhost:10348/reviews
+POST http://localhost:10348/reviews/me
 Content-Type: application/json
+X-USER-ID: test1
 
 {
   "evaluationScore": 1,
@@ -40,8 +43,9 @@ Content-Type: application/json
 
 ### 리뷰등록4
 
-POST http://localhost:10348/reviews
+POST http://localhost:10348/reviews/me
 Content-Type: application/json
+X-USER-ID: test
 
 {
   "evaluationScore": 5,
@@ -54,8 +58,9 @@ Content-Type: application/json
 
 ### 리뷰등록5
 
-POST http://localhost:10348/reviews
+POST http://localhost:10348/reviews/me
 Content-Type: application/json
+X-USER-ID: test1
 
 {
   "evaluationScore": 3,
@@ -67,8 +72,9 @@ Content-Type: application/json
 
 
 ### 리뷰수정
-PUT http://localhost:10348/reviews/1
+PUT http://localhost:10348/reviews/me/1
 Content-Type: application/json
+X-USER-ID: test
 
 {
   "evaluationScore": 4,

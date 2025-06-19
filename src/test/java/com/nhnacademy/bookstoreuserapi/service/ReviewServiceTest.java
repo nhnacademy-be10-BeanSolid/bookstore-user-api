@@ -63,7 +63,7 @@ class ReviewServiceTest {
         Mockito.when(reviewRepository.findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId())).thenReturn(null);
         Mockito.when(reviewRepository.save(Mockito.any(Review.class))).thenReturn(review);
 
-        reviewService.addReview(reviewCreateRequest);
+        reviewService.addReview("user123", reviewCreateRequest);
         Mockito.verify(reviewRepository, Mockito.times(1)).findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId());
         Mockito.verify(reviewRepository, Mockito.times(1)).save(Mockito.any(Review.class));
     }
@@ -88,7 +88,7 @@ class ReviewServiceTest {
         Review review = new Review(reviewCreateRequest, user);
         Mockito.when(reviewRepository.findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId())).thenReturn(review);
 
-        Assertions.assertThrows(ReviewAlreadyExistsBookException.class, () -> reviewService.addReview(reviewCreateRequest));
+        Assertions.assertThrows(ReviewAlreadyExistsBookException.class, () -> reviewService.addReview("user123", reviewCreateRequest));
 
         Mockito.verify(reviewRepository, Mockito.times(1)).findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId());
     }
@@ -115,7 +115,7 @@ class ReviewServiceTest {
 
         Mockito.when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(existingReview));
 
-        reviewService.editReview(reviewId, new ReviewUpdateRequest(4, "Updated review", ""));
+        reviewService.editReview("user123", reviewId, new ReviewUpdateRequest(4, "Updated review", ""));
 
         Mockito.verify(reviewRepository, Mockito.times(1)).findById(reviewId);
     }
@@ -127,7 +127,7 @@ class ReviewServiceTest {
 
         ReviewUpdateRequest request = new ReviewUpdateRequest(4, "Updated review", "");
         Assertions.assertThrows(ReviewNotFoundException.class,
-                () -> reviewService.editReview(reviewId, request));
+                () -> reviewService.editReview("user123", reviewId, request));
 
         Mockito.verify(reviewRepository, Mockito.times(1)).findById(reviewId);
     }

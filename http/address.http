@@ -1,21 +1,24 @@
 ### 주소등록
-POST http://localhost:10348/users/address
+POST http://localhost:10348/users/me/address
 Content-Type: application/json
+X-USER-ID: newTest
 
 {
   "addressNickName": "집",
   "addressDetail": "광주 광역시 지산동",
-  "userId": "test"
+  "userId": "newTest"
 }
 
 ### 주소 조회
-GET http://localhost:10348/users/address/1
+GET http://localhost:10348/users/me/address/1
 Content-Type: application/json
+X-USER-ID: newTest
 
 ### 주소 조회(회원별)
-GET http://localhost:10348/users/address/me
+GET http://localhost:10348/users/me/address
 Content-Type: application/json
-X-USER-ID: test
+X-USER-ID: newTest
 
 ### 주소 삭제
-DELETE http://localhost:10348/users/address/1
+DELETE http://localhost:10348/users/me/address/1
+X-USER-ID: newTest

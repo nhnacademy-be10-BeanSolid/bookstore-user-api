@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.nhnacademy.bookstoreuserapi.util.OwnerShipValidator.validate;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -24,7 +26,8 @@ public class AddressServiceImpl implements AddressService {
 
     // 주소 등록
     @Override
-    public ResponseAddress save(AddressCreateRequest address) {
+    public ResponseAddress save(String userId, AddressCreateRequest address) {
+        validate(userId, address.userId());
         long count = addressRepository.countByUser_UserId(address.userId());
         if (count >= 10) {
             throw new AddressLimitExceededException(address.userId());
@@ -50,11 +53,13 @@ public class AddressServiceImpl implements AddressService {
 
     // 주소 조회
     @Override
-    public ResponseAddress getAddress(long addressId) {
+    public ResponseAddress getAddress(String userId, long addressId) {
         Address findAddress = addressRepository.findById(addressId).orElse(null);
         if (findAddress == null) {
             throw new AddressNotFoundException(addressId);
         }
+        validate(userId, findAddress.getUser().getUserId());
+
         return new ResponseAddress(
                 findAddress.getAddressId(),
                 findAddress.getAddressNickName(),
@@ -71,11 +76,13 @@ public class AddressServiceImpl implements AddressService {
 
     // 주소 삭제
     @Override
-    public void deleteAddress(long addressId) {
+    public void deleteAddress(String userId, long addressId) {
         Address findAddress = addressRepository.findById(addressId).orElse(null);
         if(findAddress == null) {
             throw new AddressNotFoundException(addressId);
         }
+        validate(userId, findAddress.getUser().getUserId());
+
         addressRepository.delete(findAddress);
 
     }

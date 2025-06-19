@@ -88,7 +88,7 @@ class PointRepositoryTest {
         assertThat(points).hasSize(2);
         assertThat(points)
                 .extracting("earnedAndUsedPoint")
-                .containsExactlyInAnyOrder(50L, -100L);
+                .containsExactlyInAnyOrder(50, -100);
     }
 
     @AfterEach

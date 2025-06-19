@@ -23,10 +23,10 @@ public class PointType {
     private String typeName;
 
     @Column(name = "earning_point")
-    private int earningPoint;
+    private Integer earningPoint;
 
     @Column(name = "earning_rate")
-    private int earningRate;
+    private Integer earningRate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "grade_name")

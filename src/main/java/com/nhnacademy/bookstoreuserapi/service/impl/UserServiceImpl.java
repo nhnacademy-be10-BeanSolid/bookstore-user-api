@@ -69,7 +69,9 @@ public class UserServiceImpl implements UserService {
         user.setAuth(false);
 
         // 유형별 적립테이블의 회원가입 값에 따라 포인트 적립 액수가 달라짐
-        user.setUserPoint(pointTypeRepository.findEarningPointByTypeName("회원가입"));
+        int welcomePoint = pointTypeRepository.findEarningPointByTypeName("회원가입");
+
+        user.setUserPoint(welcomePoint);
 
         user.setUserGrade(basicGrade);
         user.setUserStatus(User.Status.ACTIVE);
@@ -80,12 +82,12 @@ public class UserServiceImpl implements UserService {
         PointCreateRequest pointCreateRequest = new PointCreateRequest(
                 request.userId(),
                 1L,
-                1L,
+                null,
                 LocalDateTime.now(),
-                pointTypeRepository.findEarningPointByTypeName("회원가입")
+                welcomePoint
         );
 
-        pointService.savePoint(pointCreateRequest);
+        pointService.savePoint(request.userId(),pointCreateRequest);
 
         return new ResponseUser(savedUser);
     }

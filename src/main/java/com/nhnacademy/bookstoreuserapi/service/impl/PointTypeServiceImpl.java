@@ -19,13 +19,13 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PointTypeServiceImpl implements PointTypeService {
 
     private final PointTypeRepository pointTypeRepository;
     private final UserGradeRepository userGradeRepository;
 
     @Override
-    @Transactional
     public void savePointType(PointTypeCreateRequest request) {
 
         PointType pointType = new PointType();
@@ -64,7 +64,6 @@ public class PointTypeServiceImpl implements PointTypeService {
     }
 
     @Override
-    @Transactional
     public void deletePointType(Long typeId) {
 
         if(!pointTypeRepository.existsById(typeId)) {
@@ -75,7 +74,6 @@ public class PointTypeServiceImpl implements PointTypeService {
     }
 
     @Override
-    @Transactional
     public ResponsePointType updateEarningPoint(Long point, Long typeId) {
 
         pointTypeRepository.updateEarningPoint(point, typeId);
@@ -94,7 +92,6 @@ public class PointTypeServiceImpl implements PointTypeService {
     }
 
     @Override
-    @Transactional
     public ResponsePointType updateEarningRate(int rate, Long typeId) {
 
         pointTypeRepository.updateEarningRate(rate, typeId);

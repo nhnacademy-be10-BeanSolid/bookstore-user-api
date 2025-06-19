@@ -34,8 +34,7 @@ import java.util.Optional;
 class ReviewServiceTest {
     @Mock
     ReviewRepository reviewRepository;
-
-
+    
     @Mock
     UserRepository userRepository;
 
@@ -115,7 +114,6 @@ class ReviewServiceTest {
         existingReview.setReviewId(reviewId);
 
         Mockito.when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(existingReview));
-        Mockito.when(reviewRepository.save(Mockito.any(Review.class))).thenReturn(existingReview);
 
         reviewService.editReview(reviewId, new ReviewUpdateRequest(4, "Updated review", ""));
 
@@ -189,7 +187,7 @@ class ReviewServiceTest {
         Page<ResponseReview> result = reviewService.getReviewsByUserId("user123", pageable);
 
         Assertions.assertEquals(1, result.getTotalElements());
-        Assertions.assertEquals("user123", result.getContent().get(0).getUserId());
+        Assertions.assertEquals("user123", result.getContent().getFirst().getUserId());
         Mockito.verify(reviewRepository, Mockito.times(1)).findAllByUserId("user123", pageable);
     }
 
@@ -216,7 +214,7 @@ class ReviewServiceTest {
         Page<ResponseReview> result = reviewService.getReviewsByBookId(bookId, pageable);
 
         Assertions.assertEquals(1, result.getTotalElements());
-        Assertions.assertEquals(1L, result.getContent().get(0).getBookId()); // getter에 따라 수정
+        Assertions.assertEquals(1L, result.getContent().getFirst().getBookId()); // getter에 따라 수정
         Mockito.verify(reviewRepository, Mockito.times(1)).findAllByBookId(bookId, pageable);
 
     }

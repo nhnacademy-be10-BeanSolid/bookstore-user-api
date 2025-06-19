@@ -125,7 +125,7 @@ class GuestControllerTest {
         String email = "guest@example.com";
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/guests/{guestEmail}", email))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         Mockito.verify(guestService).deleteGuest(email);
     }

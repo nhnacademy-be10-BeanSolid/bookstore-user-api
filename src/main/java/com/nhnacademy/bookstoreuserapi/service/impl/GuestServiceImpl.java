@@ -84,12 +84,6 @@ public class GuestServiceImpl implements GuestService {
         guest.setGuestPhoneNumber(guestUpdateRequest.guestPhoneNumber());
         guest.setGuestAddress(guestUpdateRequest.guestAddress());
 
-        guestRepository.updateGuest(guest.getGuestPassword(),
-                                    guest.getGuestName(),
-                                    guest.getGuestPhoneNumber(),
-                                    guest.getGuestAddress(),
-                                    guestEmail);
-
         return new ResponseGuest(
                 guest.getGuestPassword(),
                 guest.getGuestName(),

@@ -57,16 +57,15 @@ public class ReviewServiceImpl implements ReviewService {
         findReview.setReviewPhoto(review.reviewPhoto());
         findReview.setUpdatedAt(LocalDateTime.now());
 
-        Review updatedReview = reviewRepository.save(findReview);
         return new ResponseReview(
-                updatedReview.getReviewId(),
-                updatedReview.getEvaluationScore(),
-                updatedReview.getReviewContent(),
-                updatedReview.getReviewPhoto(),
-                updatedReview.getReviewedAt(),
-                updatedReview.getUpdatedAt(),
-                updatedReview.getUser().getUserId(),
-                updatedReview.getBookId()
+                findReview.getReviewId(),
+                findReview.getEvaluationScore(),
+                findReview.getReviewContent(),
+                findReview.getReviewPhoto(),
+                findReview.getReviewedAt(),
+                findReview.getUpdatedAt(),
+                findReview.getUser().getUserId(),
+                findReview.getBookId()
         );
     }
 

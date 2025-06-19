@@ -39,7 +39,7 @@ public class GuestController {
 
         guestService.deleteGuest(guestEmail);
 
-        return ResponseEntity.ok().body("성공적으로 삭제하였습니다.");
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{guestEmail}")

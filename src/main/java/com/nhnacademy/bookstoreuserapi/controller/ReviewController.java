@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
 
+import com.nhnacademy.bookstoreuserapi.annotation.AuthenticatedUserId;
 import com.nhnacademy.bookstoreuserapi.domain.request.ReviewUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.ReviewCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseReview;
@@ -24,20 +25,20 @@ import org.springframework.web.bind.annotation.*;
 public class ReviewController {
     private final ReviewService reviewService;
 
-    @PostMapping
-    public ResponseEntity<ResponseReview> addReview(@Valid @RequestBody ReviewCreateRequest review, BindingResult bindingResult){
+    @PostMapping("/me")
+    public ResponseEntity<ResponseReview> addReview(@AuthenticatedUserId  String userId, @Valid @RequestBody ReviewCreateRequest review, BindingResult bindingResult){
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(reviewService.addReview(review));
+        return ResponseEntity.status(HttpStatus.CREATED).body(reviewService.addReview(userId, review));
     }
 
-    @PutMapping("/{reviewId}")
-    public ResponseEntity<ResponseReview> updateReview(@PathVariable @Min(1) long reviewId, @Valid @RequestBody ReviewUpdateRequest review, BindingResult bindingResult) {
+    @PutMapping("/me/{reviewId}")
+    public ResponseEntity<ResponseReview> updateReview(@AuthenticatedUserId String userId, @PathVariable @Min(1) long reviewId, @Valid @RequestBody ReviewUpdateRequest review, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
         }
-        return ResponseEntity.ok().body(reviewService.editReview(reviewId, review));
+        return ResponseEntity.ok().body(reviewService.editReview(userId, reviewId, review));
     }
 
     @GetMapping("/{reviewId}")

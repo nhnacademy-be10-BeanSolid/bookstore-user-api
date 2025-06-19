@@ -39,22 +39,24 @@ class AddressControllerTest {
     @Test
     void addAddress() throws Exception{
         AddressCreateRequest address = new AddressCreateRequest("별칭", "광주광역시 도로명주소 123", "userId123");
-        Mockito.when(addressService.save(address)).thenReturn(null);
+        Mockito.when(addressService.save("userId123", address)).thenReturn(null);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/users/address")
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/me/address")
+                        .header("X-USER-ID", "userId123")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(address)))
                 .andExpect(status().is2xxSuccessful());
 
-        Mockito.verify(addressService, Mockito.times(1)).save(address);
+        Mockito.verify(addressService, Mockito.times(1)).save("userId123", address);
     }
 
     @Test
     void addAddressFailAlreadyExist() throws Exception{
         AddressCreateRequest address = new AddressCreateRequest("별칭", "광주광역시 도로명주소 123", "userId123");
-        Mockito.when(addressService.save(address)).thenThrow(AddressAlreadyExistException.class);
+        Mockito.when(addressService.save("userId123", address)).thenThrow(AddressAlreadyExistException.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/users/address")
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/me/address")
+                        .header("X-USER-ID", "userId123")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(address)))
                 .andExpect(status().is4xxClientError());
@@ -63,7 +65,8 @@ class AddressControllerTest {
     @Test
     void addAddressFailValidation() throws Exception{
         AddressCreateRequest address = new AddressCreateRequest("", "", "");
-        mockMvc.perform(MockMvcRequestBuilders.post("/users/address")
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/me/address")
+                        .header("X-USER-ID", "userId123")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(address)))
                 .andExpect(result ->
@@ -73,26 +76,29 @@ class AddressControllerTest {
     @Test
     void deleteAddress() throws Exception{
 
-        Mockito.doNothing().when(addressService).deleteAddress( 1L);
-        mockMvc.perform(MockMvcRequestBuilders.delete("/users/address/{addressId}", 1L))
+        Mockito.doNothing().when(addressService).deleteAddress( "userId123",1L);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/users/me/address/{addressId}", 1L)
+                        .header("X-USER-ID", "userId123"))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     void deleteAddressFail() throws Exception{
 
-        Mockito.doThrow(AddressNotFoundException.class).when(addressService).deleteAddress( 1L);
-        mockMvc.perform(MockMvcRequestBuilders.delete("/users/address/{addressId}", 1L))
+        Mockito.doThrow(AddressNotFoundException.class).when(addressService).deleteAddress("userId123", 1L);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/users/me/address/{addressId}", 1L)
+                        .header("X-USER-ID", "userId123"))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
     void getAddress() throws Exception{
-        Mockito.when(addressService.getAddress(1L)).thenReturn(null);
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/address/{addressId}", 1L))
+        Mockito.when(addressService.getAddress("userId123",1L)).thenReturn(null);
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/me/address/{addressId}", 1L)
+                        .header("X-USER-ID", "userId123"))
                 .andExpect(status().is2xxSuccessful());
 
-        Mockito.verify(addressService, Mockito.times(1)).getAddress(1L);
+        Mockito.verify(addressService, Mockito.times(1)).getAddress("userId123",1L);
     }
 
     @Test
@@ -102,7 +108,7 @@ class AddressControllerTest {
         Mockito.when(addressService.getAllAddresses("userId123"))
                 .thenReturn(List.of(responseAddress, responseAddress2));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/users/address/me")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/users/me/address")
                         .header("X-USER-ID", "userId123"))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
@@ -121,7 +127,7 @@ class AddressControllerTest {
         Mockito.when(addressService.getAllAddresses("userId123"))
                 .thenReturn(List.of(responseAddress, responseAddress2));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/address/me")
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/me/address")
                         .header("X-USER-ID", ""))
                 .andExpect(status().is4xxClientError())
                 .andReturn();
@@ -136,7 +142,7 @@ class AddressControllerTest {
         Mockito.when(addressService.getAllAddresses("userId123"))
                 .thenReturn(List.of(responseAddress, responseAddress2));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/address/me")
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/me/address")
                         .header("X-USER-ID", "123456789012345678901234567890"))
                 .andExpect(status().is4xxClientError())
                 .andReturn();

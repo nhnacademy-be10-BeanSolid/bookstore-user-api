@@ -9,9 +9,9 @@ import org.springframework.data.domain.Pageable;
 
 public interface ReviewService {
 
-    ResponseReview addReview(ReviewCreateRequest review);
+    ResponseReview addReview(String userId, ReviewCreateRequest review);
 
-    ResponseReview editReview(long reviewId, ReviewUpdateRequest review);
+    ResponseReview editReview(String userId, long reviewId, ReviewUpdateRequest review);
 
     ResponseReview getReview(long reviewId);
 

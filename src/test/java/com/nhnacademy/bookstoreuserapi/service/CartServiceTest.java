@@ -62,7 +62,7 @@ class CartServiceTest {
         Mockito.when(cartRepository.findByUserIdAndBookId("user123", 1L)).thenReturn(null);
         Mockito.when(userRepository.findById("user123")).thenReturn(Optional.of(user));
         Mockito.when(cartRepository.save(Mockito.any(Cart.class))).thenReturn(cart);
-        cartService.addCart(cartCreateRequest);
+        cartService.addCart("user123", cartCreateRequest);
         Mockito.verify(cartRepository, Mockito.times(1)).findByUserIdAndBookId("user123", 1L);
         Mockito.verify(userRepository, Mockito.times(1)).findById("user123");
         Mockito.verify(cartRepository, Mockito.times(1)).save(Mockito.any(Cart.class));
@@ -88,7 +88,7 @@ class CartServiceTest {
         Cart cart = new Cart(cartCreateRequest, user);
         Mockito.when(cartRepository.findByUserIdAndBookId("user123", 1L)).thenReturn(new ResponseCart(
                 cart.getCartId(), cart.getBookId(), cart.getUser().getUserId(), cart.getQuantity()));
-        Assertions.assertThrows(CartAlreadyExistException.class, () -> cartService.addCart(cartCreateRequest));
+        Assertions.assertThrows(CartAlreadyExistException.class, () -> cartService.addCart("user123", cartCreateRequest));
         Mockito.verify(cartRepository, Mockito.times(1)).findByUserIdAndBookId("user123", 1L);
         Mockito.verify(userRepository, Mockito.never()).findById(Mockito.anyString());
         Mockito.verify(cartRepository, Mockito.never()).save(Mockito.any(Cart.class));
@@ -116,7 +116,7 @@ class CartServiceTest {
         existingCart.setCartId(cartId);
         Mockito.when(cartRepository.findById(cartId)).thenReturn(Optional.of(existingCart));
         CartUpdateRequest cartUpdateRequest = new CartUpdateRequest(5);
-        Optional<ResponseCart> updatedCart = cartService.editCart(cartId, cartUpdateRequest);
+        Optional<ResponseCart> updatedCart = cartService.editCart("user123", cartId, cartUpdateRequest);
         Assertions.assertTrue(updatedCart.isPresent());
         Mockito.verify(cartRepository, Mockito.times(1)).findById(cartId);
         Assertions.assertEquals(5, updatedCart.get().getQuantity());
@@ -144,7 +144,7 @@ class CartServiceTest {
         existingCart.setCartId(cartId);
         Mockito.when(cartRepository.findById(cartId)).thenReturn(Optional.of(existingCart));
         CartUpdateRequest cartUpdateRequest = new CartUpdateRequest(0);
-        Optional<ResponseCart> updatedCart = cartService.editCart(cartId, cartUpdateRequest);
+        Optional<ResponseCart> updatedCart = cartService.editCart("user123", cartId, cartUpdateRequest);
         Assertions.assertTrue(updatedCart.isEmpty());
         Mockito.verify(cartRepository, Mockito.times(2)).findById(cartId);
         Mockito.verify(cartRepository,  Mockito.times(1)).delete(existingCart);
@@ -171,7 +171,7 @@ class CartServiceTest {
         Cart existingCart = new Cart(cartCreateRequest, user);
         existingCart.setCartId(cartId);
         Mockito.when(cartRepository.findById(cartId)).thenReturn(Optional.of(existingCart));
-        cartService.getCart(cartId);
+        cartService.getCart("user123", cartId);
         Mockito.verify(cartRepository, Mockito.times(1)).findById(cartId);
     }
 
@@ -179,7 +179,7 @@ class CartServiceTest {
     void getCartFailNotFound() {
         long cartId = 1L;
         Mockito.when(cartRepository.findById(cartId)).thenReturn(Optional.empty());
-        Assertions.assertThrows(CartNotFoundException.class, () -> cartService.getCart(cartId));
+        Assertions.assertThrows(CartNotFoundException.class, () -> cartService.getCart("user123", cartId));
         Mockito.verify(cartRepository, Mockito.times(1)).findById(cartId);
     }
 

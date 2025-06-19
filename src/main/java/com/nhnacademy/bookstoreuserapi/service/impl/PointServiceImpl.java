@@ -58,7 +58,7 @@ public class PointServiceImpl implements PointService {
 
     @Override
     public Page<ResponsePoint> findAll(String userId, Pageable pageable) {
-        if (userRepository.findById(userId).isEmpty()) {
+        if (!userRepository.existsById(userId)) {
             throw new UserNotFoundException(userId);
         }
         return pointRepository.findPointByUserId(userId, pageable);

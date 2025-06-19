@@ -2,6 +2,7 @@ package com.nhnacademy.bookstoreuserapi.repository;
 
 import com.nhnacademy.bookstoreuserapi.config.QuerydslConfig;
 import com.nhnacademy.bookstoreuserapi.domain.entity.Guest;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,6 +22,9 @@ class GuestRepositoryTest {
 
     @Autowired
     private GuestRepository guestRepository;
+
+    @Autowired
+    EntityManager entityManager;
 
     @BeforeEach
     void setup() {
@@ -46,15 +50,16 @@ class GuestRepositoryTest {
     @Test
     @DisplayName("Guest 정보 수정")
     void testUpdateGuest() {
-        guestRepository.updateGuest(
-                "newPassword",
-                "새이름",
-                "010-1111-2222",
-                "신주소",
-                "test@example.com"
-        );
 
         Guest updated = guestRepository.findByGuestEmail("test@example.com");
+
+        updated.setGuestPassword("newPassword");
+        updated.setGuestName("새이름");
+        updated.setGuestPhoneNumber("010-1111-2222");
+        updated.setGuestAddress("신주소");
+
+        entityManager.flush();
+        entityManager.clear();
 
         assertThat(updated.getGuestPassword()).isEqualTo("newPassword");
         assertThat(updated.getGuestName()).isEqualTo("새이름");

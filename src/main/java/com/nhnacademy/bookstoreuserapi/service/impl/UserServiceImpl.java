@@ -17,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASIC;
 
@@ -90,9 +89,7 @@ public class UserServiceImpl implements UserService {
         user.setUserEmail(request.userEmail());
         user.setUserBirth(request.userBirth());
 
-        User updateUser = userRepository.save(user);
-
-        return new ResponseUser(updateUser);
+        return new ResponseUser(user);
     }
 
     @Override

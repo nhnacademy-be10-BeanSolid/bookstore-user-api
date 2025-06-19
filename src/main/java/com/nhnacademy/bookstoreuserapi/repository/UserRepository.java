@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 
 public interface UserRepository extends JpaRepository<User, String> {
 
-    @Query("select u from User u where u.userId = :userId")
     User findByUserId(String userId);
 
     @Modifying(clearAutomatically = true)

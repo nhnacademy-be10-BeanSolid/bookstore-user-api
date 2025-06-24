@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
 
+import com.nhnacademy.bookstoreuserapi.controller.interfaces.UserGradeControllerDoc;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUserGrade;
@@ -20,9 +21,10 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users/grade")
-public class UserGradeController {
+public class UserGradeController implements UserGradeControllerDoc {
     private final UserGradeService userGradeService;
 
+    @Override
     @PostMapping
     public ResponseEntity<ResponseUserGrade> addUserGrade(@Valid @RequestBody UserGradeCreateRequest userGrade, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
@@ -31,6 +33,7 @@ public class UserGradeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userGradeService.saveUserGrade(userGrade));
     }
 
+    @Override
     @PutMapping("/{gradeName}")
     public ResponseEntity<ResponseUserGrade> updateUserGrade(@PathVariable @NotBlank @Size(max = 10) String gradeName, @Valid @RequestBody UserGradeUpdateRequest userGrade, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
@@ -40,18 +43,21 @@ public class UserGradeController {
     }
 
 
+    @Override
     @GetMapping("/{gradeName}")
     public ResponseEntity<ResponseUserGrade> getUserGrade(@PathVariable @NotBlank @Size(max = 10) String gradeName) {
         return ResponseEntity.ok().body(userGradeService.getUserGrade(gradeName));
     }
 
 
+    @Override
     @DeleteMapping("/{gradeName}")
     public ResponseEntity<Void> deleteUserGrade(@PathVariable @NotBlank @Size(max = 10) String gradeName) {
         userGradeService.deleteUserGrade(gradeName);
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @GetMapping("/all")
     public ResponseEntity<List<ResponseUserGrade>> getAllUserGrades() {
         return ResponseEntity.ok().body(userGradeService.getAllUserGrades());

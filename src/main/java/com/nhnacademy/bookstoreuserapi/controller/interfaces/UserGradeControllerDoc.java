@@ -7,6 +7,7 @@ import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUserGrade;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "유저등급 API", description = "유저등급에 관한 Controller **등급 타입 = 1 : BASIC, 2 : ROYAL, 3 : GOLD, 4 : PLATINUM **")
+@Tag(name = "유저등급 API", description = "유저등급에 관한 Controller **등급 타입 = 1 : BASIC, 2 : ROYAL, 3 : GOLD, 4 : PLATINUM**")
 public interface UserGradeControllerDoc {
 
 
@@ -121,7 +122,7 @@ public interface UserGradeControllerDoc {
 
     @Operation(summary = "모든 유저 등급 조회", description = "모든 유저 등급을 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "모든 유저 등급 조회 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseUserGrade.class))),
+            @ApiResponse(responseCode = "200", description = "모든 유저 등급 조회 성공", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ResponseUserGrade.class)))),
     })
     @GetMapping("/all")
     ResponseEntity<List<ResponseUserGrade>> getAllUserGrades();

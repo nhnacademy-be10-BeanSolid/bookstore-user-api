@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
 import com.nhnacademy.bookstoreuserapi.annotation.AuthenticatedUserId;
+import com.nhnacademy.bookstoreuserapi.domain.request.Oauth2UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUser;
 import com.nhnacademy.bookstoreuserapi.service.UserService;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
@@ -34,10 +35,26 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(userCreateRequest));
     }
 
+    @PostMapping("/register/oauth2")
+    public ResponseEntity<ResponseUser> saveOauth2User(@Valid @RequestBody Oauth2UserCreateRequest request,
+                                                       BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new ValidationFailedException(bindingResult);
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveOauth2User(request));
+    }
+
     @GetMapping("/{userId}")
     public ResponseEntity<ResponseUser> getUser(@PathVariable String userId) {
 
         return ResponseEntity.ok(userService.getUser(userId));
+    }
+
+    @GetMapping("/user/{userNo}")
+    public ResponseEntity<ResponseUser> getUserByUserNo(@PathVariable Long userNo) {
+
+        return ResponseEntity.ok(userService.getUserByUserNo(userNo));
     }
 
     @GetMapping("/me")
@@ -45,11 +62,9 @@ public class UserController {
         return ResponseEntity.ok(userService.getUser(userId));
     }
 
-    @DeleteMapping
+    @PutMapping("/me/status/WITHDRAWN")
     public ResponseEntity<ResponseUser> deleteUser(@AuthenticatedUserId String userId) {
-        userService.deleteUser(userId);
-
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(userService.deleteUser(userId));
     }
 
     @PutMapping("/me/personalinformation")

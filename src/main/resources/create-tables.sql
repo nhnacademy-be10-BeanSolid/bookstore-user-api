@@ -8,19 +8,22 @@ CREATE TABLE `user_grade` (
 );
 
 CREATE TABLE `users` (
-    `user_id`	VARCHAR(20)	NOT NULL,
-    `user_password`	VARCHAR(255)	NOT NULL,
-    `user_name`	VARCHAR(20)	NOT NULL,
-    `user_phone_number`	VARCHAR(15)	NOT NULL,
-    `user_email`	VARCHAR(50)	NOT NULL,
-    `user_birth`	DATE	NOT NULL,
+    `user_no`	BIGINT	NOT NULL AUTO_INCREMENT,
+    `user_id`	VARCHAR(20)	UNIQUE NOT NULL,
+    `user_password`	VARCHAR(255)    NULL,
+    `provider`	VARCHAR(255)	NULL,
+    `provider_id`	BIGINT	NULL,
+    `user_name`	VARCHAR(20)	NULL,
+    `user_phone_number`	VARCHAR(15)	NULL,
+    `user_email`	VARCHAR(50)	NULL,
+    `user_birth`	DATE	NULL,
     `user_point`	INT	NOT NULL,
     `is_auth`	BOOLEAN	NOT NULL	        COMMENT '일반회원, 관리자',
     `user_status`	VARCHAR(10)	NOT NULL	COMMENT 'enum(활성화, 휴면, 탈퇴)',
     `last_login_at`	DATETIME	NOT NULL,
     `grade_name`	VARCHAR(10)	NOT NULL    COMMENT '일반, 로얄, 골드, 플래티넘 등등',
 
-    PRIMARY KEY (user_id),
+    PRIMARY KEY (user_no),
     foreign key (grade_name) references user_grade(grade_name)
 );
 

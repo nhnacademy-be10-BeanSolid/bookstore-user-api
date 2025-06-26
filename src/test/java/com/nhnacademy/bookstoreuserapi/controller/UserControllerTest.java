@@ -141,7 +141,7 @@ class UserControllerTest {
     void deleteUser_success() throws Exception {
         mockMvc.perform(delete("/users")
                         .header("X-USER-ID", "user123"))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
     @Test
     @DisplayName("회원 삭제 - 실패 - 빈 사용자 ID")

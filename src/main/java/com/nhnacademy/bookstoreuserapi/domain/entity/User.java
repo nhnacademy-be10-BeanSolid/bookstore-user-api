@@ -24,22 +24,31 @@ public class User {
     }
 
     @Id
-    @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long userNo;
+
+    @Column(name = "user_id", unique = true, nullable = false)
     private String userId;
 
-    @Column(name = "user_password", nullable = false)
+    @Column(name = "user_password", nullable = true)
     private String userPassword;
 
-    @Column(name = "user_name", nullable = false)
+    @Column(name = "user_name", nullable = true)
     private String userName;
 
-    @Column(name = "user_phone_number", nullable = false)
+    @Column(name = "provider", nullable = true)
+    private String provider;
+
+    @Column(name = "provider_id", nullable = true)
+    private String providerId;
+
+    @Column(name = "user_phone_number", nullable =true)
     private String userPhoneNumber;
 
-    @Column(name = "user_email", nullable = false)
+    @Column(name = "user_email", nullable = true)
     private String userEmail;
 
-    @Column(name = "user_birth", nullable = false)
+    @Column(name = "user_birth", nullable = true)
     private LocalDate userBirth;
 
     @Column(name = "user_point", nullable = false)
@@ -78,5 +87,11 @@ public class User {
         this.userPhoneNumber = userPhoneNumber;
         this.userEmail = userEmail;
         this.userBirth = userBirth;
+    }
+
+    public User(String provider, String providerId) {
+        this.userId = provider + providerId;
+        this.provider = provider;
+        this.providerId = providerId;
     }
 }

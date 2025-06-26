@@ -38,8 +38,11 @@ public class CartServiceImpl implements CartService {
         if (findCart != null) {
             throw new CartAlreadyExistException(cart.userId(), cart.bookId());
         }
-        User user = userRepository.findById(cart.userId())
-                .orElseThrow(() -> new UserNotFoundException(cart.userId()));
+        User user = userRepository.findByUserId(cart.userId());
+
+        if (user == null) {
+            throw new UserNotFoundException(cart.userId());
+        }
         Cart savedCart = cartRepository.save(new Cart(cart, user));
         return new ResponseCart(
                 savedCart.getCartId(),
@@ -82,8 +85,9 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Page<ResponseCart> getCartsByUserId(String userId, Pageable pageable) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        if (!userRepository.existsByUserId(userId)) {
+            throw new UserNotFoundException(userId);
+        }
         return cartRepository.findAllByUserId(userId, pageable);
     }
 
@@ -97,8 +101,10 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void deleteCartsByUserId(String userId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        if (!userRepository.existsByUserId(userId)) {
+            throw new UserNotFoundException(userId);
+        }
         List<Cart> carts = cartRepository.findAllByUser_UserId(userId);
         if (carts.isEmpty()) {
             return;

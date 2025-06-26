@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.service.impl;
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
+import com.nhnacademy.bookstoreuserapi.domain.request.Oauth2UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserUpdateRequest;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASIC;
 
@@ -37,7 +39,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseUser getUser(String userId) {
 
-        if(!userRepository.existsById(userId)){
+        if(!userRepository.existsByUserId(userId)){
             throw new UserNotFoundException(userId);
         }
 
@@ -47,9 +49,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ResponseUser getUserByUserNo(Long userNo) {
+
+        if(!userRepository.existsById(userNo)){
+            throw new UserNotFoundException(userNo);
+        }
+
+        Optional<User> user = userRepository.findById(userNo);
+
+        return new ResponseUser(user);
+    }
+
+    @Override
     public ResponseUser saveUser(UserCreateRequest request) {
 
-        if(userRepository.existsById(request.userId())){
+        if(userRepository.existsByUserId(request.userId())){
             throw new UserAlreadyExistException(request.userId());
         }
 
@@ -92,16 +106,64 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ResponseUser saveOauth2User(Oauth2UserCreateRequest request) {
+
+        String userId = request.provider() + request.providerId();
+
+        if(userRepository.existsByUserId(userId)){
+            throw new UserAlreadyExistException(userId);
+        }
+
+        UserGrade basicGrade = userGradeRepository.findByGradeName(BASIC);
+
+        User user = new User(
+                request.provider(),
+                request.providerId()
+        );
+        user.setUserName(request.userName());
+        user.setUserPhoneNumber(request.userPhoneNumber());
+        user.setUserEmail(request.userEmail());
+        user.setUserBirth(request.userBirth());
+
+        user.setAuth(false);
+
+        // 유형별 적립테이블의 회원가입 값에 따라 포인트 적립 액수가 달라짐
+        int welcomePoint = pointTypeRepository.findEarningPointByTypeName("회원가입");
+
+        user.setUserPoint(welcomePoint);
+
+        user.setUserGrade(basicGrade);
+        user.setUserStatus(User.Status.ACTIVE);
+        user.setLastLoginAt(LocalDateTime.now());
+
+        User savedUser = userRepository.save(user);
+
+        PointCreateRequest pointCreateRequest = new PointCreateRequest(
+                userId,
+                1L,
+                null,
+                LocalDateTime.now(),
+                welcomePoint
+        );
+
+        pointService.savePoint(userId,pointCreateRequest);
+
+        return new ResponseUser(savedUser);
+    }
+
+    @Override
     public ResponseUser updatePersonalInformation(String userId, UserUpdateRequest request) {
 
-        if(!userRepository.existsById(userId)){
+        if(!userRepository.existsByUserId(userId)){
             throw new UserNotFoundException(userId);
         }
 
         User user = userRepository.findByUserId(userId);
 
-        String encodedPassword = passwordEncoder.encode(request.userPassword());
-        user.setUserPassword(encodedPassword);
+        if(request.userPassword()!=null){
+            String encodedPassword = passwordEncoder.encode(request.userPassword());
+            user.setUserPassword(encodedPassword);
+        }
         user.setUserName(request.userName());
         user.setUserPhoneNumber(request.userPhoneNumber());
         user.setUserEmail(request.userEmail());
@@ -113,7 +175,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseUser updateLastLoginAt(String userId) {
 
-        if(!userRepository.existsById(userId)){
+        if(!userRepository.existsByUserId(userId)){
             throw new UserNotFoundException(userId);
         }
 
@@ -125,7 +187,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseUser updatePoint(String userId, int point) {
 
-        if(!userRepository.existsById(userId)){
+        if(!userRepository.existsByUserId(userId)){
             throw new UserNotFoundException(userId);
         }
 
@@ -137,7 +199,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseUser updateUserStatus(String userId, User.Status status) {
 
-        if(!userRepository.existsById(userId)){
+        if(!userRepository.existsByUserId(userId)){
             throw new UserNotFoundException(userId);
         }
 
@@ -148,7 +210,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseUser updateUserGradeName(String userId, String gradeName) {
-        if(!userRepository.existsById(userId)){
+        if(!userRepository.existsByUserId(userId)){
             throw new UserNotFoundException(userId);
         }
         UserGrade.Grade grade;
@@ -168,12 +230,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(String userId) {
-
-        if(!userRepository.existsById(userId)){
-            throw new UserNotFoundException(userId);
-        }
-
-        userRepository.deleteById(userId);
+    public ResponseUser deleteUser(String userId) {
+        return updateUserStatus(userId, User.Status.WITHDRAWN);
     }
 }

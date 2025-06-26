@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
 
-public interface UserRepository extends JpaRepository<User, String> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByUserId(String userId);
 
@@ -27,4 +27,7 @@ public interface UserRepository extends JpaRepository<User, String> {
     @Modifying(clearAutomatically = true)
     @Query("update User u set u.userGrade = (select ug from UserGrade ug where ug.gradeName = :gradeName) where u.userId = :userId")
     void updateUserGrade_gradeNameByUserId(String userId, UserGrade.Grade gradeName);
+
+    boolean existsByUserId(String userId);
+
 }

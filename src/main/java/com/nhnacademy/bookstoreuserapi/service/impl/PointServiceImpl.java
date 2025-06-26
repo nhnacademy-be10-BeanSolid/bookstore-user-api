@@ -33,8 +33,11 @@ public class PointServiceImpl implements PointService {
     public ResponsePoint savePoint(String userId, PointCreateRequest pointCreateRequest) {
         validate(userId, pointCreateRequest.userId());
 
-        User user = userRepository.findById(pointCreateRequest.userId())
-                .orElseThrow(() -> new UserNotFoundException(pointCreateRequest.userId()));
+        User user = userRepository.findByUserId(pointCreateRequest.userId());
+
+        if (user == null) {
+            throw new UserNotFoundException(pointCreateRequest.userId());
+        }
         Point point = new Point();
         point.setUser(user);
         point.setPaymentId(pointCreateRequest.paymentId());
@@ -60,7 +63,7 @@ public class PointServiceImpl implements PointService {
 
     @Override
     public Page<ResponsePoint> findAll(String userId, Pageable pageable) {
-        if (!userRepository.existsById(userId)) {
+        if (!userRepository.existsByUserId(userId)) {
             throw new UserNotFoundException(userId);
         }
         return pointRepository.findPointByUserId(userId, pageable);

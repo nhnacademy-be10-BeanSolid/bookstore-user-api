@@ -39,8 +39,10 @@ public class AddressServiceImpl implements AddressService {
         Address addressTmp = new Address();
         addressTmp.setAddressNickName(address.addressNickName());
         addressTmp.setAddressDetail(address.addressDetail());
-        User user = userRepository.findById(address.userId())
-                .orElseThrow(() -> new UserNotFoundException(address.userId()));
+        User user = userRepository.findByUserId(address.userId());
+        if (user == null) {
+            throw new UserNotFoundException(address.userId());
+        }
         addressTmp.setUser(user);
         Address savedAddress = addressRepository.save(addressTmp);
         return new ResponseAddress(

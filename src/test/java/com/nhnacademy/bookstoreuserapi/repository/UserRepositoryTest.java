@@ -63,9 +63,9 @@ class UserRepositoryTest {
         LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         userRepository.updateLastLoginByUserId(userId, now);
 
-        Optional<User> updated = userRepository.findById(userId);
-        assertThat(updated).isPresent();
-        assertThat(updated.get().getLastLoginAt().truncatedTo(ChronoUnit.SECONDS)).isEqualTo(now);
+        User updated = userRepository.findByUserId(userId);
+        assertThat(updated).isNotNull();
+        assertThat(updated.getLastLoginAt().truncatedTo(ChronoUnit.SECONDS)).isEqualTo(now);
     }
 
     @Test
@@ -73,9 +73,9 @@ class UserRepositoryTest {
     void testUpdatePointByUserId() {
         userRepository.updatePointByUserId(userId, 50);
 
-        Optional<User> updated = userRepository.findById(userId);
-        assertThat(updated).isPresent();
-        assertThat(updated.get().getUserPoint()).isEqualTo(150);
+        User updated = userRepository.findByUserId(userId);
+        assertThat(updated).isNotNull();
+        assertThat(updated.getUserPoint()).isEqualTo(150);
     }
 
     @Test
@@ -83,8 +83,8 @@ class UserRepositoryTest {
     void testUpdateStatusByUserId() {
         userRepository.updateStatusByUserId(userId, Status.WITHDRAWN);
 
-        Optional<User> updated = userRepository.findById(userId);
-        assertThat(updated).isPresent();
-        assertThat(updated.get().getUserStatus()).isEqualTo(Status.WITHDRAWN);
+        User updated = userRepository.findByUserId(userId);
+        assertThat(updated).isNotNull();
+        assertThat(updated.getUserStatus()).isEqualTo(Status.WITHDRAWN);
     }
 }

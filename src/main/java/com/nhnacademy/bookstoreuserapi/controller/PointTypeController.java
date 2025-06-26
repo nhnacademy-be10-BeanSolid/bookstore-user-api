@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
+import com.nhnacademy.bookstoreuserapi.controller.interfaces.PointTypeControllerDoc;
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
 import com.nhnacademy.bookstoreuserapi.domain.request.PointTypeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePointType;
@@ -21,10 +22,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/users/pointType")
 @RequiredArgsConstructor
-public class PointTypeController {
+public class PointTypeController implements PointTypeControllerDoc {
 
     private final PointTypeService pointTypeService;
+
     @GetMapping
+    @Override
     public ResponseEntity<Page<ResponsePointType>> getPointTypeByGradeName(@RequestParam(name = "gradeName", required = false) @Size(max = 10) String gradeName, Pageable pageable) {
 
         if(gradeName == null) {
@@ -35,6 +38,7 @@ public class PointTypeController {
     }
 
     @PostMapping
+    @Override
     public ResponseEntity<Void> createPointType(@Valid @RequestBody PointTypeCreateRequest request, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
@@ -42,18 +46,23 @@ public class PointTypeController {
         pointTypeService.savePointType(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
     @DeleteMapping("/{typeId}")
+    @Override
     public ResponseEntity<Void> deletePointType(@PathVariable @NotNull @Min(1) Long typeId) {
         pointTypeService.deletePointType(typeId);
         return ResponseEntity.noContent().build();
     }
+
     @PutMapping("/{typeId}/point")
+    @Override
     public ResponseEntity<ResponsePointType> updateEarningPoint(@PathVariable @NotNull @Min(1) Long typeId, @RequestParam @NotNull @Min(0) int point) {
 
         return ResponseEntity.ok().body(pointTypeService.updateEarningPoint(point, typeId));
     }
-    @PutMapping("/{typeId}/rate")
 
+    @PutMapping("/{typeId}/rate")
+    @Override
     public ResponseEntity<ResponsePointType> updateRatePoint(@PathVariable @NotNull @Min(1) Long typeId, @RequestParam int rate) {
         return ResponseEntity.ok().body(pointTypeService.updateEarningRate(rate, typeId));
     }

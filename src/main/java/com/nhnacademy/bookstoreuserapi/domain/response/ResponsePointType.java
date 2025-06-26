@@ -11,7 +11,7 @@ public class ResponsePointType {
 
     private Long typeId;
     private String typeName;
-    private int earningPoint;
-    private int earningRate;
+    private Integer earningPoint;
+    private Integer earningRate;
     private String gradeName;
 }

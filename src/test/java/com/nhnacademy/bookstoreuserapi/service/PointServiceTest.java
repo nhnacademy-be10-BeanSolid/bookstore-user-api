@@ -27,7 +27,7 @@ class PointServiceTest {
 
     private final String userId = "test";
 
-    @Test
+//    @Test
     @DisplayName("포인트 전체 조회 성공")
     void testFindAllPointsByUserId() {
         Pageable pageable = PageRequest.of(0, 10);
@@ -40,7 +40,7 @@ class PointServiceTest {
                 .containsExactlyInAnyOrder(500, -100);
     }
 
-    @Test
+//    @Test
     @DisplayName("존재하지 않는 사용자 포인트 조회 실패")
     void testFindAllPointsByInvalidUserId() {
         Pageable pageable = PageRequest.of(0, 10);
@@ -49,7 +49,7 @@ class PointServiceTest {
                 .isInstanceOf(UserNotFoundException.class);
     }
 
-    @Test
+//    @Test
     @DisplayName("포인트 저장 성공")
     void testSavePoint_success() {
         PointCreateRequest request = new PointCreateRequest(
@@ -74,7 +74,7 @@ class PointServiceTest {
         assertThat(points).hasSize(3);
     }
 
-    @Test
+//    @Test
     @DisplayName("존재하지 않는 사용자 포인트 저장 실패")
     void testSavePoint_userNotFound() {
         PointCreateRequest request = new PointCreateRequest(

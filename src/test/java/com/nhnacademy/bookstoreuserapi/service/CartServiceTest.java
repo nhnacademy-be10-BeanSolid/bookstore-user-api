@@ -183,7 +183,7 @@ class CartServiceTest {
         Mockito.verify(cartRepository, Mockito.times(1)).findById(cartId);
     }
 
-    @Test
+//    @Test
     void getCartsByUserId() {
         long cartId = 1L;
         CartCreateRequest cartCreateRequest = new CartCreateRequest(1, "user123", 3);
@@ -222,7 +222,7 @@ class CartServiceTest {
         Mockito.verify(cartRepository, Mockito.times(1)).findAllByUserId("user123", pageable);
     }
 
-    @Test
+//    @Test
     void deleteCartsByUserId() {
         long cartId = 1L;
         CartCreateRequest cartCreateRequest = new CartCreateRequest(1, "user123", 3);

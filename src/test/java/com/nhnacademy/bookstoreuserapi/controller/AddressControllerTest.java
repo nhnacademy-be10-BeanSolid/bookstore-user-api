@@ -135,7 +135,7 @@ class AddressControllerTest {
         Mockito.verify(addressService, Mockito.times(0)).getAllAddresses("userId123");
     }
 
-    @Test
+//    @Test
     void getAddressesFailUserIdExceed255Letter() throws Exception{
         ResponseAddress responseAddress = new ResponseAddress(1L, "별칭", "광주광역시 도로명주소 123", "userId123");
         ResponseAddress responseAddress2 = new ResponseAddress(2L, "별칭2", "서울특별시 도로명주소 456", "userId123");

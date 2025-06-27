@@ -28,7 +28,7 @@ import java.util.List;
 public interface UserGradeControllerDoc {
 
 
-    @Operation(summary = "유저 등급 추가", description = "유저 등급을 추가합니다. 필요 파라미터 : 등급명(등급타입에 있어야함), 승급에 필요한 금액")
+    @Operation(summary = "유저 등급 추가", description = "유저 등급을 추가합니다. 필요 바디 : 등급명(등급타입에 있어야함), 승급에 필요한 금액")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "유저 등급 추가 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseUserGrade.class))),
             @ApiResponse(responseCode = "409", description = "유저 등급이 이미 존재하는 경우", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class),

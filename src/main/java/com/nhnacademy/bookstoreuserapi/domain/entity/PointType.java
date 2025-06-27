@@ -19,7 +19,7 @@ public class PointType {
     @Column(name = "type_id")
     private Long typeId;
 
-    @Column(name = "type_name", nullable = false)
+    @Column(name = "type_name", nullable = false, unique = true)
     private String typeName;
 
     @Column(name = "earning_point")

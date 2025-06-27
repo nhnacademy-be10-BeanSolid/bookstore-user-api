@@ -1,9 +1,11 @@
 package com.nhnacademy.bookstoreuserapi.service;
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
+import com.nhnacademy.bookstoreuserapi.domain.request.Oauth2UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUser;
+import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUserId;
 import com.nhnacademy.bookstoreuserapi.exception.UserAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.exception.UserGradeNotFoundException;
 import com.nhnacademy.bookstoreuserapi.exception.UserNotFoundException;
@@ -68,6 +70,25 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Oauth2사용자 저장 성공")
+    void saveOauth2User_success() {
+        Oauth2UserCreateRequest request = new Oauth2UserCreateRequest(
+                "PAYCO",
+                "s8f7a-f9sd98-f8s9d73",
+                "김철수",
+                "01098765432",
+                "kim@test.com",
+                LocalDate.of(1995, 6, 15)
+        );
+
+        userService.saveOauth2User(request);
+
+        User savedUser = userRepository.findByUserId("PAYCOs8f7a-f9sd98-f8s9d73");
+        assertThat(savedUser).isNotNull();
+        assertThat(savedUser.getProviderId()).isEqualTo("s8f7a-f9sd98-f8s9d73");
+    }
+
+    @Test
     @DisplayName("중복 사용자 저장 실패")
     void saveUser_alreadyExists() {
 
@@ -86,7 +107,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("사용자 조회 성공")
-    void findById_success() {
+    void findByUserId_success() {
         ResponseUser user = userService.getUser(userId);
         assertThat(user).isNotNull();
         assertThat(user.getUserId()).isEqualTo(userId);
@@ -94,8 +115,38 @@ class UserServiceTest {
 
     @Test
     @DisplayName("존재하지 않는 사용자 조회 실패")
-    void findById_notFound() {
+    void findByUserId_notFound() {
         assertThatThrownBy(() -> userService.getUser("notExists"))
+                .isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("사용자 조회 성공 - UserNo")
+    void findByUserNo_success() {
+        ResponseUser user = userService.getUserByUserNo(1L);
+        assertThat(user).isNotNull();
+        assertThat(user.getUserId()).isEqualTo(userId);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 사용자 조회 실패 - UserNo")
+    void findByUserNo_notFound() {
+        assertThatThrownBy(() -> userService.getUserByUserNo(0L))
+                .isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("사용자 아이디 찾기 - 이름과 이메일을 이용")
+    void findByUserNameAndUserEmail_success() {
+        ResponseUserId user = userService.getUserIdByUserNameAndUserEmail("test", "test@test.com");
+        assertThat(user).isNotNull();
+        assertThat(user.getUserId()).isEqualTo(userId);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 사용자 아이디 찾기")
+    void findByUserNameAndUserEmail_notFound() {
+        assertThatThrownBy(() -> userService.getUserIdByUserNameAndUserEmail("test1", "test@test.com"))
                 .isInstanceOf(UserNotFoundException.class);
     }
 

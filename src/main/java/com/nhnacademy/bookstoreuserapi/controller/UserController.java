@@ -3,11 +3,13 @@ package com.nhnacademy.bookstoreuserapi.controller;
 import com.nhnacademy.bookstoreuserapi.annotation.AuthenticatedUserId;
 import com.nhnacademy.bookstoreuserapi.domain.request.Oauth2UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUser;
+import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUserId;
 import com.nhnacademy.bookstoreuserapi.service.UserService;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -75,6 +77,14 @@ public class UserController {
         return ResponseEntity.ok().body(userService.updatePersonalInformation(userId, userUpdateRequest));
     }
 
+    @PutMapping("/{userId}/personalinformation")
+    public ResponseEntity<ResponseUser> updatePersonalInformationPathVariable(@PathVariable String userId, @Valid @RequestBody UserUpdateRequest userUpdateRequest, BindingResult bindingResult){
+        if(bindingResult.hasErrors()) {
+            throw new ValidationFailedException(bindingResult);
+        }
+        return ResponseEntity.ok().body(userService.updatePersonalInformation(userId, userUpdateRequest));
+    }
+
     @PutMapping("/me/lastloginat")
     public ResponseEntity<ResponseUser> updateLastLoginAt(@AuthenticatedUserId String userId){
         return ResponseEntity.ok(userService.updateLastLoginAt(userId));
@@ -93,5 +103,10 @@ public class UserController {
     @PutMapping("/me/grade")
     public ResponseEntity<ResponseUser> updateUserGradeName(@AuthenticatedUserId String userId, @RequestParam @NotBlank @Size(max = 10) String gradeName) {
         return ResponseEntity.ok(userService.updateUserGradeName(userId, gradeName));
+    }
+
+    @GetMapping("/findId")
+    public ResponseEntity<ResponseUserId> getUserIdByUserNameAndUserEmail(@Parameter @NotBlank String userName, @Parameter @NotBlank String userEmail) {
+        return ResponseEntity.ok(userService.getUserIdByUserNameAndUserEmail(userName, userEmail));
     }
 }

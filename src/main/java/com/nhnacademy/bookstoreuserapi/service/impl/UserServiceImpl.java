@@ -6,6 +6,7 @@ import com.nhnacademy.bookstoreuserapi.domain.request.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUser;
+import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUserId;
 import com.nhnacademy.bookstoreuserapi.exception.UserGradeNotFoundException;
 import com.nhnacademy.bookstoreuserapi.repository.PointTypeRepository;
 import com.nhnacademy.bookstoreuserapi.repository.UserGradeRepository;
@@ -48,6 +49,15 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userNo)
                 .orElseThrow(() -> new UserNotFoundException(userNo));
         return new ResponseUser(user);
+    }
+
+    @Override
+    public ResponseUserId getUserIdByUserNameAndUserEmail(String userName, String userEmail){
+        User user = userRepository.findByUserNameAndUserEmail(userName, userEmail);
+        if(user == null){
+            throw new UserNotFoundException(userName, userEmail);
+        }
+        return new ResponseUserId(user);
     }
 
     @Override

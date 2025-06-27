@@ -5,12 +5,15 @@ import com.nhnacademy.bookstoreuserapi.domain.request.Oauth2UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUser;
+import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUserId;
 
 public interface UserService {
 
     ResponseUser getUser(String userId);
 
     ResponseUser getUserByUserNo(Long userNo);
+
+    ResponseUserId getUserIdByUserNameAndUserEmail(String userName, String userEmail);
 
     ResponseUser saveUser(UserCreateRequest request);
 

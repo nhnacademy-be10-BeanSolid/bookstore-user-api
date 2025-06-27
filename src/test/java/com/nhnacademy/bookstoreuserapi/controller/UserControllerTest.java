@@ -3,9 +3,11 @@ package com.nhnacademy.bookstoreuserapi.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstoreuserapi.domain.entity.User;
 import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
+import com.nhnacademy.bookstoreuserapi.domain.request.Oauth2UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.request.UserUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUser;
+import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUserId;
 import com.nhnacademy.bookstoreuserapi.exception.UserNotFoundException;
 import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.service.UserService;
@@ -70,6 +72,36 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("OAuth2 회원 등록 성공")
+    void registerOAuth2User_success() throws Exception {
+        Oauth2UserCreateRequest request = new Oauth2UserCreateRequest(
+                "PAYCO", "asdf-342rdw-adfv4-fae324253", "홍길동", "01012345678",
+                "hong@test.com", LocalDate.of(1990, 1, 1)
+        );
+
+        mockMvc.perform(post("/users/register/oauth2")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated());
+    }
+
+
+    @Test
+    @DisplayName("OAuth2회원 등록 실패 - 유효성 검사")
+    void registerOAuth2User_fail() throws Exception {
+        Oauth2UserCreateRequest request = new Oauth2UserCreateRequest(
+                "", "password", "홍길동", "01012345678",
+                "asdf", LocalDate.of(1990, 1, 1));
+        mockMvc.perform(post("/users/register/oauth2")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(result ->
+                        assertThat(result.getResolvedException()).isInstanceOf(ValidationFailedException.class));
+    }
+
+
+    @Test
     @DisplayName("회원 단건 조회")
     void getUser_success() throws Exception {
         User user = new User("user123", "pw", "홍길동", "01012345678",
@@ -80,6 +112,23 @@ class UserControllerTest {
         Mockito.when(userService.getUser("user123")).thenReturn(new ResponseUser(user));
 
         mockMvc.perform(get("/users/user123"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.userId").value("user123"))
+                .andExpect(jsonPath("$.userName").value("홍길동"));
+    }
+
+    @Test
+    @DisplayName("회원 단건 조회")
+    void getUserByUserNo_success() throws Exception {
+        User user = new User("user123", "pw", "홍길동", "01012345678",
+                "hong@test.com", LocalDate.of(1990, 1, 1));
+        user.setUserStatus(User.Status.ACTIVE);
+        user.setUserNo(1L);
+        UserGrade userGrade = new UserGrade(BASIC, 0L);
+        user.setUserGrade(userGrade);
+        Mockito.when(userService.getUserByUserNo(1L)).thenReturn(new ResponseUser(user));
+
+        mockMvc.perform(get("/users/user/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userId").value("user123"))
                 .andExpect(jsonPath("$.userName").value("홍길동"));
@@ -137,6 +186,23 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("회원 아이디 찾기")
+    void getUserIdByUserNameAndUserEmail_success() throws Exception {
+        User user = new User("user123", "pw", "홍길동", "01012345678",
+                "hong@test.com", LocalDate.of(1990, 1, 1));
+        user.setUserStatus(User.Status.ACTIVE);
+        UserGrade userGrade = new UserGrade(BASIC, 0L);
+        user.setUserGrade(userGrade);
+        Mockito.when(userService.getUserIdByUserNameAndUserEmail("홍길동","hong@test.com")).thenReturn(new ResponseUserId(user));
+
+        mockMvc.perform(get("/users/findId")
+                        .param("userName", "홍길동")
+                        .param("userEmail", "hong@test.com"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.userId").value("user123"));
+    }
+
+    @Test
     @DisplayName("회원 삭제")
     void deleteUser_success() throws Exception {
         mockMvc.perform(put("/users/me/status/WITHDRAWN")
@@ -184,12 +250,12 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.userName").value("이수정"));
     }
 
-//    @Test
+    @Test
     @DisplayName("개인정보 수정 실패 - 유효성 검사")
     void updatePersonalInfo_fail() throws Exception {
         UserUpdateRequest request = new UserUpdateRequest(
                 "newPassword", "이수정", "01011112222",
-                "", LocalDate.of(1995, 5, 5));
+                "asfd", LocalDate.of(1995, 5, 5));
         mockMvc.perform(put("/users/me/personalinformation")
                         .header("X-USER-ID", "user123")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -223,6 +289,44 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("개인정보 수정-no xuserId")
+    void updatePersonalInfoPathVariable() throws Exception {
+        UserUpdateRequest request = new UserUpdateRequest(
+                "newPassword", "이수정", "01011112222",
+                "lee@test.com", LocalDate.of(1995, 5, 5)
+        );
+        User updatedUser = new User("user123", "newPassword", "이수정", "01011112222",
+                "lee@test.com", LocalDate.of(1995, 5, 5));
+
+        updatedUser.setUserStatus(User.Status.ACTIVE);
+        UserGrade userGrade = new UserGrade(BASIC, 0L);
+        updatedUser.setUserGrade(userGrade);
+
+        Mockito.when(userService.updatePersonalInformation(eq("user123"), any(UserUpdateRequest.class)))
+                .thenReturn(new ResponseUser(updatedUser));
+
+        mockMvc.perform(put("/users/user123/personalinformation")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.userName").value("이수정"));
+    }
+
+    @Test
+    @DisplayName("개인정보 수정 실패 - 유효성 검사 - no xuserId")
+    void updatePersonalInfoPathVariable_fail() throws Exception {
+        UserUpdateRequest request = new UserUpdateRequest(
+                "newPassword", "이수정", "01011112222",
+                "asfd", LocalDate.of(1995, 5, 5));
+        mockMvc.perform(put("/users/user123/personalinformation")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(result ->
+                        assertThat(result.getResolvedException()).isInstanceOf(ValidationFailedException.class));
     }
 
     @Test

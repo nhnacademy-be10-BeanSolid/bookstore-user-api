@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Data
 @NoArgsConstructor
@@ -41,35 +40,4 @@ public class ResponseUser {
         this.userGradeName = user.getUserGrade().getGradeName().name();
     }
 
-    public ResponseUser(Optional<User> user) {
-        if (user.isPresent()) {
-            User foundUser = user.get();
-            this.userNo = foundUser.getUserNo();
-            this.userId = foundUser.getUserId();
-            this.userPassword = foundUser.getUserPassword();
-            this.userName = foundUser.getUserName();
-            this.userPhoneNumber = foundUser.getUserPhoneNumber();
-            this.userEmail = foundUser.getUserEmail();
-            this.userBirth = foundUser.getUserBirth();
-            this.userPoint = foundUser.getUserPoint();
-            this.isAuth = foundUser.isAuth();
-            this.userStatus = foundUser.getUserStatus().name();
-            this.lastLoginAt = foundUser.getLastLoginAt();
-            this.userGradeName = foundUser.getUserGrade().getGradeName().name();
-        }
-        else {
-            this.userNo = null;
-            this.userId = null;
-            this.userPassword = null;
-            this.userName = null;
-            this.userPhoneNumber = null;
-            this.userEmail = null;
-            this.userBirth = null;
-            this.userPoint = 0;
-            this.isAuth = false;
-            this.userStatus = null;
-            this.lastLoginAt = null;
-            this.userGradeName = null;
-        }
-    }
 }

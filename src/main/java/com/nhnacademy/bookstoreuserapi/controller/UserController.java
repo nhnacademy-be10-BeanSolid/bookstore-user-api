@@ -53,6 +53,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getUser(userId));
     }
 
+    @GetMapping("/check-userId")
+    public boolean existUser(@RequestParam String userId) {
+        return userService.isUserExist(userId);
+    }
+
     @GetMapping("/user/{userNo}")
     public ResponseEntity<ResponseUser> getUserByUserNo(@PathVariable Long userNo) {
 
@@ -106,7 +111,7 @@ public class UserController {
     }
 
     @GetMapping("/findId")
-    public ResponseEntity<ResponseUserId> getUserIdByUserNameAndUserEmail(@Parameter @NotBlank String userName, @Parameter @NotBlank String userEmail) {
+    public ResponseEntity<ResponseUserId> getUserIdByUserNameAndUserEmail(@RequestParam @NotBlank String userName, @RequestParam @NotBlank String userEmail) {
         return ResponseEntity.ok(userService.getUserIdByUserNameAndUserEmail(userName, userEmail));
     }
 }

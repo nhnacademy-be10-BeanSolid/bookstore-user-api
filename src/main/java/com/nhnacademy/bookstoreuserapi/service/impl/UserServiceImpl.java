@@ -233,4 +233,12 @@ public class UserServiceImpl implements UserService {
     public ResponseUser deleteUser(String userId) {
         return updateUserStatus(userId, User.Status.WITHDRAWN);
     }
+
+    @Override
+    public boolean isUserExist(String userId) {
+
+        return userRepository.existsByUserId(userId);
+    }
+
+
 }

@@ -30,4 +30,6 @@ public interface UserService {
     ResponseUser updateUserGradeName(String userId, String gradeName);
 
     ResponseUser deleteUser(String userId);
+
+    boolean isUserExist(String userId);
 }

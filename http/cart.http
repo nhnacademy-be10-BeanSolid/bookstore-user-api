@@ -44,7 +44,7 @@ Content-Type: application/json
 X-USER-ID: test1
 
 ### 장바구니 수정
-PUT http://localhost:10348/carts/me/1
+PUT http://localhost:10348/carts/me/2
 Content-Type: application/json
 X-USER-ID: test
 

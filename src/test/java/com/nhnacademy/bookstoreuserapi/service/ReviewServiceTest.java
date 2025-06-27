@@ -66,7 +66,7 @@ class ReviewServiceTest {
                 .userGrade(userGrade)
                 .build();
         Review review = new Review(reviewCreateRequest, user);
-        Mockito.when(userRepository.findById(reviewCreateRequest.userId())).thenReturn(Optional.of(user));
+        Mockito.when(userRepository.findByUserId(reviewCreateRequest.userId())).thenReturn(user);
         Mockito.when(reviewRepository.findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId())).thenReturn(null);
         Mockito.when(reviewRepository.save(Mockito.any(Review.class))).thenReturn(review);
         Mockito.when(pointTypeRepository.findEarningPointByTypeName("리뷰작성")).thenReturn(500);

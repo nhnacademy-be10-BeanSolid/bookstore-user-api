@@ -39,8 +39,10 @@ public class ReviewServiceImpl implements ReviewService {
             throw new ReviewAlreadyExistsBookException(review.userId(), review.bookId());
         }
         validate(userId, review.userId());
-        User user = userRepository.findById(review.userId())
-                .orElseThrow(() -> new UserNotFoundException(review.userId()));
+        User user = userRepository.findByUserId(review.userId());
+        if (user == null) {
+            throw new UserNotFoundException(review.userId());
+        }
         Review savedReview = reviewRepository.save(new Review(review, user));
 
         int reviewPoint = pointTypeRepository.findEarningPointByTypeName("리뷰작성");

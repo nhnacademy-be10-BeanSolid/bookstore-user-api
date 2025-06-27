@@ -96,7 +96,7 @@ class PointControllerTest {
                 .thenReturn(page);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/users/me/point")
-                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm"))
+                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm".repeat(20)))
                 .andExpect(status().is4xxClientError())
                 .andReturn();
 

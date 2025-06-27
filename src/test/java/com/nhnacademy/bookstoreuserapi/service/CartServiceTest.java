@@ -60,11 +60,11 @@ class CartServiceTest {
                 .build();
         Cart cart = new Cart(cartCreateRequest, user);
         Mockito.when(cartRepository.findByUserIdAndBookId("user123", 1L)).thenReturn(null);
-        Mockito.when(userRepository.findById("user123")).thenReturn(Optional.of(user));
+        Mockito.when(userRepository.findByUserId("user123")).thenReturn(user);
         Mockito.when(cartRepository.save(Mockito.any(Cart.class))).thenReturn(cart);
         cartService.addCart("user123", cartCreateRequest);
         Mockito.verify(cartRepository, Mockito.times(1)).findByUserIdAndBookId("user123", 1L);
-        Mockito.verify(userRepository, Mockito.times(1)).findById("user123");
+        Mockito.verify(userRepository, Mockito.times(1)).findByUserId("user123");
         Mockito.verify(cartRepository, Mockito.times(1)).save(Mockito.any(Cart.class));
     }
 
@@ -90,7 +90,7 @@ class CartServiceTest {
                 cart.getCartId(), cart.getBookId(), cart.getUser().getUserId(), cart.getQuantity()));
         Assertions.assertThrows(CartAlreadyExistException.class, () -> cartService.addCart("user123", cartCreateRequest));
         Mockito.verify(cartRepository, Mockito.times(1)).findByUserIdAndBookId("user123", 1L);
-        Mockito.verify(userRepository, Mockito.never()).findById(Mockito.anyString());
+        Mockito.verify(userRepository, Mockito.never()).findByUserId(Mockito.anyString());
         Mockito.verify(cartRepository, Mockito.never()).save(Mockito.any(Cart.class));
     }
 
@@ -212,13 +212,13 @@ class CartServiceTest {
 
         Page<ResponseCart> page = new PageImpl<>(List.of(expectedResponse), pageable, 1);
 
-        Mockito.when(userRepository.findById("user123")).thenReturn(Optional.of(user));
+        Mockito.when(userRepository.existsByUserId("user123")).thenReturn(true);
         Mockito.when(cartRepository.findAllByUserId("user123", pageable)).thenReturn(page);
         Page<ResponseCart> result = cartService.getCartsByUserId("user123", pageable);
 
         Assertions.assertEquals(1, result.getTotalElements());
         Assertions.assertEquals(expectedResponse, result.getContent().get(0));
-        Mockito.verify(userRepository, Mockito.times(1)).findById("user123");
+        Mockito.verify(userRepository, Mockito.times(1)).existsByUserId("user123");
         Mockito.verify(cartRepository, Mockito.times(1)).findAllByUserId("user123", pageable);
     }
 
@@ -242,11 +242,11 @@ class CartServiceTest {
                 .build();
         Cart existingCart = new Cart(cartCreateRequest, user);
         existingCart.setCartId(cartId);
-        Mockito.when(userRepository.findById("user123")).thenReturn(Optional.of(user));
+        Mockito.when(userRepository.existsByUserId("user123")).thenReturn(true);
         Mockito.when(cartRepository.findAllByUser_UserId("user123")).thenReturn(List.of(existingCart));
         Mockito.doNothing().when(cartRepository).deleteAll(List.of(existingCart));
         cartService.deleteCartsByUserId("user123");
-        Mockito.verify(userRepository, Mockito.times(1)).findById("user123");
+        Mockito.verify(userRepository, Mockito.times(1)).existsByUserId("user123");
         Mockito.verify(cartRepository, Mockito.times(1)).findAllByUser_UserId("user123");
         Mockito.verify(cartRepository, Mockito.times(1)).deleteAll(List.of(existingCart));
     }

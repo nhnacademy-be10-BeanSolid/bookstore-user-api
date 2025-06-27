@@ -62,9 +62,9 @@ class UserServiceTest {
 
         userService.saveUser(request);
 
-        Optional<User> savedUser = userRepository.findById("newUser");
-        assertThat(savedUser).isPresent();
-        assertThat(savedUser.get().getUserPassword()).isEqualTo("encodedPassword");
+        User savedUser = userRepository.findByUserId("newUser");
+        assertThat(savedUser).isNotNull();
+        assertThat(savedUser.getUserPassword()).isEqualTo("encodedPassword");
     }
 
     @Test
@@ -139,7 +139,7 @@ class UserServiceTest {
     void updateLastLoginAt() {
         userService.updateLastLoginAt(userId);
 
-        User updated = userRepository.findById(userId).orElseThrow();
+        User updated = userRepository.findByUserId(userId);
         assertThat(updated.getLastLoginAt()).isNotNull();
     }
 
@@ -155,7 +155,7 @@ class UserServiceTest {
     void updatePoint() {
         userService.updatePoint(userId, 1000);
 
-        User updated = userRepository.findById(userId).orElseThrow();
+        User updated = userRepository.findByUserId(userId);
         assertThat(updated.getUserPoint()).isEqualTo(1500);
     }
 
@@ -170,7 +170,7 @@ class UserServiceTest {
     @DisplayName("회원 등급 업데이트")
     void updateGrade() {
         userService.updateUserGradeName(userId, "ROYAL");
-        User updated = userRepository.findById(userId).orElseThrow();
+        User updated = userRepository.findByUserId(userId);
         assertThat(updated.getUserGrade().getGradeName()).isEqualTo(ROYAL);
     }
 
@@ -200,7 +200,7 @@ class UserServiceTest {
     void updateUserStatus() {
         userService.updateUserStatus(userId, User.Status.WITHDRAWN);
 
-        User updated = userRepository.findById(userId).orElseThrow();
+        User updated = userRepository.findByUserId(userId);
         assertThat(updated.getUserStatus()).isEqualTo(User.Status.WITHDRAWN);
     }
 
@@ -215,7 +215,8 @@ class UserServiceTest {
     @DisplayName("사용자 삭제")
     void deleteUser() {
         userService.deleteUser(userId);
-        assertThat(userRepository.findById(userId)).isNotPresent();
+        User updated = userRepository.findByUserId(userId);
+        assertThat(updated.getUserStatus()).isEqualTo(User.Status.WITHDRAWN);
     }
 
     @Test

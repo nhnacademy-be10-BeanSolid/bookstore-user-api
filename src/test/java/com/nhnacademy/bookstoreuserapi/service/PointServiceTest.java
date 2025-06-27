@@ -3,6 +3,7 @@ package com.nhnacademy.bookstoreuserapi.service;
 import com.nhnacademy.bookstoreuserapi.domain.request.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePoint;
 import com.nhnacademy.bookstoreuserapi.exception.UserNotFoundException;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest
 @Sql(scripts = {"/user-test.sql", "/point-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @ActiveProfiles("test")
+@Transactional
 class PointServiceTest {
 
     @Autowired

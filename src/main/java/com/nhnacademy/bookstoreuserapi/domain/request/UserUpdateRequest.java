@@ -7,9 +7,9 @@ import org.springframework.data.annotation.CreatedDate;
 import java.time.LocalDate;
 
 public record UserUpdateRequest (
-                                @NotBlank String userPassword,
-                                @NotBlank String userName,
-                                @NotBlank String userPhoneNumber,
-                                @NotBlank @Email String userEmail,
+                                String userPassword,
+                                String userName,
+                                String userPhoneNumber,
+                                @Email String userEmail,
                                 @CreatedDate LocalDate userBirth){
 }

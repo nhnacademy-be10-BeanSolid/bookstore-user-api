@@ -60,14 +60,14 @@ class AddressServiceTest {
         Mockito.when(addressRepository.countByUser_UserId(addressCreateRequest.userId())).thenReturn(1L);
         Mockito.when(addressRepository.existsByUser_UserIdAndAddressDetail(addressCreateRequest.userId(), addressCreateRequest.addressDetail())).thenReturn(false);
         Mockito.when(addressRepository.save(address)).thenReturn(address);
-        Mockito.when(userRepository.findById(addressCreateRequest.userId())).thenReturn(Optional.of(address.getUser()));
+        Mockito.when(userRepository.findByUserId(addressCreateRequest.userId())).thenReturn(user);
 
         addressService.save("user123", addressCreateRequest);
         assertAccessDenied(() -> addressService.save("anotherUser", addressCreateRequest));
         Mockito.verify(addressRepository, Mockito.times(1)).countByUser_UserId(addressCreateRequest.userId());
         Mockito.verify(addressRepository, Mockito.times(1)).existsByUser_UserIdAndAddressDetail(addressCreateRequest.userId(), addressCreateRequest.addressDetail());
         Mockito.verify(addressRepository, Mockito.times(1)).save(address);
-        Mockito.verify(userRepository, Mockito.times(1)).findById(addressCreateRequest.userId());
+        Mockito.verify(userRepository, Mockito.times(1)).findByUserId(addressCreateRequest.userId());
     }
 
     @Test

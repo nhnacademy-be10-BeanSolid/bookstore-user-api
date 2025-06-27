@@ -24,7 +24,7 @@ public class AuthenticatedUserIdResolver implements HandlerMethodArgumentResolve
         if (userId == null || userId.isBlank()) {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_BLANK);
         }
-        if (userId.length() > 20) {
+        if (userId.length() > 255) {
             throw new InvalidHeaderException(InvalidHeaderException.USER_ID_TOO_LONG);
         }
         return userId;

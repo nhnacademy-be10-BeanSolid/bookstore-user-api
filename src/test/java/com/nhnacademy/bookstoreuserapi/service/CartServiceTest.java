@@ -183,7 +183,7 @@ class CartServiceTest {
         Mockito.verify(cartRepository, Mockito.times(1)).findById(cartId);
     }
 
-//    @Test
+    @Test
     void getCartsByUserId() {
         long cartId = 1L;
         CartCreateRequest cartCreateRequest = new CartCreateRequest(1, "user123", 3);
@@ -212,17 +212,17 @@ class CartServiceTest {
 
         Page<ResponseCart> page = new PageImpl<>(List.of(expectedResponse), pageable, 1);
 
-        Mockito.when(userRepository.findByUserId("user123")).thenReturn(user);
+        Mockito.when(userRepository.existsByUserId("user123")).thenReturn(true);
         Mockito.when(cartRepository.findAllByUserId("user123", pageable)).thenReturn(page);
         Page<ResponseCart> result = cartService.getCartsByUserId("user123", pageable);
 
         Assertions.assertEquals(1, result.getTotalElements());
         Assertions.assertEquals(expectedResponse, result.getContent().get(0));
-        Mockito.verify(userRepository, Mockito.times(1)).findByUserId("user123");
+        Mockito.verify(userRepository, Mockito.times(1)).existsByUserId("user123");
         Mockito.verify(cartRepository, Mockito.times(1)).findAllByUserId("user123", pageable);
     }
 
-//    @Test
+    @Test
     void deleteCartsByUserId() {
         long cartId = 1L;
         CartCreateRequest cartCreateRequest = new CartCreateRequest(1, "user123", 3);
@@ -242,11 +242,11 @@ class CartServiceTest {
                 .build();
         Cart existingCart = new Cart(cartCreateRequest, user);
         existingCart.setCartId(cartId);
-        Mockito.when(userRepository.findByUserId("user123")).thenReturn(user);
+        Mockito.when(userRepository.existsByUserId("user123")).thenReturn(true);
         Mockito.when(cartRepository.findAllByUser_UserId("user123")).thenReturn(List.of(existingCart));
         Mockito.doNothing().when(cartRepository).deleteAll(List.of(existingCart));
         cartService.deleteCartsByUserId("user123");
-        Mockito.verify(userRepository, Mockito.times(1)).findByUserId("user123");
+        Mockito.verify(userRepository, Mockito.times(1)).existsByUserId("user123");
         Mockito.verify(cartRepository, Mockito.times(1)).findAllByUser_UserId("user123");
         Mockito.verify(cartRepository, Mockito.times(1)).deleteAll(List.of(existingCart));
     }

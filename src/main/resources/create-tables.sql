@@ -9,7 +9,7 @@ CREATE TABLE `user_grade` (
 
 CREATE TABLE `users` (
     `user_no`	BIGINT	NOT NULL AUTO_INCREMENT,
-    `user_id`	VARCHAR(20)	UNIQUE NOT NULL,
+    `user_id`	VARCHAR(255)	UNIQUE NOT NULL,
     `user_password`	VARCHAR(255)    NULL,
     `provider`	VARCHAR(255)	NULL,
     `provider_id`	BIGINT	NULL,
@@ -32,11 +32,11 @@ CREATE TABLE `address` (
     `address_id`	BIGINT	NOT NULL AUTO_INCREMENT,
     `address_nick_name`	VARCHAR(30)	NOT NULL,
     `address_Detail`	VARCHAR(255)	NOT NULL,
-    `user_id`	VARCHAR(20)	NOT NULL,
+    `user_no`	BIGINT	NOT NULL,
 
     primary key (address_id),
-    foreign key (user_id) references users(user_id),
-    UNIQUE KEY uq_user_address (user_id, address_detail)
+    foreign key (user_no) references users(user_no),
+    UNIQUE KEY uq_user_address (user_no, address_detail)
 );
 
 
@@ -68,18 +68,18 @@ CREATE TABLE `guests` (
 CREATE TABLE `cart` (
     `cart_id`	BIGINT	NOT NULL AUTO_INCREMENT,
     `book_id`	BIGINT	NOT NULL,
-    `user_id`	VARCHAR(20)	NOT NULL,
+    `user_no`	BIGINT	NOT NULL,
     `quantity`	INTEGER	NOT NULL,
 
     primary key (cart_id),
     foreign key (book_id) references book(book_id),
-    foreign key (user_id) references users(user_id)
+    foreign key (user_no) references users(user_no)
 );
 
 CREATE TABLE `review` (
     `review_id`	BIGINT	NOT NULL AUTO_INCREMENT,
     `book_id`	BIGINT	NOT NULL,
-    `user_id`	VARCHAR(20)	NOT NULL,
+    `user_no`	BIGINT	NOT NULL,
     `evaluation_score`	INTEGER	NOT NULL	COMMENT '1점~5점',
     `review_content`	VARCHAR(255)	NOT NULL,
     `review_photo`	VARCHAR(255)	NULL,
@@ -88,18 +88,18 @@ CREATE TABLE `review` (
 
     primary key (review_id),
     FOREIGN KEY (book_id) references book(book_id),
-    foreign key (user_id) references users(user_id)
+    foreign key (user_no) references users(user_no)
 );
 
 CREATE TABLE `point` (
     `point_id`	BIGINT	NOT NULL AUTO_INCREMENT,
-    `user_id`	VARCHAR(20)	NOT NULL,
+    `user_no`	BIGINT	NOT NULL,
     `type_id`	BIGINT	NOT NULL,
     `payment_id`	BIGINT	NULL,
     `earned_and_used_at`	DATETIME	NOT NULL,
     `earned_and_used_point`	BIGINT	NOT NULL,
 
     primary key (point_id),
-    foreign key (user_id) references users(user_id),
+    foreign key (user_no) references users(user_no),
     foreign key (type_id) references point_type(type_id)
 );

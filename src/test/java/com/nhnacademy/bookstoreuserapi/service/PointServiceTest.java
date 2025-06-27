@@ -3,6 +3,7 @@ package com.nhnacademy.bookstoreuserapi.service;
 import com.nhnacademy.bookstoreuserapi.domain.request.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePoint;
 import com.nhnacademy.bookstoreuserapi.exception.UserNotFoundException;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest
 @Sql(scripts = {"/user-test.sql", "/point-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @ActiveProfiles("test")
+@Transactional
 class PointServiceTest {
 
     @Autowired
@@ -27,7 +29,7 @@ class PointServiceTest {
 
     private final String userId = "test";
 
-//    @Test
+    @Test
     @DisplayName("포인트 전체 조회 성공")
     void testFindAllPointsByUserId() {
         Pageable pageable = PageRequest.of(0, 10);
@@ -40,7 +42,7 @@ class PointServiceTest {
                 .containsExactlyInAnyOrder(500, -100);
     }
 
-//    @Test
+    @Test
     @DisplayName("존재하지 않는 사용자 포인트 조회 실패")
     void testFindAllPointsByInvalidUserId() {
         Pageable pageable = PageRequest.of(0, 10);
@@ -49,7 +51,7 @@ class PointServiceTest {
                 .isInstanceOf(UserNotFoundException.class);
     }
 
-//    @Test
+    @Test
     @DisplayName("포인트 저장 성공")
     void testSavePoint_success() {
         PointCreateRequest request = new PointCreateRequest(
@@ -74,7 +76,7 @@ class PointServiceTest {
         assertThat(points).hasSize(3);
     }
 
-//    @Test
+    @Test
     @DisplayName("존재하지 않는 사용자 포인트 저장 실패")
     void testSavePoint_userNotFound() {
         PointCreateRequest request = new PointCreateRequest(

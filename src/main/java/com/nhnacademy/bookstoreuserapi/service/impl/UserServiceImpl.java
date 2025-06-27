@@ -38,25 +38,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseUser getUser(String userId) {
-
-        if(!userRepository.existsByUserId(userId)){
-            throw new UserNotFoundException(userId);
-        }
-
-        User user = userRepository.findByUserId(userId);
-
+        User user = Optional.ofNullable(userRepository.findByUserId(userId))
+                .orElseThrow(() -> new UserNotFoundException(userId));
         return new ResponseUser(user);
     }
 
     @Override
     public ResponseUser getUserByUserNo(Long userNo) {
-
-        if(!userRepository.existsById(userNo)){
-            throw new UserNotFoundException(userNo);
-        }
-
-        Optional<User> user = userRepository.findById(userNo);
-
+        User user = userRepository.findById(userNo)
+                .orElseThrow(() -> new UserNotFoundException(userNo));
         return new ResponseUser(user);
     }
 

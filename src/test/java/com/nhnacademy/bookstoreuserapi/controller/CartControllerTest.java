@@ -139,13 +139,13 @@ class CartControllerTest {
         Mockito.verify(cartService, Mockito.times(0)).getCartsByUserId(userId, pageable);
     }
 
-//    @Test
-    void getCartsByUserIdFailExceed20Letter() throws Exception {
+    @Test
+    void getCartsByUserIdFailExceed255Letter() throws Exception {
         String userId = "user123";
         Pageable pageable = PageRequest.of(0,20);
         Mockito.when(cartService.getCartsByUserId(userId, pageable)).thenReturn(null);
         mockMvc.perform(MockMvcRequestBuilders.get("/carts/me")
-                        .header("X-USER-ID", "asfghjklqwertyuiopzxcvbnm"))
+                        .header("X-USER-ID", "asfghjklqwertyuiopzxcvbnm".repeat(20)))
                 .andExpect(status().is4xxClientError());
         Mockito.verify(cartService, Mockito.times(0)).getCartsByUserId(userId, pageable);
     }
@@ -180,12 +180,12 @@ class CartControllerTest {
         Mockito.verify(cartService, Mockito.times(0)).deleteCartsByUserId(userId);
     }
 
-//    @Test
-    void deleteCartsByUserIdFailExceed20Letter() throws Exception {
+    @Test
+    void deleteCartsByUserIdFailExceed255Letter() throws Exception {
         String userId = "user123";
         Mockito.doNothing().when(cartService).deleteCartsByUserId(userId);
         mockMvc.perform(MockMvcRequestBuilders.delete("/carts/me")
-                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm"))
+                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm".repeat(20)))
                 .andExpect(status().is4xxClientError());
         Mockito.verify(cartService, Mockito.times(0)).deleteCartsByUserId(userId);
     }

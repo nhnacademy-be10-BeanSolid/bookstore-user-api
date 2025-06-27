@@ -128,34 +128,34 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-//    @Test
+    @Test
     @DisplayName("회원 조회 실패 - 20자 초과 사용자 ID")
     void getUserInfo_Exceed20Letter() throws Exception {
         mockMvc.perform(get("/users/me")
-                        .header("X-USER-ID", "asfghjklqwertyuiopzxcvbnm"))
+                        .header("X-USER-ID", "asfghjklqwertyuiopzxcvbnm".repeat(20)))
                 .andExpect(status().isBadRequest());
     }
 
-//    @Test
+    @Test
     @DisplayName("회원 삭제")
     void deleteUser_success() throws Exception {
-        mockMvc.perform(delete("/users")
+        mockMvc.perform(put("/users/me/status/WITHDRAWN")
                         .header("X-USER-ID", "user123"))
                 .andExpect(status().isOk());
     }
-//    @Test
+    @Test
     @DisplayName("회원 삭제 - 실패 - 빈 사용자 ID")
     void deleteUser_fail_blank() throws Exception {
-        mockMvc.perform(delete("/users")
+        mockMvc.perform(put("/users/me/status/WITHDRAWN")
                         .header("X-USER-ID", ""))
                 .andExpect(status().isBadRequest());
     }
 
-//    @Test
-    @DisplayName("회원 삭제 - 실패 - 20자 초과 사용자 ID")
-    void deleteUser_fail_exceed20Letter() throws Exception {
-        mockMvc.perform(delete("/users")
-                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm"))
+    @Test
+    @DisplayName("회원 삭제 - 실패 - 255자 초과 사용자 ID")
+    void deleteUser_fail_exceed255Letter() throws Exception {
+        mockMvc.perform(put("/users/me/status/WITHDRAWN")
+                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm".repeat(20)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -212,14 +212,14 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-//    @Test
-    @DisplayName("회원 정보 수정 - 실패 - 20자 초과 사용자 ID")
-    void updatePersonalInfo_fail_exceed20Letter() throws Exception {
+    @Test
+    @DisplayName("회원 정보 수정 - 실패 - 255자 초과 사용자 ID")
+    void updatePersonalInfo_fail_exceed255Letter() throws Exception {
         UserUpdateRequest request = new UserUpdateRequest(
                  "newPassword", "이수정", "01011112222",
                 "test@test", LocalDate.of(1995, 5, 5));
         mockMvc.perform(put("/users/me/personalinformation")
-                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm")
+                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm".repeat(20))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
@@ -254,9 +254,9 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-//    @Test
-    @DisplayName("마지막 로그인 시간 갱신 - 실패 - 20자 초과 사용자 ID")
-    void updateLastLoginAtFailExceed20Letter() throws Exception {
+    @Test
+    @DisplayName("마지막 로그인 시간 갱신 - 실패 - 255자 초과 사용자 ID")
+    void updateLastLoginAtFailExceed255Letter() throws Exception {
         User user = new User("user123", "pw", "홍길동", "01012345678",
                 "hong@test.com", LocalDate.of(1990, 1, 1));
         user.setUserStatus(User.Status.ACTIVE);
@@ -264,7 +264,7 @@ class UserControllerTest {
         user.setUserGrade(userGrade);
 
         mockMvc.perform(put("/users/me/lastloginat")
-                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm"))
+                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm".repeat(20)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -305,9 +305,9 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-//    @Test
-    @DisplayName("포인트 수정- 실패 - 20자 초과 사용자 ID")
-    void updatePointFailExceed20Letter() throws Exception {
+    @Test
+    @DisplayName("포인트 수정- 실패 - 255자 초과 사용자 ID")
+    void updatePointFailExceed255Letter() throws Exception {
         User user = new User("user123", "pw", "홍길동", "01012345678",
                 "hong@test.com", LocalDate.of(1990, 1, 1));
         user.setUserPoint(2000);
@@ -317,7 +317,7 @@ class UserControllerTest {
 
         mockMvc.perform(put("/users/me/point")
                         .param("point", "2000")
-                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm"))
+                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm".repeat(20)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -354,9 +354,9 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-//    @Test
-    @DisplayName("상태 변경 - 실패 - 20자 초과 사용자 ID")
-    void updateStatusFailExceed20Letter() throws Exception {
+    @Test
+    @DisplayName("상태 변경 - 실패 - 255자 초과 사용자 ID")
+    void updateStatusFailExceed255Letter() throws Exception {
         User user = new User("user123", "pw", "홍길동", "01012345678",
                 "hong@test.com", LocalDate.of(1990, 1, 1));
         user.setUserStatus(User.Status.WITHDRAWN);
@@ -365,7 +365,7 @@ class UserControllerTest {
 
         mockMvc.perform(put("/users/me/status")
                         .param("status", "WITHDRAWN")
-                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm"))
+                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm".repeat(20)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -401,9 +401,9 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-//    @Test
-    @DisplayName("회원 등급 수정 - 실패 - 20자 초과 사용자 ID")
-    void updateUserGradeFailExceed20Letter() throws Exception {
+    @Test
+    @DisplayName("회원 등급 수정 - 실패 - 255자 초과 사용자 ID")
+    void updateUserGradeFailExceed255Letter() throws Exception {
         User user = new User("user123", "pw", "홍길동", "01012345678",
                 "hong@test.com", LocalDate.of(1990, 1, 1));
         user.setUserStatus(User.Status.ACTIVE);
@@ -411,7 +411,7 @@ class UserControllerTest {
 
         mockMvc.perform(put("/users/me/grade")
                         .param("gradeName", "ROYAL")
-                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm"))
+                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm".repeat(20)))
                 .andExpect(status().isBadRequest());
     }
 }

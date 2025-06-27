@@ -11,6 +11,9 @@ Content-Type: application/json
   "userBirth": "2020-03-12"
 }
 
+### 아이디찾기
+GET http://localhost:10348/users/findId?userName=test1&userEmail=test@test.com
+
 ### 회원 등록(OAuth2)
 POST http://localhost:10348/users/register/oauth2
 Content-Type: application/json

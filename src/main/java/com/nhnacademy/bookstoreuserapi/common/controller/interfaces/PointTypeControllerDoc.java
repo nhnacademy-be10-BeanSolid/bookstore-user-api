@@ -1,6 +1,6 @@
-package com.nhnacademy.bookstoreuserapi.controller.interfaces;
+package com.nhnacademy.bookstoreuserapi.common.controller.interfaces;
 
-import com.nhnacademy.bookstoreuserapi.controller.advice.ErrorMessage;
+import com.nhnacademy.bookstoreuserapi.common.controller.advice.ErrorMessage;
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointTypeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.ResponsePointType;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public interface PointTypeControllerDoc {
     @Operation(summary = "포인트 타입 조회", description = "포인트 타입을 조회합니다. 필요 파라미터 : gradeName(유저 등급명)")
     @Parameters({
-            @Parameter(name = "gradeName", description = "유저 등급명", required = false, example = "BASIC"),
+            @Parameter(name = "gradeName", description = "유저 등급명", example = "BASIC"),
             @Parameter(name = "page", description = "페이지 번호 (0부터 시작)", example = "0"),
             @Parameter(name = "size", description = "페이지 크기", example = "10"),
             @Parameter(name = "sort", description = "정렬 기준 (예: field,asc 또는 field,desc)", example = "typeId,asc")

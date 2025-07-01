@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.config;
+package com.nhnacademy.bookstoreuserapi.common.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

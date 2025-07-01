@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.usergrade.repository.queryfactory;
+package com.nhnacademy.bookstoreuserapi.pointtype.repository.queryfactory;
 
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.ResponsePointType;

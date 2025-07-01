@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.util;
+package com.nhnacademy.bookstoreuserapi.common.exception;
 
 import org.springframework.security.access.AccessDeniedException;
 

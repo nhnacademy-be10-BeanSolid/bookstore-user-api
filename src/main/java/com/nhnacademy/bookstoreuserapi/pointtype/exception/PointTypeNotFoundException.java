@@ -1,10 +1,8 @@
 package com.nhnacademy.bookstoreuserapi.pointtype.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import com.nhnacademy.bookstoreuserapi.common.exception.NotFoundException;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class PointTypeNotFoundException extends RuntimeException {
+public class PointTypeNotFoundException extends NotFoundException {
     public PointTypeNotFoundException(Long typeId) {
         super("PointType ID " + typeId + " not found.");
     }

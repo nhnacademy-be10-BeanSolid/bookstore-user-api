@@ -8,7 +8,7 @@ import com.nhnacademy.bookstoreuserapi.review.exception.ReviewAlreadyExistsBookE
 import com.nhnacademy.bookstoreuserapi.review.exception.ReviewNotFoundException;
 import com.nhnacademy.bookstoreuserapi.review.controller.ReviewController;
 import com.nhnacademy.bookstoreuserapi.review.service.ReviewService;
-import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
+import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

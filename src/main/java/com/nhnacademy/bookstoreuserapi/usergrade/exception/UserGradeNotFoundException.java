@@ -1,10 +1,8 @@
 package com.nhnacademy.bookstoreuserapi.usergrade.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import com.nhnacademy.bookstoreuserapi.common.exception.NotFoundException;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class UserGradeNotFoundException extends RuntimeException {
+public class UserGradeNotFoundException extends NotFoundException {
     public UserGradeNotFoundException(String userGradeId) {
         super("UserGrade ID : " + userGradeId + " not found");
     }

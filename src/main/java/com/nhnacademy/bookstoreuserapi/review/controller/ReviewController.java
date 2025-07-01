@@ -1,11 +1,11 @@
 package com.nhnacademy.bookstoreuserapi.review.controller;
 
 
-import com.nhnacademy.bookstoreuserapi.annotation.AuthenticatedUserId;
+import com.nhnacademy.bookstoreuserapi.common.annotation.AuthenticatedUserId;
 import com.nhnacademy.bookstoreuserapi.review.domain.ReviewUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.review.domain.ReviewCreateRequest;
 import com.nhnacademy.bookstoreuserapi.review.domain.ResponseReview;
-import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
+import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.review.service.ReviewService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;

@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.repository;
 
-import com.nhnacademy.bookstoreuserapi.config.QuerydslConfig;
+import com.nhnacademy.bookstoreuserapi.common.config.QuerydslConfig;
 import com.nhnacademy.bookstoreuserapi.user.domain.User;
 import com.nhnacademy.bookstoreuserapi.user.domain.User.Status;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;

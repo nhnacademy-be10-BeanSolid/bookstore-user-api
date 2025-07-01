@@ -1,10 +1,8 @@
 package com.nhnacademy.bookstoreuserapi.user.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import com.nhnacademy.bookstoreuserapi.common.exception.NotFoundException;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class UserNotFoundException extends RuntimeException {
+public class UserNotFoundException extends NotFoundException {
     public UserNotFoundException(String userId) {
         super("User ID : " + userId + " not found");
     }

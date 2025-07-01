@@ -1,10 +1,8 @@
 package com.nhnacademy.bookstoreuserapi.address.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import com.nhnacademy.bookstoreuserapi.common.exception.BadRequestException;
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-public class AddressLimitExceededException extends RuntimeException {
+public class AddressLimitExceededException extends BadRequestException {
     public AddressLimitExceededException(String userId) {
         super("User " + userId + " already has the maximum of 10 addresses.");
     }

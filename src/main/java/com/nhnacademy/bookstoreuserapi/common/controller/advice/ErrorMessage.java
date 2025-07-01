@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.controller.advice;
+package com.nhnacademy.bookstoreuserapi.common.controller.advice;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;

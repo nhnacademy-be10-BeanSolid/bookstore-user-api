@@ -1,7 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.cart.repository.queryfactory.impl;
 
 import com.nhnacademy.bookstoreuserapi.cart.repository.queryfactory.CartRepositoryCustom;
-import com.nhnacademy.bookstoreuserapi.domain.entity.QCart;
+import com.nhnacademy.bookstoreuserapi.cart.domain.QCart;
 import com.nhnacademy.bookstoreuserapi.cart.domain.ResponseCart;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;

@@ -1,7 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.pointtype.repository;
 
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointType;
-import com.nhnacademy.bookstoreuserapi.usergrade.repository.queryfactory.PointTypeRepositoryCustom;
+import com.nhnacademy.bookstoreuserapi.pointtype.repository.queryfactory.PointTypeRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

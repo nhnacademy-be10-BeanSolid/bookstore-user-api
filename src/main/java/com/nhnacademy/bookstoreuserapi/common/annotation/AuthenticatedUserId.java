@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.annotation;
+package com.nhnacademy.bookstoreuserapi.common.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

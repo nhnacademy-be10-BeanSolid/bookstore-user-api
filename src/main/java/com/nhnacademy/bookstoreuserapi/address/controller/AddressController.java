@@ -1,9 +1,9 @@
 package com.nhnacademy.bookstoreuserapi.address.controller;
 
-import com.nhnacademy.bookstoreuserapi.annotation.AuthenticatedUserId;
+import com.nhnacademy.bookstoreuserapi.common.annotation.AuthenticatedUserId;
 import com.nhnacademy.bookstoreuserapi.address.domain.AddressCreateRequest;
 import com.nhnacademy.bookstoreuserapi.address.domain.ResponseAddress;
-import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
+import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.address.service.AddressService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;

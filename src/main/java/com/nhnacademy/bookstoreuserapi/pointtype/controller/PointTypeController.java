@@ -1,10 +1,10 @@
 package com.nhnacademy.bookstoreuserapi.pointtype.controller;
 
-import com.nhnacademy.bookstoreuserapi.controller.interfaces.PointTypeControllerDoc;
+import com.nhnacademy.bookstoreuserapi.common.controller.interfaces.PointTypeControllerDoc;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointTypeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.ResponsePointType;
-import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
+import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;

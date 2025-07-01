@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.point.repository.queryfactory.impl;
 
-import com.nhnacademy.bookstoreuserapi.domain.entity.QPoint;
+import com.nhnacademy.bookstoreuserapi.point.domain.QPoint;
 import com.nhnacademy.bookstoreuserapi.point.domain.ResponsePoint;
 import com.nhnacademy.bookstoreuserapi.point.repository.queryfactory.PointRepositoryCustom;
 import com.querydsl.core.types.Projections;

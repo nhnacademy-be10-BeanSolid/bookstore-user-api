@@ -1,10 +1,10 @@
 package com.nhnacademy.bookstoreuserapi.cart.controller;
 
-import com.nhnacademy.bookstoreuserapi.annotation.AuthenticatedUserId;
+import com.nhnacademy.bookstoreuserapi.common.annotation.AuthenticatedUserId;
 import com.nhnacademy.bookstoreuserapi.cart.domain.CartUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.cart.domain.CartCreateRequest;
 import com.nhnacademy.bookstoreuserapi.cart.domain.ResponseCart;
-import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
+import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.cart.service.CartService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;

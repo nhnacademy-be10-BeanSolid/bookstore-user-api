@@ -1,6 +1,6 @@
-package com.nhnacademy.bookstoreuserapi.annotation;
+package com.nhnacademy.bookstoreuserapi.common.annotation;
 
-import com.nhnacademy.bookstoreuserapi.exception.InvalidHeaderException;
+import com.nhnacademy.bookstoreuserapi.common.exception.InvalidHeaderException;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;

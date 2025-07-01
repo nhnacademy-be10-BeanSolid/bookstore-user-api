@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-import static com.nhnacademy.bookstoreuserapi.util.OwnerShipValidator.validate;
+import static com.nhnacademy.bookstoreuserapi.common.exception.OwnerShipValidator.validate;
 
 @Service
 @RequiredArgsConstructor

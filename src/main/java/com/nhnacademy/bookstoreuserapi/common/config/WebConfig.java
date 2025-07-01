@@ -1,6 +1,6 @@
-package com.nhnacademy.bookstoreuserapi.config;
+package com.nhnacademy.bookstoreuserapi.common.config;
 
-import com.nhnacademy.bookstoreuserapi.annotation.AuthenticatedUserIdResolver;
+import com.nhnacademy.bookstoreuserapi.common.annotation.AuthenticatedUserIdResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

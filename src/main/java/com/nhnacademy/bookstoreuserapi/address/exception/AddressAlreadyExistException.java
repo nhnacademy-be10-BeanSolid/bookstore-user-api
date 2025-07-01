@@ -1,9 +1,9 @@
 package com.nhnacademy.bookstoreuserapi.address.exception;
 
-import com.nhnacademy.bookstoreuserapi.exception.CustomHttpException;
+import com.nhnacademy.bookstoreuserapi.common.exception.ConflictException;
 
-public class AddressAlreadyExistException extends CustomHttpException {
+public class AddressAlreadyExistException extends ConflictException {
     public AddressAlreadyExistException(String addressDetail, String userId) {
-        super(CustomHttpStatus.CONFLICT, "Address " + addressDetail + " is already exist in " + userId);
+        super("Address " + addressDetail + " is already exist in " + userId);
     }
 }

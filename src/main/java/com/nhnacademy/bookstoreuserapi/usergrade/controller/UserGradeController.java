@@ -1,11 +1,11 @@
 package com.nhnacademy.bookstoreuserapi.usergrade.controller;
 
 
-import com.nhnacademy.bookstoreuserapi.controller.interfaces.UserGradeControllerDoc;
+import com.nhnacademy.bookstoreuserapi.common.controller.interfaces.UserGradeControllerDoc;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGradeUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGradeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.ResponseUserGrade;
-import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
+import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.usergrade.service.UserGradeService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

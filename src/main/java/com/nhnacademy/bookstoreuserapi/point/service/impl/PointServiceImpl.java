@@ -17,7 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import static com.nhnacademy.bookstoreuserapi.util.OwnerShipValidator.validate;
+import static com.nhnacademy.bookstoreuserapi.common.exception.OwnerShipValidator.validate;
 
 
 @Service

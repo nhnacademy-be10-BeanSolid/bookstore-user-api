@@ -6,7 +6,7 @@ import com.nhnacademy.bookstoreuserapi.address.controller.AddressController;
 import com.nhnacademy.bookstoreuserapi.address.domain.AddressCreateRequest;
 import com.nhnacademy.bookstoreuserapi.address.domain.ResponseAddress;
 import com.nhnacademy.bookstoreuserapi.address.exception.AddressAlreadyExistException;
-import com.nhnacademy.bookstoreuserapi.exception.*;
+import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.address.service.AddressService;
 import com.nhnacademy.bookstoreuserapi.user.exception.UserAlreadyExistException;
 import org.junit.jupiter.api.Assertions;
@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AddressController.class)
@@ -54,13 +54,14 @@ class AddressControllerTest {
     @Test
     void addAddressFailAlreadyExist() throws Exception{
         AddressCreateRequest address = new AddressCreateRequest("별칭", "광주광역시 도로명주소 123", "userId123");
-        Mockito.when(addressService.save("userId123", address)).thenThrow(AddressAlreadyExistException.class);
+        Mockito.when(addressService.save("userId123", address))
+                .thenThrow(new AddressAlreadyExistException("광주광역시 도로명주소 123", "userId123"));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/users/me/address")
                         .header("X-USER-ID", "userId123")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(address)))
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().isConflict());
     }
 
     @Test
@@ -71,7 +72,7 @@ class AddressControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(address)))
                 .andExpect(result ->
-                        assertTrue(result.getResolvedException() instanceof ValidationFailedException));
+                        assertInstanceOf(ValidationFailedException.class, result.getResolvedException()));
     }
 
     @Test
@@ -86,7 +87,8 @@ class AddressControllerTest {
     @Test
     void deleteAddressFail() throws Exception{
 
-        Mockito.doThrow(UserAlreadyExistException.class).when(addressService).deleteAddress("userId123", 1L);
+        Mockito.doThrow(new UserAlreadyExistException("userId123"))
+                .when(addressService).deleteAddress("userId123", 1L);
         mockMvc.perform(MockMvcRequestBuilders.delete("/users/me/address/{addressId}", 1L)
                         .header("X-USER-ID", "userId123"))
                 .andExpect(status().is4xxClientError());

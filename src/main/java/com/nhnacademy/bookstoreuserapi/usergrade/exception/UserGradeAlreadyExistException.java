@@ -1,10 +1,8 @@
 package com.nhnacademy.bookstoreuserapi.usergrade.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import com.nhnacademy.bookstoreuserapi.common.exception.ConflictException;
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class UserGradeAlreadyExistException extends RuntimeException {
+public class UserGradeAlreadyExistException extends ConflictException {
     public UserGradeAlreadyExistException(String userGrade) {
         super("Grade : " + userGrade + " already exists.");
     }

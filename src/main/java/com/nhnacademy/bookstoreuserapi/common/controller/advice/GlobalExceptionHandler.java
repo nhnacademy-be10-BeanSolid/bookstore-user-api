@@ -1,11 +1,9 @@
-package com.nhnacademy.bookstoreuserapi.controller.advice;
+package com.nhnacademy.bookstoreuserapi.common.controller.advice;
 
-import com.nhnacademy.bookstoreuserapi.exception.CustomHttpException;
+import com.nhnacademy.bookstoreuserapi.common.exception.CustomHttpException;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice

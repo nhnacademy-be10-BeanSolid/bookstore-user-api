@@ -1,9 +1,9 @@
 package com.nhnacademy.bookstoreuserapi.point.controller;
 
-import com.nhnacademy.bookstoreuserapi.annotation.AuthenticatedUserId;
+import com.nhnacademy.bookstoreuserapi.common.annotation.AuthenticatedUserId;
 import com.nhnacademy.bookstoreuserapi.point.domain.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.point.domain.ResponsePoint;
-import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
+import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.point.service.PointService;
 import jakarta.validation.Valid;
 

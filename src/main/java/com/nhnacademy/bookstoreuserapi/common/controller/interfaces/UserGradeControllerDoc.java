@@ -1,6 +1,6 @@
-package com.nhnacademy.bookstoreuserapi.controller.interfaces;
+package com.nhnacademy.bookstoreuserapi.common.controller.interfaces;
 
-import com.nhnacademy.bookstoreuserapi.controller.advice.ErrorMessage;
+import com.nhnacademy.bookstoreuserapi.common.controller.advice.ErrorMessage;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGradeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGradeUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.ResponseUserGrade;

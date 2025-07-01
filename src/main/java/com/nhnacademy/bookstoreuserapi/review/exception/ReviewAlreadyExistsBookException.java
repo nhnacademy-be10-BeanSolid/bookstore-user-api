@@ -1,10 +1,8 @@
 package com.nhnacademy.bookstoreuserapi.review.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import com.nhnacademy.bookstoreuserapi.common.exception.ConflictException;
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class ReviewAlreadyExistsBookException extends RuntimeException {
+public class ReviewAlreadyExistsBookException extends ConflictException {
     public ReviewAlreadyExistsBookException(String userId, long bookId) {
         super("Review already exists for user: " + userId + " at book: " + bookId);
     }

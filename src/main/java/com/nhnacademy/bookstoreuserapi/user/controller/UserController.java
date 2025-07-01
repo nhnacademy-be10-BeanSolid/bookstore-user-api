@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.user.controller;
 
-import com.nhnacademy.bookstoreuserapi.annotation.AuthenticatedUserId;
+import com.nhnacademy.bookstoreuserapi.common.annotation.AuthenticatedUserId;
 import com.nhnacademy.bookstoreuserapi.user.domain.Oauth2UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUser;
 import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUserId;
@@ -8,7 +8,7 @@ import com.nhnacademy.bookstoreuserapi.user.service.UserService;
 import com.nhnacademy.bookstoreuserapi.user.domain.User;
 import com.nhnacademy.bookstoreuserapi.user.domain.UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.user.domain.UserUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
+import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

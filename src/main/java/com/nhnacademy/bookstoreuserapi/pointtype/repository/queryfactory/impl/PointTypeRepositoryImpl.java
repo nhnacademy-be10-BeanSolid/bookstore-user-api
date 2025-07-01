@@ -1,9 +1,9 @@
-package com.nhnacademy.bookstoreuserapi.usergrade.repository.queryfactory.impl;
+package com.nhnacademy.bookstoreuserapi.pointtype.repository.queryfactory.impl;
 
-import com.nhnacademy.bookstoreuserapi.domain.entity.QPointType;
+import com.nhnacademy.bookstoreuserapi.pointtype.domain.QPointType;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.ResponsePointType;
-import com.nhnacademy.bookstoreuserapi.usergrade.repository.queryfactory.PointTypeRepositoryCustom;
+import com.nhnacademy.bookstoreuserapi.pointtype.repository.queryfactory.PointTypeRepositoryCustom;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;

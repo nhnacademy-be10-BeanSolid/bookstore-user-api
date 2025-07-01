@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.repository;
 
-import com.nhnacademy.bookstoreuserapi.config.QuerydslConfig;
+import com.nhnacademy.bookstoreuserapi.common.config.QuerydslConfig;
 import com.nhnacademy.bookstoreuserapi.point.domain.Point;
 import com.nhnacademy.bookstoreuserapi.point.repository.PointRepository;
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointType;

@@ -10,7 +10,7 @@ import com.nhnacademy.bookstoreuserapi.user.domain.UserUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUser;
 import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUserId;
 import com.nhnacademy.bookstoreuserapi.user.exception.UserNotFoundException;
-import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
+import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstoreuserapi.pointtype.controller.PointTypeController;
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointTypeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.ResponsePointType;
-import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
+import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

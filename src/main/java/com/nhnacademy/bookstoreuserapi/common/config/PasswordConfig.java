@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.config;
+package com.nhnacademy.bookstoreuserapi.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

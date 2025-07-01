@@ -1,7 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.review.repository.queryfactory.impl;
 
-
-import com.nhnacademy.bookstoreuserapi.domain.entity.QReview;
+import com.nhnacademy.bookstoreuserapi.review.domain.QReview;
 import com.nhnacademy.bookstoreuserapi.review.domain.ResponseReview;
 import com.nhnacademy.bookstoreuserapi.review.repository.queryfactory.ReviewRepositoryCustom;
 import com.querydsl.core.types.Projections;

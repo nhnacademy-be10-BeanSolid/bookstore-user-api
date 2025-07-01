@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.repository;
 
-import com.nhnacademy.bookstoreuserapi.config.QuerydslConfig;
+import com.nhnacademy.bookstoreuserapi.common.config.QuerydslConfig;
 import com.nhnacademy.bookstoreuserapi.guest.domain.Guest;
 import com.nhnacademy.bookstoreuserapi.guest.repository.GuestRepository;
 import jakarta.persistence.EntityManager;

@@ -5,7 +5,7 @@ import com.nhnacademy.bookstoreuserapi.guest.controller.GuestController;
 import com.nhnacademy.bookstoreuserapi.guest.domain.GuestCreateRequest;
 import com.nhnacademy.bookstoreuserapi.guest.domain.GuestUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.guest.domain.ResponseGuest;
-import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
+import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.guest.service.GuestService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

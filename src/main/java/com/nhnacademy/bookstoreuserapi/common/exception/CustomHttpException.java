@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.exception;
+package com.nhnacademy.bookstoreuserapi.common.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +19,6 @@ public class CustomHttpException extends RuntimeException {
         NOT_ACCEPTABLE(406),
         REQUEST_TIMEOUT(408),
         CONFLICT(409),
-        GONE(410),
-        UNSUPPORTED_MEDIA_TYPE(415),
-        UNPROCESSABLE_ENTITY(422),
-        TOO_MANY_REQUESTS(429),
-
         INTERNAL_SERVER_ERROR(500);
 
         private final int code;

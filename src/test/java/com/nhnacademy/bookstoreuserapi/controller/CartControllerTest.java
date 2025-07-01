@@ -1,11 +1,12 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstoreuserapi.domain.request.CartUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.request.CartCreateRequest;
-import com.nhnacademy.bookstoreuserapi.exception.CartAlreadyExistException;
-import com.nhnacademy.bookstoreuserapi.exception.CartNotFoundException;
-import com.nhnacademy.bookstoreuserapi.service.CartService;
+import com.nhnacademy.bookstoreuserapi.cart.controller.CartController;
+import com.nhnacademy.bookstoreuserapi.cart.domain.CartUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.cart.domain.CartCreateRequest;
+import com.nhnacademy.bookstoreuserapi.cart.exception.CartAlreadyExistException;
+import com.nhnacademy.bookstoreuserapi.cart.exception.CartNotFoundException;
+import com.nhnacademy.bookstoreuserapi.cart.service.CartService;
 import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

@@ -1,8 +1,8 @@
 package com.nhnacademy.bookstoreuserapi.repository.queryfactory;
 
-import com.nhnacademy.bookstoreuserapi.domain.response.ResponseReview;
+import com.nhnacademy.bookstoreuserapi.review.domain.ResponseReview;
 import com.nhnacademy.bookstoreuserapi.domain.entity.QReview;
-import com.nhnacademy.bookstoreuserapi.repository.queryfactory.impl.ReviewRepositoryImpl;
+import com.nhnacademy.bookstoreuserapi.review.repository.queryfactory.impl.ReviewRepositoryImpl;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;

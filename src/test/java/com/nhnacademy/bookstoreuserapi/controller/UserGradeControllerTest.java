@@ -1,11 +1,12 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeCreateRequest;
-import com.nhnacademy.bookstoreuserapi.exception.UserGradeAlreadyExistException;
-import com.nhnacademy.bookstoreuserapi.exception.UserGradeNotFoundException;
-import com.nhnacademy.bookstoreuserapi.service.UserGradeService;
+import com.nhnacademy.bookstoreuserapi.usergrade.controller.UserGradeController;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGradeUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGradeCreateRequest;
+import com.nhnacademy.bookstoreuserapi.usergrade.exception.UserGradeAlreadyExistException;
+import com.nhnacademy.bookstoreuserapi.usergrade.exception.UserGradeNotFoundException;
+import com.nhnacademy.bookstoreuserapi.usergrade.service.UserGradeService;
 import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

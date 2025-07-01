@@ -1,12 +1,16 @@
 package com.nhnacademy.bookstoreuserapi.repository;
 
 import com.nhnacademy.bookstoreuserapi.config.QuerydslConfig;
-import com.nhnacademy.bookstoreuserapi.domain.entity.Point;
-import com.nhnacademy.bookstoreuserapi.domain.entity.PointType;
-import com.nhnacademy.bookstoreuserapi.domain.entity.User;
-import com.nhnacademy.bookstoreuserapi.domain.entity.User.Status;
-import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
-import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePoint;
+import com.nhnacademy.bookstoreuserapi.point.domain.Point;
+import com.nhnacademy.bookstoreuserapi.point.repository.PointRepository;
+import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointType;
+import com.nhnacademy.bookstoreuserapi.pointtype.repository.PointTypeRepository;
+import com.nhnacademy.bookstoreuserapi.user.domain.User;
+import com.nhnacademy.bookstoreuserapi.user.domain.User.Status;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
+import com.nhnacademy.bookstoreuserapi.point.domain.ResponsePoint;
+import com.nhnacademy.bookstoreuserapi.user.repository.UserRepository;
+import com.nhnacademy.bookstoreuserapi.usergrade.repository.UserGradeRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +25,7 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASIC;
+import static com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade.BASIC;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest

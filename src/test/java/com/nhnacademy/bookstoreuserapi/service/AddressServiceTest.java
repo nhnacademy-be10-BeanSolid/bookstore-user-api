@@ -1,16 +1,16 @@
 package com.nhnacademy.bookstoreuserapi.service;
 
-import com.nhnacademy.bookstoreuserapi.domain.entity.Address;
-import com.nhnacademy.bookstoreuserapi.domain.entity.User;
-import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
-import com.nhnacademy.bookstoreuserapi.domain.request.AddressCreateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.response.ResponseAddress;
-import com.nhnacademy.bookstoreuserapi.exception.AddressAlreadyExistException;
-import com.nhnacademy.bookstoreuserapi.exception.AddressLimitExceededException;
-import com.nhnacademy.bookstoreuserapi.exception.AddressNotFoundException;
-import com.nhnacademy.bookstoreuserapi.repository.AddressRepository;
-import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
-import com.nhnacademy.bookstoreuserapi.service.impl.AddressServiceImpl;
+import com.nhnacademy.bookstoreuserapi.address.domain.Address;
+import com.nhnacademy.bookstoreuserapi.user.domain.User;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
+import com.nhnacademy.bookstoreuserapi.address.domain.AddressCreateRequest;
+import com.nhnacademy.bookstoreuserapi.address.domain.ResponseAddress;
+import com.nhnacademy.bookstoreuserapi.address.exception.AddressAlreadyExistException;
+import com.nhnacademy.bookstoreuserapi.address.exception.AddressLimitExceededException;
+import com.nhnacademy.bookstoreuserapi.address.exception.AddressNotFoundException;
+import com.nhnacademy.bookstoreuserapi.address.repository.AddressRepository;
+import com.nhnacademy.bookstoreuserapi.user.repository.UserRepository;
+import com.nhnacademy.bookstoreuserapi.address.service.impl.AddressServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

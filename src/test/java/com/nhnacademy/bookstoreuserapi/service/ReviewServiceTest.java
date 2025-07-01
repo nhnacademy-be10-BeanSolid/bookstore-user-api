@@ -1,18 +1,19 @@
 package com.nhnacademy.bookstoreuserapi.service;
 
 
-import com.nhnacademy.bookstoreuserapi.domain.entity.Review;
-import com.nhnacademy.bookstoreuserapi.domain.entity.User;
-import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
-import com.nhnacademy.bookstoreuserapi.domain.request.ReviewUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.request.ReviewCreateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.response.ResponseReview;
-import com.nhnacademy.bookstoreuserapi.exception.ReviewAlreadyExistsBookException;
-import com.nhnacademy.bookstoreuserapi.exception.ReviewNotFoundException;
-import com.nhnacademy.bookstoreuserapi.repository.PointTypeRepository;
-import com.nhnacademy.bookstoreuserapi.repository.ReviewRepository;
-import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
-import com.nhnacademy.bookstoreuserapi.service.impl.ReviewServiceImpl;
+import com.nhnacademy.bookstoreuserapi.point.service.PointService;
+import com.nhnacademy.bookstoreuserapi.review.domain.Review;
+import com.nhnacademy.bookstoreuserapi.user.domain.User;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
+import com.nhnacademy.bookstoreuserapi.review.domain.ReviewUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.review.domain.ReviewCreateRequest;
+import com.nhnacademy.bookstoreuserapi.review.domain.ResponseReview;
+import com.nhnacademy.bookstoreuserapi.review.exception.ReviewAlreadyExistsBookException;
+import com.nhnacademy.bookstoreuserapi.review.exception.ReviewNotFoundException;
+import com.nhnacademy.bookstoreuserapi.pointtype.repository.PointTypeRepository;
+import com.nhnacademy.bookstoreuserapi.review.repository.ReviewRepository;
+import com.nhnacademy.bookstoreuserapi.user.repository.UserRepository;
+import com.nhnacademy.bookstoreuserapi.review.service.impl.ReviewServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

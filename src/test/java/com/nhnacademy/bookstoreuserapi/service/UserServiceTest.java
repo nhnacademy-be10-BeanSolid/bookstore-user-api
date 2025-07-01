@@ -1,15 +1,16 @@
 package com.nhnacademy.bookstoreuserapi.service;
 
-import com.nhnacademy.bookstoreuserapi.domain.entity.User;
-import com.nhnacademy.bookstoreuserapi.domain.request.Oauth2UserCreateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.request.UserUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUser;
-import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUserId;
-import com.nhnacademy.bookstoreuserapi.exception.UserAlreadyExistException;
-import com.nhnacademy.bookstoreuserapi.exception.UserGradeNotFoundException;
-import com.nhnacademy.bookstoreuserapi.exception.UserNotFoundException;
-import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
+import com.nhnacademy.bookstoreuserapi.user.domain.User;
+import com.nhnacademy.bookstoreuserapi.user.domain.Oauth2UserCreateRequest;
+import com.nhnacademy.bookstoreuserapi.user.domain.UserCreateRequest;
+import com.nhnacademy.bookstoreuserapi.user.domain.UserUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUser;
+import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUserId;
+import com.nhnacademy.bookstoreuserapi.user.exception.UserAlreadyExistException;
+import com.nhnacademy.bookstoreuserapi.usergrade.exception.UserGradeNotFoundException;
+import com.nhnacademy.bookstoreuserapi.user.exception.UserNotFoundException;
+import com.nhnacademy.bookstoreuserapi.user.repository.UserRepository;
+import com.nhnacademy.bookstoreuserapi.user.service.UserService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,8 +22,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import java.time.LocalDate;
-import java.util.Optional;
-import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.ROYAL;
+
+import static com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade.ROYAL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;

@@ -1,9 +1,11 @@
 package com.nhnacademy.bookstoreuserapi.repository;
 
 import com.nhnacademy.bookstoreuserapi.config.QuerydslConfig;
-import com.nhnacademy.bookstoreuserapi.domain.entity.User;
-import com.nhnacademy.bookstoreuserapi.domain.entity.User.Status;
-import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
+import com.nhnacademy.bookstoreuserapi.user.domain.User;
+import com.nhnacademy.bookstoreuserapi.user.domain.User.Status;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
+import com.nhnacademy.bookstoreuserapi.user.repository.UserRepository;
+import com.nhnacademy.bookstoreuserapi.usergrade.repository.UserGradeRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,9 +18,8 @@ import org.springframework.context.annotation.Import;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 
-import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASIC;
+import static com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade.BASIC;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest

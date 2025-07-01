@@ -1,9 +1,9 @@
 package com.nhnacademy.bookstoreuserapi.controller.interfaces;
 
 import com.nhnacademy.bookstoreuserapi.controller.advice.ErrorMessage;
-import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeCreateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUserGrade;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGradeCreateRequest;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGradeUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.ResponseUserGrade;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;

@@ -1,8 +1,8 @@
 package com.nhnacademy.bookstoreuserapi.controller.interfaces;
 
 import com.nhnacademy.bookstoreuserapi.controller.advice.ErrorMessage;
-import com.nhnacademy.bookstoreuserapi.domain.request.PointTypeCreateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePointType;
+import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointTypeCreateRequest;
+import com.nhnacademy.bookstoreuserapi.pointtype.domain.ResponsePointType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;

@@ -1,11 +1,12 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstoreuserapi.domain.request.GuestCreateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.request.GuestUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.response.ResponseGuest;
+import com.nhnacademy.bookstoreuserapi.guest.controller.GuestController;
+import com.nhnacademy.bookstoreuserapi.guest.domain.GuestCreateRequest;
+import com.nhnacademy.bookstoreuserapi.guest.domain.GuestUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.guest.domain.ResponseGuest;
 import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
-import com.nhnacademy.bookstoreuserapi.service.GuestService;
+import com.nhnacademy.bookstoreuserapi.guest.service.GuestService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

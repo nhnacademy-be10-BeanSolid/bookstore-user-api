@@ -1,10 +1,10 @@
 package com.nhnacademy.bookstoreuserapi.service;
 
-import com.nhnacademy.bookstoreuserapi.domain.request.GuestCreateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.request.GuestUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.response.ResponseGuest;
-import com.nhnacademy.bookstoreuserapi.exception.GuestNotFoundException;
-import com.nhnacademy.bookstoreuserapi.service.impl.GuestServiceImpl;
+import com.nhnacademy.bookstoreuserapi.guest.domain.GuestCreateRequest;
+import com.nhnacademy.bookstoreuserapi.guest.domain.GuestUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.guest.domain.ResponseGuest;
+import com.nhnacademy.bookstoreuserapi.guest.exception.GuestNotFoundException;
+import com.nhnacademy.bookstoreuserapi.guest.service.impl.GuestServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

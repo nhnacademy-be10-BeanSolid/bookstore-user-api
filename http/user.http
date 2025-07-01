@@ -3,7 +3,7 @@ POST http://localhost:10348/users/register
 Content-Type: application/json
 
 {
-  "userId": "test125",
+  "userId": "admin",
   "userPassword": "test125",
   "userName": "test125",
   "userPhoneNumber": "010-3333-2222",

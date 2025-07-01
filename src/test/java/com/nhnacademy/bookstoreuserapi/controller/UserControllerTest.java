@@ -1,16 +1,17 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstoreuserapi.domain.entity.User;
-import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
-import com.nhnacademy.bookstoreuserapi.domain.request.Oauth2UserCreateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.request.UserCreateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.request.UserUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUser;
-import com.nhnacademy.bookstoreuserapi.domain.response.ResponseUserId;
-import com.nhnacademy.bookstoreuserapi.exception.UserNotFoundException;
+import com.nhnacademy.bookstoreuserapi.user.controller.UserController;
+import com.nhnacademy.bookstoreuserapi.user.domain.User;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
+import com.nhnacademy.bookstoreuserapi.user.domain.Oauth2UserCreateRequest;
+import com.nhnacademy.bookstoreuserapi.user.domain.UserCreateRequest;
+import com.nhnacademy.bookstoreuserapi.user.domain.UserUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUser;
+import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUserId;
+import com.nhnacademy.bookstoreuserapi.user.exception.UserNotFoundException;
 import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
-import com.nhnacademy.bookstoreuserapi.service.UserService;
+import com.nhnacademy.bookstoreuserapi.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -22,8 +23,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 
-import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASIC;
-import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.ROYAL;
+import static com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade.BASIC;
+import static com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade.ROYAL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;

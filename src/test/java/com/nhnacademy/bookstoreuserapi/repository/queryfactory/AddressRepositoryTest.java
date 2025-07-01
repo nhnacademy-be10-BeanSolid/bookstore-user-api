@@ -1,8 +1,8 @@
 package com.nhnacademy.bookstoreuserapi.repository.queryfactory;
 
 import com.nhnacademy.bookstoreuserapi.domain.entity.QAddress;
-import com.nhnacademy.bookstoreuserapi.domain.response.ResponseAddress;
-import com.nhnacademy.bookstoreuserapi.repository.queryfactory.impl.AddressRepositoryImpl;
+import com.nhnacademy.bookstoreuserapi.address.domain.ResponseAddress;
+import com.nhnacademy.bookstoreuserapi.address.repository.queryfactory.impl.AddressRepositoryImpl;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;

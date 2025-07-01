@@ -2,12 +2,13 @@ package com.nhnacademy.bookstoreuserapi.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstoreuserapi.domain.request.AddressCreateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.response.ResponseAddress;
-import com.nhnacademy.bookstoreuserapi.exception.AddressAlreadyExistException;
-import com.nhnacademy.bookstoreuserapi.exception.AddressNotFoundException;
-import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
-import com.nhnacademy.bookstoreuserapi.service.AddressService;
+import com.nhnacademy.bookstoreuserapi.address.controller.AddressController;
+import com.nhnacademy.bookstoreuserapi.address.domain.AddressCreateRequest;
+import com.nhnacademy.bookstoreuserapi.address.domain.ResponseAddress;
+import com.nhnacademy.bookstoreuserapi.address.exception.AddressAlreadyExistException;
+import com.nhnacademy.bookstoreuserapi.exception.*;
+import com.nhnacademy.bookstoreuserapi.address.service.AddressService;
+import com.nhnacademy.bookstoreuserapi.user.exception.UserAlreadyExistException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -85,7 +86,7 @@ class AddressControllerTest {
     @Test
     void deleteAddressFail() throws Exception{
 
-        Mockito.doThrow(AddressNotFoundException.class).when(addressService).deleteAddress("userId123", 1L);
+        Mockito.doThrow(UserAlreadyExistException.class).when(addressService).deleteAddress("userId123", 1L);
         mockMvc.perform(MockMvcRequestBuilders.delete("/users/me/address/{addressId}", 1L)
                         .header("X-USER-ID", "userId123"))
                 .andExpect(status().is4xxClientError());

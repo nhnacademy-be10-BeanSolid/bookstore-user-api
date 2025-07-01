@@ -1,10 +1,11 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstoreuserapi.domain.request.PointTypeCreateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePointType;
-import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
-import com.nhnacademy.bookstoreuserapi.service.PointTypeService;
+import com.nhnacademy.bookstoreuserapi.pointtype.controller.PointTypeController;
+import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointTypeCreateRequest;
+import com.nhnacademy.bookstoreuserapi.pointtype.domain.ResponsePointType;
+import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
+import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -23,7 +24,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
-import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.GOLD;
+import static com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade.GOLD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;

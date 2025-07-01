@@ -1,10 +1,11 @@
 package com.nhnacademy.bookstoreuserapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstoreuserapi.domain.request.PointCreateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePoint;
-import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
-import com.nhnacademy.bookstoreuserapi.service.PointService;
+import com.nhnacademy.bookstoreuserapi.point.domain.PointCreateRequest;
+import com.nhnacademy.bookstoreuserapi.point.domain.ResponsePoint;
+import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
+import com.nhnacademy.bookstoreuserapi.point.controller.PointController;
+import com.nhnacademy.bookstoreuserapi.point.service.PointService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -129,6 +130,6 @@ class PointControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(result ->
-                        Assertions.assertTrue(result.getResolvedException() instanceof ValidationFailedException));
+                        Assertions.assertInstanceOf(ValidationFailedException.class, result.getResolvedException()));
     }
 }

@@ -1,12 +1,12 @@
 package com.nhnacademy.bookstoreuserapi.service;
 
 
-import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
-import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.request.UserGradeCreateRequest;
-import com.nhnacademy.bookstoreuserapi.exception.UserGradeAlreadyExistException;
-import com.nhnacademy.bookstoreuserapi.repository.UserGradeRepository;
-import com.nhnacademy.bookstoreuserapi.service.impl.UserGradeServiceImpl;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGradeUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGradeCreateRequest;
+import com.nhnacademy.bookstoreuserapi.usergrade.exception.UserGradeAlreadyExistException;
+import com.nhnacademy.bookstoreuserapi.usergrade.repository.UserGradeRepository;
+import com.nhnacademy.bookstoreuserapi.usergrade.service.impl.UserGradeServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

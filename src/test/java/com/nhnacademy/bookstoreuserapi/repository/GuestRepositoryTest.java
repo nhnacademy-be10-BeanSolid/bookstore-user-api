@@ -1,7 +1,8 @@
 package com.nhnacademy.bookstoreuserapi.repository;
 
-import com.nhnacademy.bookstoreuserapi.config.QuerydslConfig;
-import com.nhnacademy.bookstoreuserapi.domain.entity.Guest;
+import com.nhnacademy.bookstoreuserapi.common.config.QuerydslConfig;
+import com.nhnacademy.bookstoreuserapi.guest.domain.Guest;
+import com.nhnacademy.bookstoreuserapi.guest.repository.GuestRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;

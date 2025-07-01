@@ -1,17 +1,17 @@
 package com.nhnacademy.bookstoreuserapi.service;
 
 
-import com.nhnacademy.bookstoreuserapi.domain.entity.Cart;
-import com.nhnacademy.bookstoreuserapi.domain.entity.User;
-import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
-import com.nhnacademy.bookstoreuserapi.domain.request.CartUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.request.CartCreateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.response.ResponseCart;
-import com.nhnacademy.bookstoreuserapi.exception.CartAlreadyExistException;
-import com.nhnacademy.bookstoreuserapi.exception.CartNotFoundException;
-import com.nhnacademy.bookstoreuserapi.repository.CartRepository;
-import com.nhnacademy.bookstoreuserapi.repository.UserRepository;
-import com.nhnacademy.bookstoreuserapi.service.impl.CartServiceImpl;
+import com.nhnacademy.bookstoreuserapi.cart.domain.Cart;
+import com.nhnacademy.bookstoreuserapi.user.domain.User;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
+import com.nhnacademy.bookstoreuserapi.cart.domain.CartUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.cart.domain.CartCreateRequest;
+import com.nhnacademy.bookstoreuserapi.cart.domain.ResponseCart;
+import com.nhnacademy.bookstoreuserapi.cart.exception.CartAlreadyExistException;
+import com.nhnacademy.bookstoreuserapi.cart.exception.CartNotFoundException;
+import com.nhnacademy.bookstoreuserapi.cart.repository.CartRepository;
+import com.nhnacademy.bookstoreuserapi.user.repository.UserRepository;
+import com.nhnacademy.bookstoreuserapi.cart.service.impl.CartServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

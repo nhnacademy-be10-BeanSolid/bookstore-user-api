@@ -1,9 +1,11 @@
 package com.nhnacademy.bookstoreuserapi.repository;
 
-import com.nhnacademy.bookstoreuserapi.config.QuerydslConfig;
-import com.nhnacademy.bookstoreuserapi.domain.entity.PointType;
-import com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade;
-import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePointType;
+import com.nhnacademy.bookstoreuserapi.common.config.QuerydslConfig;
+import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointType;
+import com.nhnacademy.bookstoreuserapi.pointtype.repository.PointTypeRepository;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
+import com.nhnacademy.bookstoreuserapi.pointtype.domain.ResponsePointType;
+import com.nhnacademy.bookstoreuserapi.usergrade.repository.UserGradeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
-import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.BASIC;
+import static com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade.BASIC;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest

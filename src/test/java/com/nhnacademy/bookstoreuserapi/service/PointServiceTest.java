@@ -1,8 +1,9 @@
 package com.nhnacademy.bookstoreuserapi.service;
 
-import com.nhnacademy.bookstoreuserapi.domain.request.PointCreateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePoint;
-import com.nhnacademy.bookstoreuserapi.exception.UserNotFoundException;
+import com.nhnacademy.bookstoreuserapi.point.domain.PointCreateRequest;
+import com.nhnacademy.bookstoreuserapi.point.domain.ResponsePoint;
+import com.nhnacademy.bookstoreuserapi.point.service.PointService;
+import com.nhnacademy.bookstoreuserapi.user.exception.UserNotFoundException;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

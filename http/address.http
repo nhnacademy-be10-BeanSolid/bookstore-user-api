@@ -1,7 +1,7 @@
 ### 주소등록
 POST http://localhost:10348/users/me/address
 Content-Type: application/json
-X-USER-ID: newTest
+X-USER-ID: admin
 
 {
   "addressNickName": "집",

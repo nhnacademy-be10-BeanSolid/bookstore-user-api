@@ -2,12 +2,13 @@ package com.nhnacademy.bookstoreuserapi.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstoreuserapi.domain.request.ReviewUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.request.ReviewCreateRequest;
-import com.nhnacademy.bookstoreuserapi.exception.ReviewAlreadyExistsBookException;
-import com.nhnacademy.bookstoreuserapi.exception.ReviewNotFoundException;
-import com.nhnacademy.bookstoreuserapi.service.ReviewService;
-import com.nhnacademy.bookstoreuserapi.exception.ValidationFailedException;
+import com.nhnacademy.bookstoreuserapi.review.domain.ReviewUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.review.domain.ReviewCreateRequest;
+import com.nhnacademy.bookstoreuserapi.review.exception.ReviewAlreadyExistsBookException;
+import com.nhnacademy.bookstoreuserapi.review.exception.ReviewNotFoundException;
+import com.nhnacademy.bookstoreuserapi.review.controller.ReviewController;
+import com.nhnacademy.bookstoreuserapi.review.service.ReviewService;
+import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

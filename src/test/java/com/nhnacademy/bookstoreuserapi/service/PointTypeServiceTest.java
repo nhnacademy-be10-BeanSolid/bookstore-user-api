@@ -1,8 +1,9 @@
 package com.nhnacademy.bookstoreuserapi.service;
 
-import com.nhnacademy.bookstoreuserapi.domain.request.PointTypeCreateRequest;
-import com.nhnacademy.bookstoreuserapi.domain.response.ResponsePointType;
-import com.nhnacademy.bookstoreuserapi.exception.PointTypeNotFoundException;
+import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointTypeCreateRequest;
+import com.nhnacademy.bookstoreuserapi.pointtype.domain.ResponsePointType;
+import com.nhnacademy.bookstoreuserapi.pointtype.exception.PointTypeNotFoundException;
+import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
-import static com.nhnacademy.bookstoreuserapi.domain.entity.UserGrade.Grade.GOLD;
+import static com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade.GOLD;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest

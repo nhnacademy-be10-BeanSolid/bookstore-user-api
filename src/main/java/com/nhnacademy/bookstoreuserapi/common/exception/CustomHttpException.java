@@ -24,6 +24,6 @@ public class CustomHttpException extends RuntimeException {
         private final int code;
     }
 
-    private final CustomHttpStatus CustomHttpStatus;
+    private final CustomHttpStatus customHttpStatus;
     private final String message;
 }

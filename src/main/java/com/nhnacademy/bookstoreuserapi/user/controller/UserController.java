@@ -75,17 +75,13 @@ public class UserController {
 
     @PutMapping("/me/personalinformation")
     public ResponseEntity<ResponseUser> updatePersonalInformation(@AuthenticatedUserId String userId, @Valid @RequestBody UserUpdateRequest userUpdateRequest, BindingResult bindingResult){
-        if(bindingResult.hasErrors()) {
-            throw new ValidationFailedException(bindingResult);
-        }
+
         return updatePersonalInformationInternal(userId, userUpdateRequest, bindingResult);
     }
 
     @PutMapping("/{userId}/personalinformation")
     public ResponseEntity<ResponseUser> updatePersonalInformationPathVariable(@PathVariable String userId, @Valid @RequestBody UserUpdateRequest userUpdateRequest, BindingResult bindingResult){
-        if(bindingResult.hasErrors()) {
-            throw new ValidationFailedException(bindingResult);
-        }
+
         return updatePersonalInformationInternal(userId, userUpdateRequest, bindingResult);
     }
 

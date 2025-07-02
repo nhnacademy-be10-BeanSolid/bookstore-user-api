@@ -78,12 +78,21 @@ public class UserController {
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
         }
-        return ResponseEntity.ok().body(userService.updatePersonalInformation(userId, userUpdateRequest));
+        return updatePersonalInformationInternal(userId, userUpdateRequest, bindingResult);
     }
 
     @PutMapping("/{userId}/personalinformation")
     public ResponseEntity<ResponseUser> updatePersonalInformationPathVariable(@PathVariable String userId, @Valid @RequestBody UserUpdateRequest userUpdateRequest, BindingResult bindingResult){
         if(bindingResult.hasErrors()) {
+            throw new ValidationFailedException(bindingResult);
+        }
+        return updatePersonalInformationInternal(userId, userUpdateRequest, bindingResult);
+    }
+
+    // sonarqube 관련 이슈를 해결하기 위해 공통 updatePersonalInformation 와 updatePersonalInformationPathVariable 의 공통 로직을 private 으로 별개의 메소드로 정의
+    private ResponseEntity<ResponseUser> updatePersonalInformationInternal(
+            String userId, UserUpdateRequest userUpdateRequest, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
         }
         return ResponseEntity.ok().body(userService.updatePersonalInformation(userId, userUpdateRequest));

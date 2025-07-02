@@ -6,7 +6,6 @@ import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGradeUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.ResponseUserGrade;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -81,9 +80,9 @@ public interface UserGradeControllerDoc {
 
 
     @Operation(summary = "유저 등급 조회", description = "유저 등급을 조회합니다. 필요 파라미터 : 등급명")
-    @Parameters({
-            @Parameter(name = "gradeName", description = "조회할 유저 등급의 이름 (BASIC, ROYAL, GOLD, PLATINUM 중 하나)", required = true, schema = @Schema(type = "string", example = "GOLD"))
-    })
+
+    @Parameter(name = "gradeName", description = "조회할 유저 등급의 이름 (BASIC, ROYAL, GOLD, PLATINUM 중 하나)", required = true, schema = @Schema(type = "string", example = "GOLD"))
+
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "유저 등급 조회 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseUserGrade.class))),
             @ApiResponse(responseCode = "404", description = "유저 등급이 존재하지 않는 경우", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class),
@@ -101,9 +100,9 @@ public interface UserGradeControllerDoc {
     ResponseEntity<ResponseUserGrade> getUserGrade(@PathVariable @NotBlank @Size(max = 10) String gradeName);
 
     @Operation(summary = "유저 등급 삭제", description = "유저 등급을 삭제합니다. 필요 파라미터 : 등급명")
-    @Parameters({
-            @Parameter(name = "gradeName", description = "삭제할 유저 등급의 이름 (BASIC, ROYAL, GOLD, PLATINUM 중 하나)", required = true)
-    })
+
+    @Parameter(name = "gradeName", description = "삭제할 유저 등급의 이름 (BASIC, ROYAL, GOLD, PLATINUM 중 하나)", required = true)
+
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "유저 등급 삭제 성공"),
             @ApiResponse(responseCode = "404", description = "유저 등급이 존재하지 않는 경우", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class),

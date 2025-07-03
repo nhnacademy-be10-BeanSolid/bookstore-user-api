@@ -20,8 +20,8 @@ VALUES ('회원가입', 1000, 10, 'BASIC'),
        ('리뷰작성', 300, 5, 'GOLD');
 
 insert into users (user_no, user_id, user_password, user_name, user_phone_number, user_email,
-                   user_birth, user_point, is_auth, user_status, last_login_at, grade_name)
+                   user_birth, user_point, is_auth, user_status, created_at, last_login_at, grade_name)
 values (1, 'test', '1234','test','010-1234-5678', 'test@test.com',
-        '2000-01-12', 500, false,'ACTIVE', '2000-01-12 14:35:25', 'BASIC');
+        '2000-01-12', 500, false,'ACTIVE', '2000-01-12 14:35:25', '2012-04-12 14:35:25', 'BASIC');
 
 

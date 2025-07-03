@@ -86,9 +86,9 @@ public class UserServiceImpl implements UserService {
 
         user.setUserPoint(welcomePoint);
 
+        user.setCreatedAt(LocalDateTime.now());
         user.setUserGrade(basicGrade);
         user.setUserStatus(User.Status.ACTIVE);
-        user.setLastLoginAt(LocalDateTime.now());
 
         User savedUser = userRepository.save(user);
 
@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
 
         user.setUserGrade(basicGrade);
         user.setUserStatus(User.Status.ACTIVE);
-        user.setLastLoginAt(LocalDateTime.now());
+        user.setCreatedAt(LocalDateTime.now());
 
         User savedUser = userRepository.save(user);
 
@@ -239,6 +239,4 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.existsByUserId(userId);
     }
-
-
 }

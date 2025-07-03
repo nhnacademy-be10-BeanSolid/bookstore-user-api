@@ -21,6 +21,7 @@ public class ResponseUser {
     private int userPoint;
     private boolean isAuth;
     private String userStatus;
+    private LocalDateTime createdAt;
     private LocalDateTime lastLoginAt;
     private String userGradeName;
 
@@ -35,8 +36,8 @@ public class ResponseUser {
         this.userPoint = user.getUserPoint();
         this.isAuth = user.isAuth();
         this.userStatus = user.getUserStatus().name();
+        this.createdAt = user.getCreatedAt();
         this.lastLoginAt = user.getLastLoginAt();
         this.userGradeName = user.getUserGrade().getGradeName().name();
     }
-
 }

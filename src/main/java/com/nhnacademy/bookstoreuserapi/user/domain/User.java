@@ -65,7 +65,10 @@ public class User {
     @Column(name = "user_status", nullable = false)
     private Status userStatus;
 
-    @Column(name = "last_login_at", nullable = false)
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "last_login_at")
     private LocalDateTime lastLoginAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

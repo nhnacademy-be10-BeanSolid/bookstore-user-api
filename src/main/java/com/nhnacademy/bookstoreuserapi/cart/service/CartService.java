@@ -1,25 +1,18 @@
 package com.nhnacademy.bookstoreuserapi.cart.service;
 
-import com.nhnacademy.bookstoreuserapi.cart.domain.CartUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.cart.domain.CartCreateRequest;
-import com.nhnacademy.bookstoreuserapi.cart.domain.ResponseCart;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.nhnacademy.bookstoreuserapi.cart.context.CartContext;
+import com.nhnacademy.bookstoreuserapi.cart.dto.request.CartAddItemRequest;
+import com.nhnacademy.bookstoreuserapi.cart.dto.request.CartUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.cart.dto.response.CartCreateResponse;
+import com.nhnacademy.bookstoreuserapi.cart.dto.response.CartResponse;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface CartService {
-
-    ResponseCart addCart(String userId, CartCreateRequest cart);
-
-    Optional<ResponseCart> editCart(String userId, long cartId, CartUpdateRequest cart);
-
-    ResponseCart getCart(String userId, long cartId);
-
-    Page<ResponseCart> getCartsByUserId(String userId, Pageable pageable);
-
-    void deleteCart(String userId, long cartId);
-
-    void deleteCartsByUserId(String userId);
-
+    CartCreateResponse createCart(CartContext context);
+    CartResponse getCart(CartContext context);
+    void addItem(CartContext context, CartAddItemRequest request);
+    void updateItem(CartContext context, Long itemId, CartUpdateRequest request);
+    void deleteItem(CartContext context, Long itemId);
+    void deleteItems(CartContext context, List<Long> itemIds);
 }

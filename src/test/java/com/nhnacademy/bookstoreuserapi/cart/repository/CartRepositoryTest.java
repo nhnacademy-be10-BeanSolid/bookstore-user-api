@@ -1,7 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.cart.repository;
 
 import com.nhnacademy.bookstoreuserapi.cart.domain.QCart;
-import com.nhnacademy.bookstoreuserapi.cart.domain.ResponseCart;
+import com.nhnacademy.bookstoreuserapi.cart.domain.response.CartResponse;
 import com.nhnacademy.bookstoreuserapi.cart.repository.queryfactory.impl.CartRepositoryImpl;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -24,7 +24,7 @@ class CartRepositoryTest {
     private JPAQueryFactory queryFactory;
 
     @Mock
-    private JPAQuery<ResponseCart> cartQuery;
+    private JPAQuery<CartResponse> cartQuery;
 
     @Mock
     private JPAQuery<Long> countQuery;
@@ -44,23 +44,23 @@ class CartRepositoryTest {
         Pageable pageable = PageRequest.of(0, 10);
         QCart cart = QCart.cart;
 
-        ResponseCart responseCart = new ResponseCart(1L, 101L, userId, 3);
+        CartResponse cartResponse = new CartResponse(1L, 101L, userId, 3);
 
-        when(queryFactory.select(Projections.constructor(ResponseCart.class,
+        when(queryFactory.select(Projections.constructor(CartResponse.class,
                 cart.cartId, cart.bookId, cart.user.userId, cart.quantity)))
                 .thenReturn(cartQuery);
         when(cartQuery.from(cart)).thenReturn(cartQuery);
         when(cartQuery.where(cart.user.userId.eq(userId))).thenReturn(cartQuery);
         when(cartQuery.offset(pageable.getOffset())).thenReturn(cartQuery);
         when(cartQuery.limit(pageable.getPageSize())).thenReturn(cartQuery);
-        when(cartQuery.fetch()).thenReturn(List.of(responseCart));
+        when(cartQuery.fetch()).thenReturn(List.of(cartResponse));
 
         when(queryFactory.select(cart.count())).thenReturn(countQuery);
         when(countQuery.from(cart)).thenReturn(countQuery);
         when(countQuery.where(cart.user.userId.eq(userId))).thenReturn(countQuery);
         when(countQuery.fetchOne()).thenReturn(1L);
 
-        Page<ResponseCart> result = cartRepository.findAllByUserId(userId, pageable);
+        Page<CartResponse> result = cartRepository.findAllByUserId(userId, pageable);
 
         assertThat(result).hasSize(1);
         assertThat(result.getTotalElements()).isEqualTo(1);
@@ -74,9 +74,9 @@ class CartRepositoryTest {
         long bookId = 101L;
         QCart cart = QCart.cart;
 
-        ResponseCart expectedCart = new ResponseCart(1L, bookId, userId, 2);
+        CartResponse expectedCart = new CartResponse(1L, bookId, userId, 2);
 
-        when(queryFactory.select(Projections.constructor(ResponseCart.class,
+        when(queryFactory.select(Projections.constructor(CartResponse.class,
                 cart.cartId, cart.bookId, cart.user.userId, cart.quantity)))
                 .thenReturn(cartQuery);
         when(cartQuery.from(cart)).thenReturn(cartQuery);
@@ -85,7 +85,7 @@ class CartRepositoryTest {
                 .thenReturn(cartQuery);
         when(cartQuery.fetchOne()).thenReturn(expectedCart);
 
-        ResponseCart result = cartRepository.findByUserIdAndBookId(userId, bookId);
+        CartResponse result = cartRepository.findByUserIdAndBookId(userId, bookId);
 
         assertThat(result).isNotNull();
         assertThat(result.getUserId()).isEqualTo(userId);

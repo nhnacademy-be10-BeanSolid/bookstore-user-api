@@ -7,10 +7,11 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    User findByUserId(String userId);
+    Optional<User> findByUserId(String userId);
 
     @Modifying(clearAutomatically = true)
     @Query("update User u set u.lastLoginAt = :lastLoginAt where u.userId = :userId")

@@ -4,10 +4,10 @@ package com.nhnacademy.bookstoreuserapi.cart.service;
 import com.nhnacademy.bookstoreuserapi.cart.domain.Cart;
 import com.nhnacademy.bookstoreuserapi.user.domain.User;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
-import com.nhnacademy.bookstoreuserapi.cart.domain.CartUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.cart.domain.CartCreateRequest;
-import com.nhnacademy.bookstoreuserapi.cart.domain.ResponseCart;
-import com.nhnacademy.bookstoreuserapi.cart.exception.CartAlreadyExistException;
+import com.nhnacademy.bookstoreuserapi.cart.domain.request.CartUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.cart.domain.request.CartCreateRequest;
+import com.nhnacademy.bookstoreuserapi.cart.domain.response.CartResponse;
+import com.nhnacademy.bookstoreuserapi.cart.exception.CartAlreadyExistsException;
 import com.nhnacademy.bookstoreuserapi.cart.exception.CartNotFoundException;
 import com.nhnacademy.bookstoreuserapi.cart.repository.CartRepository;
 import com.nhnacademy.bookstoreuserapi.user.repository.UserRepository;
@@ -86,9 +86,9 @@ class CartServiceTest {
                 .userGrade(userGrade)
                 .build();
         Cart cart = new Cart(cartCreateRequest, user);
-        Mockito.when(cartRepository.findByUserIdAndBookId("user123", 1L)).thenReturn(new ResponseCart(
+        Mockito.when(cartRepository.findByUserIdAndBookId("user123", 1L)).thenReturn(new CartResponse(
                 cart.getCartId(), cart.getBookId(), cart.getUser().getUserId(), cart.getQuantity()));
-        Assertions.assertThrows(CartAlreadyExistException.class, () -> cartService.addCart("user123", cartCreateRequest));
+        Assertions.assertThrows(CartAlreadyExistsException.class, () -> cartService.addCart("user123", cartCreateRequest));
         Mockito.verify(cartRepository, Mockito.times(1)).findByUserIdAndBookId("user123", 1L);
         Mockito.verify(userRepository, Mockito.never()).findByUserId(Mockito.anyString());
         Mockito.verify(cartRepository, Mockito.never()).save(Mockito.any(Cart.class));
@@ -116,7 +116,7 @@ class CartServiceTest {
         existingCart.setCartId(cartId);
         Mockito.when(cartRepository.findById(cartId)).thenReturn(Optional.of(existingCart));
         CartUpdateRequest cartUpdateRequest = new CartUpdateRequest(5);
-        Optional<ResponseCart> updatedCart = cartService.editCart("user123", cartId, cartUpdateRequest);
+        Optional<CartResponse> updatedCart = cartService.editCart("user123", cartId, cartUpdateRequest);
         Assertions.assertTrue(updatedCart.isPresent());
         Mockito.verify(cartRepository, Mockito.times(1)).findById(cartId);
         Assertions.assertEquals(5, updatedCart.get().getQuantity());
@@ -144,7 +144,7 @@ class CartServiceTest {
         existingCart.setCartId(cartId);
         Mockito.when(cartRepository.findById(cartId)).thenReturn(Optional.of(existingCart));
         CartUpdateRequest cartUpdateRequest = new CartUpdateRequest(0);
-        Optional<ResponseCart> updatedCart = cartService.editCart("user123", cartId, cartUpdateRequest);
+        Optional<CartResponse> updatedCart = cartService.editCart("user123", cartId, cartUpdateRequest);
         Assertions.assertTrue(updatedCart.isEmpty());
         Mockito.verify(cartRepository, Mockito.times(2)).findById(cartId);
         Mockito.verify(cartRepository,  Mockito.times(1)).delete(existingCart);
@@ -203,18 +203,18 @@ class CartServiceTest {
                 .build();
         Cart existingCart = new Cart(cartCreateRequest, user);
         existingCart.setCartId(cartId);
-        ResponseCart expectedResponse = new ResponseCart(
+        CartResponse expectedResponse = new CartResponse(
                 existingCart.getCartId(),
                 existingCart.getBookId(),
                 existingCart.getUser().getUserId(),
                 existingCart.getQuantity());
         Pageable pageable = PageRequest.of(0,20);
 
-        Page<ResponseCart> page = new PageImpl<>(List.of(expectedResponse), pageable, 1);
+        Page<CartResponse> page = new PageImpl<>(List.of(expectedResponse), pageable, 1);
 
         Mockito.when(userRepository.existsByUserId("user123")).thenReturn(true);
         Mockito.when(cartRepository.findAllByUserId("user123", pageable)).thenReturn(page);
-        Page<ResponseCart> result = cartService.getCartsByUserId("user123", pageable);
+        Page<CartResponse> result = cartService.getCartsByUserId("user123", pageable);
 
         Assertions.assertEquals(1, result.getTotalElements());
         Assertions.assertEquals(expectedResponse, result.getContent().getFirst());

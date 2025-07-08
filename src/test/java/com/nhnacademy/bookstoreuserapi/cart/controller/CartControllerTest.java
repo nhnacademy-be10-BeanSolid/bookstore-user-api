@@ -1,9 +1,9 @@
 package com.nhnacademy.bookstoreuserapi.cart.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstoreuserapi.cart.domain.CartUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.cart.domain.CartCreateRequest;
-import com.nhnacademy.bookstoreuserapi.cart.exception.CartAlreadyExistException;
+import com.nhnacademy.bookstoreuserapi.cart.domain.request.CartUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.cart.domain.request.CartCreateRequest;
+import com.nhnacademy.bookstoreuserapi.cart.exception.CartAlreadyExistsException;
 import com.nhnacademy.bookstoreuserapi.cart.exception.CartNotFoundException;
 import com.nhnacademy.bookstoreuserapi.cart.service.CartService;
 import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
@@ -50,7 +50,7 @@ class CartControllerTest {
     @Test
     void addCartFailAlreadyExist() throws Exception {
         CartCreateRequest cart = new CartCreateRequest(1, "user123", 3);
-        Mockito.when(cartService.addCart("user123", cart)).thenThrow(new CartAlreadyExistException("user123", 1L));
+        Mockito.when(cartService.addCart("user123", cart)).thenThrow(new CartAlreadyExistsException("user123", 1L));
         mockMvc.perform(MockMvcRequestBuilders.post("/carts/me")
                         .header("X-USER-ID", "user123")
                         .contentType(MediaType.APPLICATION_JSON)

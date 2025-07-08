@@ -1,12 +1,11 @@
 package com.nhnacademy.bookstoreuserapi.cart.repository.queryfactory;
 
-import com.nhnacademy.bookstoreuserapi.cart.domain.ResponseCart;
+import com.nhnacademy.bookstoreuserapi.cart.dto.response.CartItemDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 
 public interface CartRepositoryCustom {
-    Page<ResponseCart> findAllByUserId(String userId, Pageable pageable);
-
-    ResponseCart findByUserIdAndBookId(String userId, long bookId);
+    List<CartItemDto> findAllByCartId(Long cartId);
 }

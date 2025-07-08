@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Table(
-        name = "address",
+        name = "addresses",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"userNo", "addressDetail"})
+                @UniqueConstraint(columnNames = {"user_no", "address_Detail"})
         }
 )public class Address {
     @Id

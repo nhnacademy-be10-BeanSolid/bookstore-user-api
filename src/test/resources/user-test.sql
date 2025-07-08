@@ -1,21 +1,21 @@
 delete from cart;
-delete from point;
-delete from point_type;
-delete from address;
-delete from review;
+delete from points;
+delete from point_types;
+delete from addresses;
+delete from reviews;
 delete from users;
-delete from user_grade;
+delete from user_grades;
 
 ALTER TABLE users ALTER COLUMN user_no RESTART WITH 2;
 
-INSERT INTO user_grade(grade_name, required_money)
+INSERT INTO user_grades(grade_name, required_money)
 values ('BASIC', 500),
        ('ROYAL', 750),
        ('GOLD', 1000);
 
-ALTER TABLE point_type ALTER COLUMN type_id RESTART WITH 1;
+ALTER TABLE point_types ALTER COLUMN type_id RESTART WITH 1;
 
-INSERT INTO point_type (type_name, earning_point, earning_rate, grade_name)
+INSERT INTO point_types (type_name, earning_point, earning_rate, grade_name)
 VALUES ('회원가입', 1000, 10, 'BASIC'),
        ('리뷰작성', 300, 5, 'GOLD');
 

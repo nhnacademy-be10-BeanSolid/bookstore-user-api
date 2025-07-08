@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "point_type")
+@Table(name = "point_types")
 @Getter
 @Setter
 @AllArgsConstructor

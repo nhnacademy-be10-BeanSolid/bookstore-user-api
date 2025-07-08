@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "user_grade")
+@Table(name = "user_grades")
 public class UserGrade {
     @Id
     @Enumerated(EnumType.STRING)

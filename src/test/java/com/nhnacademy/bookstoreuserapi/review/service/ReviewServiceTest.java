@@ -71,13 +71,14 @@ class ReviewServiceTest {
         Mockito.when(reviewRepository.findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId())).thenReturn(null);
         Mockito.when(reviewRepository.save(Mockito.any(Review.class))).thenReturn(review);
         Mockito.when(pointTypeRepository.findEarningPointByTypeName("리뷰작성")).thenReturn(500);
-
+        Mockito.when(pointTypeRepository.findTypeIdByTypeName("리뷰작성")).thenReturn(2L);
 
 
         reviewService.addReview("user123", reviewCreateRequest);
         Mockito.verify(reviewRepository, Mockito.times(1)).findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId());
         Mockito.verify(reviewRepository, Mockito.times(1)).save(Mockito.any(Review.class));
         Mockito.verify(pointTypeRepository).findEarningPointByTypeName("리뷰작성");
+        Mockito.verify(pointTypeRepository).findTypeIdByTypeName("리뷰작성");
         Mockito.verify(userRepository).updatePointByUserId("user123", 500);
 
         Mockito.verify(pointService).savePoint(
@@ -85,7 +86,7 @@ class ReviewServiceTest {
                 Mockito.argThat(request ->
                         request.userId().equals("user123") &&
                                 request.typeId().equals(2L) &&
-                                request.paymentId() == null &&
+                                request.orderNo() == null &&
                                 request.earnedAndUsedPoint() == 500
                 )
         );

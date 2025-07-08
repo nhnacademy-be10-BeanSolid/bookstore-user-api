@@ -66,7 +66,7 @@ class PointServiceTest {
 
         assertThat(response).isNotNull();
         assertThat(response.getUserId()).isEqualTo(userId);
-        assertThat(response.getPaymentId()).isEqualTo(2L);
+        assertThat(response.getOrderNo()).isEqualTo(2L);
         assertThat(response.getEarnedAndUsedPoint()).isEqualTo(1000L);
         Pageable pageable = PageRequest.of(0, 10);
 

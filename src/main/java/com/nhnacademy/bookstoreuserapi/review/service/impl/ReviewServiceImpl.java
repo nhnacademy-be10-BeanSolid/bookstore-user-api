@@ -48,12 +48,13 @@ public class ReviewServiceImpl implements ReviewService {
         Review savedReview = reviewRepository.save(new Review(review, user));
 
         int reviewPoint = pointTypeRepository.findEarningPointByTypeName("리뷰작성");
+        long typeId = pointTypeRepository.findTypeIdByTypeName("리뷰작성");
 
         userRepository.updatePointByUserId(review.userId(), reviewPoint);
 
         PointCreateRequest pointCreateRequest = new PointCreateRequest(
                 userId,
-                2L,
+                typeId,
                 null,
                 LocalDateTime.now(),
                 reviewPoint

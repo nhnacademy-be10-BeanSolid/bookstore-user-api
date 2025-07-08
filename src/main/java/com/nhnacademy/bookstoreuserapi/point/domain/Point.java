@@ -31,9 +31,8 @@ public class Point {
     @JoinColumn(name = "type_id", nullable = false)
     private PointType pointType;
 
-    // 관계매핑필요
-    @Column(name = "payment_id")
-    private Long paymentId;
+    @Column(name = "order_no")
+    private Long orderNo;
 
     @Column(name = "earned_and_used_at", nullable = false)
     private LocalDateTime earnedAndUsedAt;

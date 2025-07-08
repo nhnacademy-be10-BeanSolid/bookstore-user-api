@@ -1,6 +1,6 @@
 -- user-api 테이블 생성 코드
 
-CREATE TABLE `user_grade` (
+CREATE TABLE `user_grades` (
     `grade_name`	VARCHAR(10)	NOT NULL	COMMENT '일반, 로얄, 골드, 플래티넘 등등',
     `required_money`	BIGINT	NOT NULL,
 
@@ -28,7 +28,7 @@ CREATE TABLE `users` (
 );
 
 
-CREATE TABLE `address` (
+CREATE TABLE `addresses` (
     `address_id`	BIGINT	NOT NULL AUTO_INCREMENT,
     `address_nick_name`	VARCHAR(30)	NOT NULL,
     `address_Detail`	VARCHAR(255)	NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE `address` (
 );
 
 
-CREATE TABLE `point_type` (
+CREATE TABLE `point_types` (
     `type_id`	BIGINT	NOT NULL AUTO_INCREMENT,
     `type_name`	VARCHAR(20)	NOT NULL	COMMENT '회원가입, 리뷰작성, 도서 구매, 3개월 이내 순수 주문금액',
     `earning_point`	BIGINT	NULL	    COMMENT '회원가입 : 5000, 리뷰작성 : 500',
@@ -76,7 +76,7 @@ CREATE TABLE `cart` (
     foreign key (user_no) references users(user_no)
 );
 
-CREATE TABLE `review` (
+CREATE TABLE `reviews` (
     `review_id`	BIGINT	NOT NULL AUTO_INCREMENT,
     `book_id`	BIGINT	NOT NULL,
     `user_no`	BIGINT	NOT NULL,
@@ -91,7 +91,7 @@ CREATE TABLE `review` (
     foreign key (user_no) references users(user_no)
 );
 
-CREATE TABLE `point` (
+CREATE TABLE `points` (
     `point_id`	BIGINT	NOT NULL AUTO_INCREMENT,
     `user_no`	BIGINT	NOT NULL,
     `type_id`	BIGINT	NOT NULL,

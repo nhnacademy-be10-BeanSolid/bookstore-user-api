@@ -1,12 +1,12 @@
 package com.nhnacademy.bookstoreuserapi.cart.domain;
 
+import com.nhnacademy.bookstoreuserapi.common.entity.BaseTimeEntity;
 import com.nhnacademy.bookstoreuserapi.user.domain.User;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Table(name = "carts")
-public class Cart {
+public class Cart extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartId;
@@ -40,12 +40,6 @@ public class Cart {
     @JoinColumn(name = "cart_id")
     private List<CartItem> items = new ArrayList<>();
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
-
     public Cart(User user) {
         this.user = user;
         this.ownerType = OwnerType.USER;
@@ -57,7 +51,9 @@ public class Cart {
     }
 
     public void addItem(Long itemId, int quantity) {
-        this.items.add(new CartItem(itemId, quantity));
+        CartItem item = new CartItem(itemId, quantity);
+        item.setCart(this);
+        this.items.add(item);
     }
 
     public void removeItem(Long itemId) {

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 @NoArgsConstructor
@@ -16,6 +18,17 @@ public class CartItem {
     private Long itemId;
 
     private Integer quantity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
+
+    @PrePersist @PreUpdate
+    private void touchParent() {
+        if(cart != null) {
+            cart.setUpdatedAt(LocalDateTime.now());
+        }
+    }
 
     public CartItem(Long itemId, Integer quantity) {
         this.itemId = itemId;

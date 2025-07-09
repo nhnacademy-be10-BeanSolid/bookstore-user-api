@@ -2,17 +2,16 @@ package com.nhnacademy.bookstoreuserapi.review.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstoreuserapi.review.domain.ReviewUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.review.domain.ReviewCreateRequest;
+import com.nhnacademy.bookstoreuserapi.review.domain.ReviewUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.review.exception.ReviewAlreadyExistsBookException;
 import com.nhnacademy.bookstoreuserapi.review.exception.ReviewNotFoundException;
 import com.nhnacademy.bookstoreuserapi.review.service.ReviewService;
-import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = ReviewController.class)
-@EntityScan("com.nhnacademy.bookstoreuserapi")
 @AutoConfigureMockMvc
 class ReviewControllerTest {
     @Autowired

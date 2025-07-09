@@ -1,18 +1,17 @@
 package com.nhnacademy.bookstoreuserapi.usergrade.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGradeUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGradeCreateRequest;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGradeUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.usergrade.exception.UserGradeAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.usergrade.exception.UserGradeNotFoundException;
 import com.nhnacademy.bookstoreuserapi.usergrade.service.UserGradeService;
-import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,7 +22,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = UserGradeController.class)
-@EntityScan("com.nhnacademy.bookstoreuserapi")
 @AutoConfigureMockMvc
 class UserGradeControllerTest {
     @Autowired

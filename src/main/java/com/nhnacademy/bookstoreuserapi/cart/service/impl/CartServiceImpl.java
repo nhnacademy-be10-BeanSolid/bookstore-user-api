@@ -2,6 +2,7 @@ package com.nhnacademy.bookstoreuserapi.cart.service.impl;
 
 import com.nhnacademy.bookstoreuserapi.cart.context.CartContext;
 import com.nhnacademy.bookstoreuserapi.cart.domain.Cart;
+import com.nhnacademy.bookstoreuserapi.cart.domain.OwnerType;
 import com.nhnacademy.bookstoreuserapi.cart.dto.request.CartAddItemRequest;
 import com.nhnacademy.bookstoreuserapi.cart.dto.request.CartUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.cart.dto.response.CartCreateResponse;
@@ -123,10 +124,10 @@ public class CartServiceImpl implements CartService {
 
     private Cart findCart(CartContext context) {
         if (context.isUser()) {
-            return cartRepository.findByUser_UserId(context.getUserId())
+            return cartRepository.findByOwnerTypeAndUser_UserId(OwnerType.USER, context.getUserId())
                     .orElseThrow(() -> new CartNotFoundException("해당 사용자(userId: " + context.getUserId() + ")의 장바구니를 찾을 수 없습니다."));
         } else {
-            return cartRepository.findByGuestUUID(context.getGuestUUID())
+            return cartRepository.findByOwnerTypeAndGuestUUID(OwnerType.GUEST, context.getGuestUUID())
                     .orElseThrow(() -> new CartNotFoundException("해당 게스트(UUID: " + context.getGuestUUID() + ")의 장바구니를 찾을 수 없습니다."));
         }
     }

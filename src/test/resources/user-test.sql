@@ -1,11 +1,3 @@
-delete from cart;
-delete from points;
-delete from point_types;
-delete from addresses;
-delete from reviews;
-delete from users;
-delete from user_grades;
-
 ALTER TABLE users ALTER COLUMN user_no RESTART WITH 2;
 
 INSERT INTO user_grades(grade_name, required_money)

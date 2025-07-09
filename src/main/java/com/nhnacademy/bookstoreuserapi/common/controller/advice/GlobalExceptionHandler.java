@@ -2,7 +2,9 @@ package com.nhnacademy.bookstoreuserapi.common.controller.advice;
 
 import com.nhnacademy.bookstoreuserapi.common.exception.CustomHttpException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -21,6 +23,17 @@ public class GlobalExceptionHandler {
                 e.getMessage()
         );
         return ResponseEntity.status(statusCode).body(errorMessage);
+    }
+
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    public ResponseEntity<ErrorMessage> handleException(MissingRequestHeaderException e, HttpServletRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                request.getRequestURI(),
+                e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
     }
 
     @ExceptionHandler(Exception.class)

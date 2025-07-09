@@ -26,9 +26,11 @@ public class Cart extends BaseTimeEntity {
     @Column(name = "guest_uuid", unique = true, columnDefinition = "CHAR(36)")
     private String guestUUID;
 
+    @Enumerated(EnumType.STRING)
     @Column(
             name = "owner_type",
-            columnDefinition = "ENUM('USER', 'GUEST') NOT NULL"
+            nullable = false,
+            columnDefinition = "ENUM('USER', 'GUEST')"
     )
     private OwnerType ownerType;
 

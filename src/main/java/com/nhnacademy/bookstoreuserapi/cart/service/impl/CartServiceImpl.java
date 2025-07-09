@@ -10,7 +10,6 @@ import com.nhnacademy.bookstoreuserapi.cart.dto.response.CartResponse;
 import com.nhnacademy.bookstoreuserapi.cart.exception.CartAlreadyExistsException;
 import com.nhnacademy.bookstoreuserapi.cart.exception.CartItemNotFoundException;
 import com.nhnacademy.bookstoreuserapi.cart.exception.CartNotFoundException;
-import com.nhnacademy.bookstoreuserapi.cart.repository.CartItemRepository;
 import com.nhnacademy.bookstoreuserapi.cart.repository.CartRepository;
 import com.nhnacademy.bookstoreuserapi.cart.service.CartService;
 import com.nhnacademy.bookstoreuserapi.user.domain.User;
@@ -31,7 +30,6 @@ public class CartServiceImpl implements CartService {
     private static final int MAX_ATTEMPTS = 5;
 
     private final CartRepository cartRepository;
-    private final CartItemRepository cartItemRepository;
     private final UserRepository userRepository;
 
     @Override
@@ -47,7 +45,7 @@ public class CartServiceImpl implements CartService {
         if (cartRepository.existsByUser_UserId(userId)) {
             throw new CartAlreadyExistsException(userId);
         }
-        if(userRepository.existsByUserId(userId)) {
+        if(!userRepository.existsByUserId(userId)) {
             throw new UserNotFoundException(userId);
         }
         User user = userRepository.findByUserId(userId);

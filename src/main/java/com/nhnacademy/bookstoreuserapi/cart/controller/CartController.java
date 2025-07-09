@@ -33,44 +33,40 @@ public class CartController {
     }
 
     @PostMapping("/items")
-    public ResponseEntity<Void> addItemToCart(
+    public ResponseEntity<CartResponse> addItemToCart(
             CartContext ctx,
             @Valid @RequestBody CartAddItemRequest request,
             BindingResult bindingResult
     ) {
         validate(bindingResult);
-        cartService.addItem(ctx, request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(cartService.addItem(ctx, request));
     }
 
     @PatchMapping("/items/{itemId}")
-    public ResponseEntity<Void> updateItemQuantity(
+    public ResponseEntity<CartResponse> updateItemQuantity(
             CartContext ctx,
             @PathVariable("itemId") Long itemId,
             @Valid @RequestBody CartUpdateRequest request,
             BindingResult bindingResult
     ) {
         validate(bindingResult);
-        cartService.updateItem(ctx, itemId, request);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(cartService.updateItem(ctx, itemId, request));
     }
 
     @DeleteMapping("/items/{itemId}")
-    public ResponseEntity<Void> deleteItemFromCart(
+    public ResponseEntity<CartResponse> deleteItemFromCart(
             CartContext ctx,
             @PathVariable("itemId") Long itemId
     ) {
-        cartService.deleteItem(ctx, itemId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(cartService.deleteItem(ctx, itemId));
     }
 
     @DeleteMapping("/items")
-    public ResponseEntity<Void> deleteItemsFromCart(
+    public ResponseEntity<CartResponse> deleteItemsFromCart(
             CartContext ctx,
             @RequestBody List<Long> itemIds
     ) {
-        cartService.deleteItems(ctx, itemIds);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(cartService.deleteItems(ctx, itemIds));
     }
 
     private void validate(BindingResult bindingResult) {

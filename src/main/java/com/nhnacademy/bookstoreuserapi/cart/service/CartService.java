@@ -11,8 +11,8 @@ import java.util.List;
 public interface CartService {
     CartCreateResponse createCart(CartContext context);
     CartResponse getCart(CartContext context);
-    void addItem(CartContext context, CartAddItemRequest request);
-    void updateItem(CartContext context, Long itemId, CartUpdateRequest request);
-    void deleteItem(CartContext context, Long itemId);
-    void deleteItems(CartContext context, List<Long> itemIds);
+    CartResponse addItem(CartContext context, CartAddItemRequest request);
+    CartResponse updateItem(CartContext context, Long itemId, CartUpdateRequest request);
+    CartResponse deleteItem(CartContext context, Long itemId);
+    CartResponse deleteItems(CartContext context, List<Long> itemIds);
 }

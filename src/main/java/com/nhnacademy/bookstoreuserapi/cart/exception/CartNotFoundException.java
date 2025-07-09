@@ -3,7 +3,7 @@ package com.nhnacademy.bookstoreuserapi.cart.exception;
 import com.nhnacademy.bookstoreuserapi.common.exception.NotFoundException;
 
 public class CartNotFoundException extends NotFoundException {
-    public CartNotFoundException(long cartId) {
-        super("Cart not found with ID: " + cartId);
+    public CartNotFoundException(String message) {
+        super(message);
     }
 }

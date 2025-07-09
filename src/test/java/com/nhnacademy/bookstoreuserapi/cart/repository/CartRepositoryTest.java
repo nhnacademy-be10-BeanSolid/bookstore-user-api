@@ -2,7 +2,7 @@ package com.nhnacademy.bookstoreuserapi.cart.repository;
 
 import com.nhnacademy.bookstoreuserapi.cart.domain.QCart;
 import com.nhnacademy.bookstoreuserapi.cart.domain.response.CartResponse;
-import com.nhnacademy.bookstoreuserapi.cart.repository.queryfactory.impl.CartRepositoryImpl;
+import com.nhnacademy.bookstoreuserapi.cart.repository.queryfactory.impl.CartItemRepositoryImpl;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -29,12 +29,12 @@ class CartRepositoryTest {
     @Mock
     private JPAQuery<Long> countQuery;
 
-    private CartRepositoryImpl cartRepository;
+    private CartItemRepositoryImpl cartRepository;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        cartRepository = new CartRepositoryImpl(queryFactory);
+        cartRepository = new CartItemRepositoryImpl(queryFactory);
     }
 
     @Test

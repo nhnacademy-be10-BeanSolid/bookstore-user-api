@@ -13,12 +13,16 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartItemId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id")
-    private Cart cart;
+    private Long itemId;
 
-    private Long bookId;
+    private Integer quantity;
 
-    private int quantity;
+    public CartItem(Long itemId, Integer quantity) {
+        this.itemId = itemId;
+        this.quantity = quantity;
+    }
 
+    public void updateQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 }

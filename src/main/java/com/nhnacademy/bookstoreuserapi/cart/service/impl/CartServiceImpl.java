@@ -2,14 +2,13 @@ package com.nhnacademy.bookstoreuserapi.cart.service.impl;
 
 import com.nhnacademy.bookstoreuserapi.cart.context.CartContext;
 import com.nhnacademy.bookstoreuserapi.cart.domain.Cart;
-import com.nhnacademy.bookstoreuserapi.cart.domain.CartItem;
-import com.nhnacademy.bookstoreuserapi.cart.domain.OwnerType;
 import com.nhnacademy.bookstoreuserapi.cart.dto.request.CartAddItemRequest;
 import com.nhnacademy.bookstoreuserapi.cart.dto.request.CartUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.cart.dto.response.CartCreateResponse;
 import com.nhnacademy.bookstoreuserapi.cart.dto.response.CartItemDto;
 import com.nhnacademy.bookstoreuserapi.cart.dto.response.CartResponse;
 import com.nhnacademy.bookstoreuserapi.cart.exception.CartAlreadyExistsException;
+import com.nhnacademy.bookstoreuserapi.cart.exception.CartItemNotFoundException;
 import com.nhnacademy.bookstoreuserapi.cart.exception.CartNotFoundException;
 import com.nhnacademy.bookstoreuserapi.cart.repository.CartItemRepository;
 import com.nhnacademy.bookstoreuserapi.cart.repository.CartRepository;
@@ -17,18 +16,20 @@ import com.nhnacademy.bookstoreuserapi.cart.service.CartService;
 import com.nhnacademy.bookstoreuserapi.user.domain.User;
 import com.nhnacademy.bookstoreuserapi.user.exception.UserNotFoundException;
 import com.nhnacademy.bookstoreuserapi.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class CartServiceImpl implements CartService {
+    private static final int MAX_ATTEMPTS = 5;
+
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final UserRepository userRepository;
@@ -38,16 +39,18 @@ public class CartServiceImpl implements CartService {
         if (context.isUser()) {
             return createUserCart(context.getUserId());
         } else {
-            return createGuestCart();
+            return createGuestCartWithRetry();
         }
     }
 
     private CartCreateResponse createUserCart(String userId) {
-        if (cartRepository.existsByUserIdAndOwnerType(userId, OwnerType.USER)) {
+        if (cartRepository.existsByUser_UserId(userId)) {
             throw new CartAlreadyExistsException(userId);
         }
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        if(userRepository.existsByUserId(userId)) {
+            throw new UserNotFoundException(userId);
+        }
+        User user = userRepository.findByUserId(userId);
 
         Cart cart = new Cart(user);
         Cart saved = cartRepository.save(cart);
@@ -60,62 +63,87 @@ public class CartServiceImpl implements CartService {
                 .build();
     }
 
-    private CartCreateResponse createGuestCart() {
-        String guestUUID = UUID.randomUUID().toString();
-        Cart cart = new Cart(guestUUID);
-        Cart saved = cartRepository.save(cart);
-        return CartCreateResponse.builder()
-                .cartId(saved.getCartId())
-                .guestUUID(saved.getGuest_uuid())
-                .ownerType(saved.getOwnerType())
-                .createdAt(saved.getCreatedAt())
-                .build();
+    private CartCreateResponse createGuestCartWithRetry() {
+        for(int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+            String guestUUID = UUID.randomUUID().toString();
+            Cart cart = new Cart(guestUUID);
+            try {
+                Cart saved = cartRepository.save(cart);
+                return CartCreateResponse.builder()
+                        .cartId(saved.getCartId())
+                        .guestUUID(saved.getGuestUUID())
+                        .ownerType(saved.getOwnerType())
+                        .createdAt(saved.getCreatedAt())
+                        .build();
+            } catch (DataIntegrityViolationException e) {
+                if(attempt == MAX_ATTEMPTS) {
+                    throw new RuntimeException("UUID 생성 재시도 실패", e);
+                }
+            }
+        }
+        throw new RuntimeException("Guest Cart 생성 중 알 수 없는 오류");
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CartResponse getCart(CartContext context) {
         Cart cart = findCart(context);
-        List<CartItemDto> items = cartItemRepository.findAllByCart(cart).stream()
-                .map(item -> new CartItemDto(item.getBookId(), item.getQuantity()))
-                .collect(Collectors.toList());
-        return new CartResponse(cart.getCartId(), items);
+        return getCurrentCartResponse(cart);
     }
 
     @Override
-    public void addItem(CartContext context, CartAddItemRequest request) {
+    public CartResponse addItem(CartContext context, CartAddItemRequest request) {
         Cart cart = findCart(context);
-        CartItem item = new CartItem(cart, request.getItemId(), request.getQuantity());
-        cartItemRepository.save(item);
+        cart.addItem(request.itemId(), request.quantity());
+        return getCurrentCartResponse(cart);
     }
 
     @Override
-    public void updateItem(CartContext context, Long itemId, CartUpdateRequest request) {
+    public CartResponse updateItem(CartContext context, Long itemId, CartUpdateRequest request) {
         Cart cart = findCart(context);
-        CartItem item = cartItemRepository.findByCartAndBookId(cart, itemId)
-                .orElseThrow(() -> new CartNotFoundException(itemId));
-        item.updateQuantity(request.quantity());
-        cartItemRepository.save(item);
+        cart.getItems().stream()
+                .filter(i -> i.getItemId().equals(itemId))
+                .findFirst()
+                .orElseThrow(() -> new CartItemNotFoundException(itemId))
+                .updateQuantity(request.quantity());
+        return getCurrentCartResponse(cart);
     }
 
     @Override
-    public void deleteItem(CartContext context, Long itemId) {
+    public CartResponse deleteItem(CartContext context, Long itemId) {
         Cart cart = findCart(context);
-        cartItemRepository.deleteByCartAndBookId(cart, itemId);
+        cart.removeItem(itemId);
+        return getCurrentCartResponse(cart);
     }
 
     @Override
-    public void deleteItems(CartContext context, List<Long> itemIds) {
+    public CartResponse deleteItems(CartContext context, List<Long> itemIds) {
         Cart cart = findCart(context);
-        cartItemRepository.deleteAllByCartAndBookIdIn(cart, itemIds);
+        itemIds.forEach(cart::removeItem);
+        return getCurrentCartResponse(cart);
     }
 
     private Cart findCart(CartContext context) {
         if (context.isUser()) {
-            return cartRepository.findByUserId(context.getUserId())
-                    .orElseThrow(() -> new CartNotFoundException(0));
+            return cartRepository.findByUser_UserId(context.getUserId())
+                    .orElseThrow(() -> new CartNotFoundException("해당 사용자(userId: " + context.getUserId() + ")의 장바구니를 찾을 수 없습니다."));
         } else {
             return cartRepository.findByGuestUUID(context.getGuestUUID())
-                    .orElseThrow(() -> new CartNotFoundException(0));
+                    .orElseThrow(() -> new CartNotFoundException("해당 게스트(UUID: " + context.getGuestUUID() + ")의 장바구니를 찾을 수 없습니다."));
         }
+    }
+
+    private CartResponse getCurrentCartResponse(Cart cart) {
+        List<CartItemDto> itemDtos = cart.getItems().stream()
+                .map(item -> CartItemDto.builder()
+                        .itemId(item.getItemId())
+                        .quantity(item.getQuantity())
+                        .build())
+                .toList();
+
+        return CartResponse.builder()
+                .cartId(cart.getCartId())
+                .items(itemDtos)
+                .build();
     }
 }

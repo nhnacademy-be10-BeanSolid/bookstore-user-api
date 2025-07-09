@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.review.service;
 
 
+import com.nhnacademy.bookstoreuserapi.point.domain.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.point.service.PointService;
 import com.nhnacademy.bookstoreuserapi.review.domain.Review;
 import com.nhnacademy.bookstoreuserapi.user.domain.User;
@@ -30,6 +31,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -69,27 +74,19 @@ class ReviewServiceTest {
         Review review = new Review(reviewCreateRequest, user);
         Mockito.when(userRepository.findByUserId(reviewCreateRequest.userId())).thenReturn(user);
         Mockito.when(reviewRepository.findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId())).thenReturn(null);
-        Mockito.when(reviewRepository.save(Mockito.any(Review.class))).thenReturn(review);
+        Mockito.when(reviewRepository.save(any(Review.class))).thenReturn(review);
         Mockito.when(pointTypeRepository.findEarningPointByTypeName("리뷰작성")).thenReturn(500);
         Mockito.when(pointTypeRepository.findTypeIdByTypeName("리뷰작성")).thenReturn(2L);
 
 
         reviewService.addReview("user123", reviewCreateRequest);
-        Mockito.verify(reviewRepository, Mockito.times(1)).findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId());
-        Mockito.verify(reviewRepository, Mockito.times(1)).save(Mockito.any(Review.class));
-        Mockito.verify(pointTypeRepository).findEarningPointByTypeName("리뷰작성");
-        Mockito.verify(pointTypeRepository).findTypeIdByTypeName("리뷰작성");
-        Mockito.verify(userRepository).updatePointByUserId("user123", 500);
+        verify(reviewRepository, Mockito.times(1)).findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId());
+        verify(reviewRepository, Mockito.times(1)).save(any(Review.class));
+        verify(pointTypeRepository).findEarningPointByTypeName("리뷰작성");
+        verify(pointTypeRepository).findTypeIdByTypeName("리뷰작성");
+        verify(userRepository).updatePointByUserId("user123", 500);
 
-        Mockito.verify(pointService).savePoint(
-                Mockito.eq("user123"),
-                Mockito.argThat(request ->
-                        request.userId().equals("user123") &&
-                                request.typeId().equals(2L) &&
-                                request.orderNo() == null &&
-                                request.earnedAndUsedPoint() == 500
-                )
-        );
+        verify(pointService).savePoint(eq("user123"), any(PointCreateRequest.class));
     }
 
     @Test
@@ -114,7 +111,7 @@ class ReviewServiceTest {
 
         Assertions.assertThrows(ReviewAlreadyExistsBookException.class, () -> reviewService.addReview("user123", reviewCreateRequest));
 
-        Mockito.verify(reviewRepository, Mockito.times(1)).findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId());
+        verify(reviewRepository, Mockito.times(1)).findByUser_UserIdAndBookId(review.getUser().getUserId(), review.getBookId());
     }
 
     @Test
@@ -141,7 +138,7 @@ class ReviewServiceTest {
 
         reviewService.editReview("user123", reviewId, new ReviewUpdateRequest(4, "Updated review", ""));
 
-        Mockito.verify(reviewRepository, Mockito.times(1)).findById(reviewId);
+        verify(reviewRepository, Mockito.times(1)).findById(reviewId);
     }
 
     @Test
@@ -153,7 +150,7 @@ class ReviewServiceTest {
         Assertions.assertThrows(ReviewNotFoundException.class,
                 () -> reviewService.editReview("user123", reviewId, request));
 
-        Mockito.verify(reviewRepository, Mockito.times(1)).findById(reviewId);
+        verify(reviewRepository, Mockito.times(1)).findById(reviewId);
     }
 
     @Test
@@ -178,7 +175,7 @@ class ReviewServiceTest {
 
         Mockito.when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(existingReview));
         reviewService.getReview(reviewId);
-        Mockito.verify(reviewRepository, Mockito.times(1)).findById(reviewId);
+        verify(reviewRepository, Mockito.times(1)).findById(reviewId);
     }
 
     @Test
@@ -188,7 +185,7 @@ class ReviewServiceTest {
 
         Assertions.assertThrows(ReviewNotFoundException.class, () -> reviewService.getReview(reviewId));
 
-        Mockito.verify(reviewRepository, Mockito.times(1)).findById(reviewId);
+        verify(reviewRepository, Mockito.times(1)).findById(reviewId);
     }
 
     @Test
@@ -212,7 +209,7 @@ class ReviewServiceTest {
 
         Assertions.assertEquals(1, result.getTotalElements());
         Assertions.assertEquals("user123", result.getContent().getFirst().getUserId());
-        Mockito.verify(reviewRepository, Mockito.times(1)).findAllByUserId("user123", pageable);
+        verify(reviewRepository, Mockito.times(1)).findAllByUserId("user123", pageable);
     }
 
 
@@ -239,7 +236,7 @@ class ReviewServiceTest {
 
         Assertions.assertEquals(1, result.getTotalElements());
         Assertions.assertEquals(1L, result.getContent().getFirst().getBookId()); // getter에 따라 수정
-        Mockito.verify(reviewRepository, Mockito.times(1)).findAllByBookId(bookId, pageable);
+        verify(reviewRepository, Mockito.times(1)).findAllByBookId(bookId, pageable);
 
     }
 

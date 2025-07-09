@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.pointtype.service.impl;
 
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointType;
+import com.nhnacademy.bookstoreuserapi.pointtype.exception.PointTypeNotAvailableException;
 import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointTypeCreateRequest;
@@ -51,7 +52,8 @@ public class PointTypeServiceImpl implements PointTypeService {
                         pt.getTypeName(),
                         pt.getEarningPoint(),
                         pt.getEarningRate(),
-                        pt.getUserGrade().getGradeName().toString()
+                        pt.getUserGrade().getGradeName().toString(),
+                        pt.getIsActive()
                 ))
                 .toList();
 
@@ -86,7 +88,8 @@ public class PointTypeServiceImpl implements PointTypeService {
                 pointType.getTypeName(),
                 pointType.getEarningPoint(),
                 pointType.getEarningRate(),
-                pointType.getUserGrade().getGradeName().toString()
+                pointType.getUserGrade().getGradeName().toString(),
+                pointType.getIsActive()
         );
     }
 
@@ -103,7 +106,42 @@ public class PointTypeServiceImpl implements PointTypeService {
                 pointType.getTypeName(),
                 pointType.getEarningPoint(),
                 pointType.getEarningRate(),
-                pointType.getUserGrade().getGradeName().toString()
+                pointType.getUserGrade().getGradeName().toString(),
+                pointType.getIsActive()
         );
+    }
+
+    @Override
+    public Boolean isActivePointType(String typeName) {
+
+        if(!pointTypeRepository.existsByTypeName(typeName)) {
+
+            throw new PointTypeNotFoundException(pointTypeRepository.findTypeIdByTypeName(typeName));
+        }
+
+        if(pointTypeRepository.findIsActiveByTypeName(typeName)){
+
+            return true;
+        }
+
+        else throw new PointTypeNotAvailableException(typeName);
+    }
+
+    @Override
+    public int getEarningPointByTypeName(String typeName) {
+
+        if(pointTypeRepository.existsByTypeName(typeName)){
+            return pointTypeRepository.findEarningPointByTypeName(typeName);
+        }
+        else throw new PointTypeNotFoundException(pointTypeRepository.findTypeIdByTypeName(typeName));
+    }
+
+    @Override
+    public Long getTypeIdByName(String typeName) {
+
+        if(pointTypeRepository.existsByTypeName(typeName)){
+            return pointTypeRepository.findTypeIdByTypeName(typeName);
+        }
+        else throw new PointTypeNotFoundException(pointTypeRepository.findTypeIdByTypeName(typeName));
     }
 }

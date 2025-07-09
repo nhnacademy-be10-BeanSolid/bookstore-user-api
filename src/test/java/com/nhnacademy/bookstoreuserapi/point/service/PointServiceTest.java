@@ -39,7 +39,7 @@ class PointServiceTest {
         assertThat(points).hasSize(2);
         assertThat(points)
                 .extracting(ResponsePoint::getEarnedAndUsedPoint)
-                .containsExactlyInAnyOrder(500, -100);
+                .containsExactlyInAnyOrder("500", "-100");
     }
 
     @Test
@@ -59,7 +59,7 @@ class PointServiceTest {
                 2L,
                 1L,
                 LocalDateTime.of(2025, 1, 1, 10, 0, 15),
-                1000
+                "1000"
         );
 
         ResponsePoint response = pointService.savePoint(userId, request);
@@ -67,7 +67,7 @@ class PointServiceTest {
         assertThat(response).isNotNull();
         assertThat(response.getUserId()).isEqualTo(userId);
         assertThat(response.getOrderNo()).isEqualTo(2L);
-        assertThat(response.getEarnedAndUsedPoint()).isEqualTo(1000L);
+        assertThat(response.getEarnedAndUsedPoint()).isEqualTo("1000");
         Pageable pageable = PageRequest.of(0, 10);
 
 
@@ -84,7 +84,7 @@ class PointServiceTest {
                 1L,
                 1L,
                 LocalDateTime.now(),
-                200
+                "200"
         );
 
         assertThatThrownBy(() -> pointService.savePoint("unknownUser", request))

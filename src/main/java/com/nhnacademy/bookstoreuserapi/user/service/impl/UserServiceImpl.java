@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.user.service.impl;
 
+import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
 import com.nhnacademy.bookstoreuserapi.user.domain.Oauth2UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.point.domain.PointCreateRequest;
@@ -8,7 +9,6 @@ import com.nhnacademy.bookstoreuserapi.user.domain.UserUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUser;
 import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUserId;
 import com.nhnacademy.bookstoreuserapi.usergrade.exception.UserGradeNotFoundException;
-import com.nhnacademy.bookstoreuserapi.pointtype.repository.PointTypeRepository;
 import com.nhnacademy.bookstoreuserapi.usergrade.repository.UserGradeRepository;
 import com.nhnacademy.bookstoreuserapi.point.service.PointService;
 import com.nhnacademy.bookstoreuserapi.user.service.UserService;
@@ -34,8 +34,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserGradeRepository userGradeRepository;
-    private final PointTypeRepository pointTypeRepository;
     private final PointService pointService;
+    private final PointTypeService pointTypeService;
 
     @Override
     public ResponseUser getUser(String userId) {
@@ -82,9 +82,15 @@ public class UserServiceImpl implements UserService {
         user.setAuth(false);
 
         // 유형별 적립테이블의 회원가입 값에 따라 포인트 적립 액수가 달라짐
-        int welcomePoint = pointTypeRepository.findEarningPointByTypeName("회원가입");
+
+        pointTypeService.isActivePointType("회원가입");
+
+        int welcomePoint = pointTypeService.getEarningPointByTypeName("회원가입");
+        Long typeId = pointTypeService.getTypeIdByName("회원가입");
 
         user.setUserPoint(welcomePoint);
+
+        String welcomePointPlus = welcomePoint + " 적립";
 
         user.setCreatedAt(LocalDateTime.now());
         user.setUserGrade(basicGrade);
@@ -94,10 +100,10 @@ public class UserServiceImpl implements UserService {
 
         PointCreateRequest pointCreateRequest = new PointCreateRequest(
                 request.userId(),
-                1L,
+                typeId,
                 null,
                 LocalDateTime.now(),
-                welcomePoint
+                welcomePointPlus
         );
 
         pointService.savePoint(request.userId(),pointCreateRequest);
@@ -128,9 +134,17 @@ public class UserServiceImpl implements UserService {
         user.setAuth(false);
 
         // 유형별 적립테이블의 회원가입 값에 따라 포인트 적립 액수가 달라짐
-        int welcomePoint = pointTypeRepository.findEarningPointByTypeName("회원가입");
+
+
+
+        pointTypeService.isActivePointType("회원가입");
+
+        int welcomePoint = pointTypeService.getEarningPointByTypeName("회원가입");
+        Long typeId = pointTypeService.getTypeIdByName("회원가입");
 
         user.setUserPoint(welcomePoint);
+
+        String welcomePointPlus = welcomePoint + " 적립";
 
         user.setUserGrade(basicGrade);
         user.setUserStatus(User.Status.ACTIVE);
@@ -140,10 +154,10 @@ public class UserServiceImpl implements UserService {
 
         PointCreateRequest pointCreateRequest = new PointCreateRequest(
                 userId,
-                1L,
+                typeId,
                 null,
                 LocalDateTime.now(),
-                welcomePoint
+                welcomePointPlus
         );
 
         pointService.savePoint(userId,pointCreateRequest);

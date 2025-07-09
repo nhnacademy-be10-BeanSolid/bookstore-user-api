@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.review.service.impl;
 
 
+import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
 import com.nhnacademy.bookstoreuserapi.review.domain.Review;
 import com.nhnacademy.bookstoreuserapi.review.exception.ReviewAlreadyExistsBookException;
 import com.nhnacademy.bookstoreuserapi.review.exception.ReviewNotFoundException;
@@ -10,7 +11,6 @@ import com.nhnacademy.bookstoreuserapi.point.domain.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.review.domain.ReviewUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.review.domain.ReviewCreateRequest;
 import com.nhnacademy.bookstoreuserapi.review.domain.ResponseReview;
-import com.nhnacademy.bookstoreuserapi.pointtype.repository.PointTypeRepository;
 import com.nhnacademy.bookstoreuserapi.review.repository.ReviewRepository;
 import com.nhnacademy.bookstoreuserapi.user.exception.UserNotFoundException;
 import com.nhnacademy.bookstoreuserapi.user.repository.UserRepository;
@@ -31,8 +31,8 @@ import static com.nhnacademy.bookstoreuserapi.common.exception.OwnerShipValidato
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
-    private final PointTypeRepository pointTypeRepository;
     private final PointService pointService;
+    private final PointTypeService pointTypeService;
 
     @Override
     public ResponseReview addReview(String userId, ReviewCreateRequest review){
@@ -47,8 +47,13 @@ public class ReviewServiceImpl implements ReviewService {
         }
         Review savedReview = reviewRepository.save(new Review(review, user));
 
-        int reviewPoint = pointTypeRepository.findEarningPointByTypeName("리뷰작성");
-        long typeId = pointTypeRepository.findTypeIdByTypeName("리뷰작성");
+
+        pointTypeService.isActivePointType("리뷰작성");
+
+        int reviewPoint = pointTypeService.getEarningPointByTypeName("리뷰작성");
+        long typeId = pointTypeService.getTypeIdByName("리뷰작성");
+
+        String reviewPointPlus = reviewPoint + " 적립";
 
         userRepository.updatePointByUserId(review.userId(), reviewPoint);
 
@@ -57,7 +62,7 @@ public class ReviewServiceImpl implements ReviewService {
                 typeId,
                 null,
                 LocalDateTime.now(),
-                reviewPoint
+                reviewPointPlus
         );
 
         pointService.savePoint(userId,pointCreateRequest);

@@ -36,6 +36,7 @@ class PointTypeRepositoryTest {
         pointType.setTypeName("순수금액");
         pointType.setEarningPoint(100);
         pointType.setEarningRate(1);
+        pointType.setIsActive(true);
 
         UserGrade userGrade = new UserGrade();
         userGrade.setGradeName(BASIC);

@@ -57,7 +57,8 @@ class PointTypeServiceTest {
                 "순수 주문금액",
                 2000,
                 20,
-                "ROYAL"
+                "ROYAL",
+                true
         );
 
         pointTypeService.savePointType(request);

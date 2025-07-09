@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.pointtype.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,4 +15,7 @@ public class ResponsePointType {
     private Integer earningPoint;
     private Integer earningRate;
     private String gradeName;
+
+    @JsonProperty("isActive")
+    private boolean isActive;
 }

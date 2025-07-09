@@ -19,4 +19,10 @@ public interface PointTypeService {
     ResponsePointType updateEarningPoint(int point, Long typeId);
 
     ResponsePointType updateEarningRate(int rate, Long typeId);
+
+    Boolean isActivePointType(String typeName);
+
+    int getEarningPointByTypeName(String typeName);
+
+    Long getTypeIdByName(String typeName);
 }

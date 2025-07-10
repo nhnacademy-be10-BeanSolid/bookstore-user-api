@@ -17,7 +17,7 @@ public interface PointTypeService {
 
     void deletePointType(Long id);
 
-    Boolean isActivePointType(String typeName);
+    boolean isActivePointType(String typeName);
 
     int getEarningPointByTypeName(String typeName);
 
@@ -25,7 +25,7 @@ public interface PointTypeService {
 
     void updatePointTypeisActive(Long typeId);
 
-    Boolean getPointTypeIsActive(Long typeId);
+    boolean getPointTypeIsActive(Long typeId);
 
     void updatePointTypeInfo(PointTypeUpdateRequest request, Long typeId);
 

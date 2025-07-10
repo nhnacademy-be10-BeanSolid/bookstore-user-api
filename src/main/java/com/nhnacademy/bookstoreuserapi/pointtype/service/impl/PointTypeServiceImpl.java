@@ -77,7 +77,7 @@ public class PointTypeServiceImpl implements PointTypeService {
     }
 
     @Override
-    public Boolean isActivePointType(String typeName) {
+    public boolean isActivePointType(String typeName) {
 
         if(!pointTypeRepository.existsByTypeName(typeName)) {
 
@@ -114,7 +114,7 @@ public class PointTypeServiceImpl implements PointTypeService {
     }
 
     @Override
-    public Boolean getPointTypeIsActive(Long typeId) {
+    public boolean getPointTypeIsActive(Long typeId) {
 
         if(!pointTypeRepository.existsById(typeId)) {
             throw new PointTypeNotFoundException(typeId);

@@ -67,8 +67,9 @@ class PointTypeServiceTest {
 
         Page<ResponsePointType> result = pointTypeService.getPointTypeByGradeName(GOLD, PageRequest.of(0, 10));
 
-        assertThat(result).isNotEmpty();
-        assertThat(result).allMatch(pt -> pt.getGradeName().equals(GOLD.name()));
+        assertThat(result)
+                .isNotEmpty()
+                .allMatch(pt -> pt.getGradeName().equals(GOLD.name()));
         verify(pointTypeRepository).findPointTypeByGradeName(eq(GOLD), any(Pageable.class));
     }
 

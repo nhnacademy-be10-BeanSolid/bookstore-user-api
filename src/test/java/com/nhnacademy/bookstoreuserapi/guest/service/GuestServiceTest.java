@@ -30,9 +30,8 @@ class GuestServiceTest {
         MockitoAnnotations.openMocks(this);
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
         when(passwordEncoder.matches(anyString(), anyString())).then(invocation -> {
-            String raw = invocation.getArgument(0);
             String encoded = invocation.getArgument(1);
-            // 단순히 encodedPassword로만 매칭 처리
+
             return "encodedPassword".equals(encoded);
         });
     }

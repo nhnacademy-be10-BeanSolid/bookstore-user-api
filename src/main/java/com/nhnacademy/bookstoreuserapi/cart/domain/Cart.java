@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,10 @@ public class Cart extends BaseTimeEntity {
     }
 
     public void addItem(Long itemId, int quantity) {
+        boolean itemExists = this.items.stream().anyMatch(i -> i.getItemId().equals(itemId));
+        if (itemExists) {
+            throw new DataIntegrityViolationException("Item with ID " + itemId + " already exists in the cart.");
+        }
         CartItem item = new CartItem(itemId, quantity);
         item.setCart(this);
         this.items.add(item);

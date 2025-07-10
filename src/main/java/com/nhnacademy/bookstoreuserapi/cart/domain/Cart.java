@@ -3,24 +3,32 @@ package com.nhnacademy.bookstoreuserapi.cart.domain;
 import com.nhnacademy.bookstoreuserapi.common.entity.BaseTimeEntity;
 import com.nhnacademy.bookstoreuserapi.user.domain.User;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@Table(
+        name = "carts",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uq_guest_uuid", columnNames = "guest_uuid")
+        }
+)
+@Getter
+@Setter
 @NoArgsConstructor
-@Table(name = "carts")
 public class Cart extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cart_id", columnDefinition = "BIGINT UNSIGNED")
     private Long cartId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_no")
+    @JoinColumn(name = "user_no", foreignKey = @ForeignKey(name = "fk_cart_user"))
     private User user;
 
     @Column(name = "guest_uuid", unique = true, columnDefinition = "CHAR(36)")

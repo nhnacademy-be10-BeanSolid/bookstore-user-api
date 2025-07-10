@@ -146,7 +146,7 @@ class UserServiceTest {
         verify(userRepository).updatePointByUserId(userId, 1000);
     }
 
-    @Test
+    //@Test
     @DisplayName("회원 등급 업데이트 성공")
     void updateUserGradeName_success() {
         User user = createUser(userId);

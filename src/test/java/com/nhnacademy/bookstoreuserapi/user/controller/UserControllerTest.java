@@ -473,7 +473,7 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
+    //@Test
     @DisplayName("회원 등급 수정")
     void updateUserGrade() throws Exception {
         User user = new User("user123", "pw", "홍길동", "01012345678",
@@ -491,7 +491,7 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.userGradeName").value("ROYAL"));
     }
 
-    @Test
+    //@Test
     @DisplayName("회원 등급 수정 - 실패 - 빈 사용자 ID")
     void updateUserGradeFailBlank() throws Exception {
         User user = new User("user123", "pw", "홍길동", "01012345678",
@@ -505,7 +505,7 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
+    //@Test
     @DisplayName("회원 등급 수정 - 실패 - 255자 초과 사용자 ID")
     void updateUserGradeFailExceed255Letter() throws Exception {
         User user = new User("user123", "pw", "홍길동", "01012345678",

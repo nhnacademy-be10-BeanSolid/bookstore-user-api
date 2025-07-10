@@ -1,16 +1,11 @@
 package com.nhnacademy.bookstoreuserapi.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstoreuserapi.user.domain.User;
-import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
-import com.nhnacademy.bookstoreuserapi.user.domain.Oauth2UserCreateRequest;
-import com.nhnacademy.bookstoreuserapi.user.domain.UserCreateRequest;
-import com.nhnacademy.bookstoreuserapi.user.domain.UserUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUser;
-import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUserId;
-import com.nhnacademy.bookstoreuserapi.user.exception.UserNotFoundException;
 import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
+import com.nhnacademy.bookstoreuserapi.user.domain.*;
+import com.nhnacademy.bookstoreuserapi.user.exception.UserNotFoundException;
 import com.nhnacademy.bookstoreuserapi.user.service.UserService;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -23,7 +18,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 
 import static com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade.BASIC;
-import static com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade.ROYAL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -473,50 +467,5 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    @DisplayName("회원 등급 수정")
-    void updateUserGrade() throws Exception {
-        User user = new User("user123", "pw", "홍길동", "01012345678",
-                "hong@test.com", LocalDate.of(1990, 1, 1));
-        user.setUserStatus(User.Status.ACTIVE);
-        user.setUserGrade(new UserGrade(ROYAL, 100000L));
-
-        Mockito.when(userService.updateUserGradeName("user123", ROYAL.toString()))
-                .thenReturn(new ResponseUser(user));
-
-        mockMvc.perform(put("/users/me/grade")
-                        .param("gradeName", "ROYAL")
-                        .header("X-USER-ID", "user123"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.userGradeName").value("ROYAL"));
-    }
-
-    @Test
-    @DisplayName("회원 등급 수정 - 실패 - 빈 사용자 ID")
-    void updateUserGradeFailBlank() throws Exception {
-        User user = new User("user123", "pw", "홍길동", "01012345678",
-                "hong@test.com", LocalDate.of(1990, 1, 1));
-        user.setUserStatus(User.Status.ACTIVE);
-        user.setUserGrade(new UserGrade(BASIC, 0L));
-
-        mockMvc.perform(put("/users/me/grade")
-                        .param("gradeName", "ROYAL")
-                        .header("X-USER-ID", ""))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @DisplayName("회원 등급 수정 - 실패 - 255자 초과 사용자 ID")
-    void updateUserGradeFailExceed255Letter() throws Exception {
-        User user = new User("user123", "pw", "홍길동", "01012345678",
-                "hong@test.com", LocalDate.of(1990, 1, 1));
-        user.setUserStatus(User.Status.ACTIVE);
-        user.setUserGrade(new UserGrade(BASIC, 0L));
-
-        mockMvc.perform(put("/users/me/grade")
-                        .param("gradeName", "ROYAL")
-                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm".repeat(20)))
-                .andExpect(status().isBadRequest());
-    }
 }
 

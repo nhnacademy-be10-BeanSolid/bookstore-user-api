@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.user.service;
 
 import com.nhnacademy.bookstoreuserapi.point.domain.PointCreateRequest;
+import com.nhnacademy.bookstoreuserapi.point.service.PointService;
 import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
 import com.nhnacademy.bookstoreuserapi.user.domain.*;
 import com.nhnacademy.bookstoreuserapi.user.exception.UserAlreadyExistException;
@@ -8,23 +9,24 @@ import com.nhnacademy.bookstoreuserapi.user.exception.UserNotFoundException;
 import com.nhnacademy.bookstoreuserapi.user.repository.UserRepository;
 import com.nhnacademy.bookstoreuserapi.user.service.impl.UserServiceImpl;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
-import com.nhnacademy.bookstoreuserapi.usergrade.exception.UserGradeNotFoundException;
 import com.nhnacademy.bookstoreuserapi.usergrade.repository.UserGradeRepository;
-import com.nhnacademy.bookstoreuserapi.point.service.PointService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade.BASIC;
-import static com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade.ROYAL;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class UserServiceTest {
 
@@ -144,39 +146,6 @@ class UserServiceTest {
         userService.updatePoint(userId, 1000);
 
         verify(userRepository).updatePointByUserId(userId, 1000);
-    }
-
-    @Test
-    @DisplayName("회원 등급 업데이트 성공")
-    void updateUserGradeName_success() {
-        User user = createUser(userId);
-        UserGrade grade = createUserGrade(ROYAL);
-        when(userRepository.existsByUserId(userId)).thenReturn(true);
-        when(userGradeRepository.findByGradeName(ROYAL)).thenReturn(grade);
-        when(userRepository.findByUserId(userId)).thenReturn(user);
-
-        userService.updateUserGradeName(userId, "ROYAL");
-
-        verify(userRepository).updateUserGrade_gradeNameByUserId(userId, ROYAL);
-    }
-
-    @Test
-    @DisplayName("회원 등급 업데이트 실패 - 잘못된 등급명")
-    void updateUserGradeName_invalidGrade() {
-        when(userRepository.existsByUserId(userId)).thenReturn(true);
-
-        assertThatThrownBy(() -> userService.updateUserGradeName(userId, "INVALID"))
-                .isInstanceOf(UserGradeNotFoundException.class);
-    }
-
-    @Test
-    @DisplayName("회원 등급 업데이트 실패 - 저장되지 않은 등급")
-    void updateUserGradeName_notSavedGrade() {
-        when(userRepository.existsByUserId(userId)).thenReturn(true);
-        when(userGradeRepository.findByGradeName(any())).thenReturn(null);
-
-        assertThatThrownBy(() -> userService.updateUserGradeName(userId, "PLATINUM"))
-                .isInstanceOf(UserGradeNotFoundException.class);
     }
 
     @Test

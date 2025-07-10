@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.pointtype.service.impl;
 
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointType;
+import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointTypeUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointTypeCreateRequest;
@@ -32,6 +33,7 @@ public class PointTypeServiceImpl implements PointTypeService {
         pointType.setTypeName(request.typeName());
         pointType.setEarningPoint(request.earningPoint());
         pointType.setEarningRate(request.earningRate());
+        pointType.setIsActive(request.isActive());
 
         UserGrade userGrade = userGradeRepository.findByGradeName(UserGrade.Grade.valueOf(request.gradeName()));
 
@@ -51,7 +53,8 @@ public class PointTypeServiceImpl implements PointTypeService {
                         pt.getTypeName(),
                         pt.getEarningPoint(),
                         pt.getEarningRate(),
-                        pt.getUserGrade().getGradeName().toString()
+                        pt.getUserGrade().getGradeName().toString(),
+                        pt.getIsActive()
                 ))
                 .toList();
 
@@ -74,36 +77,77 @@ public class PointTypeServiceImpl implements PointTypeService {
     }
 
     @Override
-    public ResponsePointType updateEarningPoint(int point, Long typeId) {
+    public boolean isActivePointType(String typeName) {
 
-        PointType pointType = pointTypeRepository.findById(typeId)
-                .orElseThrow(() -> new PointTypeNotFoundException(typeId));
+        if(!pointTypeRepository.existsByTypeName(typeName)) {
 
-        pointType.setEarningPoint(point);
+            throw new PointTypeNotFoundException(pointTypeRepository.findTypeIdByTypeName(typeName));
+        }
 
-        return new ResponsePointType(
-                pointType.getTypeId(),
-                pointType.getTypeName(),
-                pointType.getEarningPoint(),
-                pointType.getEarningRate(),
-                pointType.getUserGrade().getGradeName().toString()
-        );
+        return pointTypeRepository.isActiveByTypeName(typeName);
     }
 
     @Override
-    public ResponsePointType updateEarningRate(int rate, Long typeId) {
+    public int getEarningPointByTypeName(String typeName) {
 
-        PointType pointType = pointTypeRepository.findById(typeId)
-                .orElseThrow(() -> new PointTypeNotFoundException(typeId));
+        if(pointTypeRepository.existsByTypeName(typeName)){
+            return pointTypeRepository.findEarningPointByTypeName(typeName);
+        }
+        else throw new PointTypeNotFoundException(pointTypeRepository.findTypeIdByTypeName(typeName));
+    }
 
-        pointType.setEarningRate(rate);
+    @Override
+    public Long getTypeIdByName(String typeName) {
 
-        return new ResponsePointType(
-                pointType.getTypeId(),
-                pointType.getTypeName(),
-                pointType.getEarningPoint(),
-                pointType.getEarningRate(),
-                pointType.getUserGrade().getGradeName().toString()
-        );
+        if(pointTypeRepository.existsByTypeName(typeName)){
+            return pointTypeRepository.findTypeIdByTypeName(typeName);
+        }
+        else throw new PointTypeNotFoundException(pointTypeRepository.findTypeIdByTypeName(typeName));
+    }
+
+    @Override
+    public void updatePointTypeisActive(Long typeId) {
+
+        PointType pointType = pointTypeRepository.findById(typeId).orElseThrow(() -> new PointTypeNotFoundException(typeId));
+
+        pointType.setIsActive(!getPointTypeIsActive(typeId));
+    }
+
+    @Override
+    public boolean getPointTypeIsActive(Long typeId) {
+
+        if(!pointTypeRepository.existsById(typeId)) {
+            throw new PointTypeNotFoundException(typeId);
+        }
+
+        return pointTypeRepository.findIsActiveByTypeId(typeId);
+    }
+
+    @Override
+    public void updatePointTypeInfo(PointTypeUpdateRequest request, Long typeId) {
+
+        PointType pointType = pointTypeRepository.findById(typeId).orElseThrow(() -> new PointTypeNotFoundException(typeId));
+
+        pointType.setTypeName(request.typeName());
+        pointType.setEarningPoint(request.earningPoint());
+        pointType.setEarningRate(request.earningRate());
+        pointType.setUserGrade(userGradeRepository.findByGradeName(UserGrade.Grade.valueOf(request.gradeName())));
+    }
+
+    @Override
+    public ResponsePointType getPointTypeInfo(Long typeId) {
+
+        PointType pointType = pointTypeRepository.findById(typeId).orElseThrow(() -> new PointTypeNotFoundException(typeId));
+
+        ResponsePointType responsePointType = new ResponsePointType();
+
+        responsePointType.setTypeId(typeId);
+        responsePointType.setTypeName(pointType.getTypeName());
+        responsePointType.setEarningPoint(pointType.getEarningPoint());
+        responsePointType.setEarningRate(pointType.getEarningRate());
+        responsePointType.setGradeName(pointType.getUserGrade().getGradeName().name());
+        responsePointType.setActive(pointType.getIsActive());
+
+        return responsePointType;
     }
 }

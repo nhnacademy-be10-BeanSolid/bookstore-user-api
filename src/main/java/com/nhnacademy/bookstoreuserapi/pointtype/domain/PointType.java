@@ -30,6 +30,9 @@ public class PointType {
     private Integer earningRate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "grade_name")
+    @JoinColumn(name = "grade_name", nullable = false)
     private UserGrade userGrade;
+
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
 }

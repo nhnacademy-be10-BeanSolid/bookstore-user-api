@@ -16,5 +16,5 @@ public class ResponsePoint {
     private Long typeId;
     private Long orderNo;
     private LocalDateTime earnedAndUsedAt;
-    private int earnedAndUsedPoint;
+    private String earnedAndUsedPoint;
 }

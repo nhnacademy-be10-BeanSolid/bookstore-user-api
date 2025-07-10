@@ -39,10 +39,4 @@ public interface PointTypeControllerDoc {
 
     @DeleteMapping("/{typeId}")
     ResponseEntity<Void> deletePointType(@PathVariable @NotNull @Min(1) Long typeId);
-
-    @PutMapping("/{typeId}/point")
-    ResponseEntity<ResponsePointType> updateEarningPoint(@PathVariable @NotNull @Min(1) Long typeId, @RequestParam @NotNull @Min(0) int point);
-
-    @PutMapping("/{typeId}/rate")
-    ResponseEntity<ResponsePointType> updateRatePoint(@PathVariable @NotNull @Min(1) Long typeId, @RequestParam int rate);
 }

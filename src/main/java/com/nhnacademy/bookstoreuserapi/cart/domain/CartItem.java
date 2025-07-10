@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
 )
 @Check(constraints = "quantity > 0")
 @Getter
-@Setter
 @NoArgsConstructor
 public class CartItem {
     @Id
@@ -31,12 +30,15 @@ public class CartItem {
     @Column(name = "cart_item_id", columnDefinition = "BIGINT UNSIGNED")
     private Long cartItemId;
 
+    @Setter
     private Long itemId;
 
+    @Setter
     @Min(1)
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "cart_id",

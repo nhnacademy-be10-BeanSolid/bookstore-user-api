@@ -20,7 +20,6 @@ import java.util.List;
         }
 )
 @Getter
-@Setter
 @NoArgsConstructor
 public class Cart extends BaseTimeEntity {
     @Id
@@ -28,13 +27,16 @@ public class Cart extends BaseTimeEntity {
     @Column(name = "cart_id", columnDefinition = "BIGINT UNSIGNED")
     private Long cartId;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_no", foreignKey = @ForeignKey(name = "fk_cart_user"))
     private User user;
 
+    @Setter
     @Column(name = "guest_uuid", unique = true, columnDefinition = "CHAR(36)")
     private String guestUUID;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     @Column(
             name = "owner_type",

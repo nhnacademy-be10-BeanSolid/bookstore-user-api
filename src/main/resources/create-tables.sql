@@ -65,16 +65,34 @@ CREATE TABLE `guests` (
     primary key (guest_id)
 );
 
-CREATE TABLE `cart` (
-    `cart_id`	BIGINT	NOT NULL AUTO_INCREMENT,
-    `book_id`	BIGINT	NOT NULL,
-    `user_no`	BIGINT	NOT NULL,
-    `quantity`	INTEGER	NOT NULL,
+CREATE TABLE carts (
+    cart_id       BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    user_no       BIGINT          NULL,
+    guest_uuid    CHAR(36)        NULL,
+    owner_type    ENUM('USER', 'GUEST') NOT NULL,
+    created_at    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (cart_id),
+    UNIQUE KEY uq_quest_uuid (guest_uuid),
+    CONSTRAINT fk_cart_user
+       FOREIGN KEY(user_no) REFERENCES users(user_no)
+           ON DELETE CASCADE
+) ENGINE=InnoDB;
 
-    primary key (cart_id),
-    foreign key (book_id) references book(book_id),
-    foreign key (user_no) references users(user_no)
-);
+CREATE TABLE cart_items (
+    cart_item_id    BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    cart_id         BIGINT UNSIGNED NOT NULL,
+    item_id         BIGINT          NOT NULL,
+    quantity        INT    UNSIGNED NOT NULL CHECK (quantity > 0),
+    PRIMARY KEY (cart_item_id),
+    CONSTRAINT uq_cartitem_cart_book UNIQUE (cart_id, item_id),
+    CONSTRAINT fk_cartitem_cart
+        FOREIGN KEY (cart_id) REFERENCES carts(cart_id)
+            ON DELETE CASCADE,
+    CONSTRAINT fk_cartitem_book
+        FOREIGN KEY (item_id) REFERENCES books(book_id)
+            ON DELETE CASCADE
+) ENGINE=InnoDB;
 
 CREATE TABLE `reviews` (
     `review_id`	BIGINT	NOT NULL AUTO_INCREMENT,
@@ -87,7 +105,7 @@ CREATE TABLE `reviews` (
     `updated_at`	DATETIME	NULL,
 
     primary key (review_id),
-    FOREIGN KEY (book_id) references book(book_id),
+    FOREIGN KEY (book_id) references books(book_id),
     foreign key (user_no) references users(user_no)
 );
 

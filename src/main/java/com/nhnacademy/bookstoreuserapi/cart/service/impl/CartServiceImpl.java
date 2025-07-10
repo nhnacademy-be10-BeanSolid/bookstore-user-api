@@ -1,114 +1,148 @@
 package com.nhnacademy.bookstoreuserapi.cart.service.impl;
 
+import com.nhnacademy.bookstoreuserapi.cart.context.CartContext;
 import com.nhnacademy.bookstoreuserapi.cart.domain.Cart;
+import com.nhnacademy.bookstoreuserapi.cart.domain.OwnerType;
+import com.nhnacademy.bookstoreuserapi.cart.dto.request.CartAddItemRequest;
+import com.nhnacademy.bookstoreuserapi.cart.dto.request.CartUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.cart.dto.response.CartCreateResponse;
+import com.nhnacademy.bookstoreuserapi.cart.dto.response.CartItemDto;
+import com.nhnacademy.bookstoreuserapi.cart.dto.response.CartResponse;
+import com.nhnacademy.bookstoreuserapi.cart.exception.CartAlreadyExistsException;
+import com.nhnacademy.bookstoreuserapi.cart.exception.CartItemNotFoundException;
+import com.nhnacademy.bookstoreuserapi.cart.exception.CartNotFoundException;
+import com.nhnacademy.bookstoreuserapi.cart.repository.CartRepository;
 import com.nhnacademy.bookstoreuserapi.cart.service.CartService;
 import com.nhnacademy.bookstoreuserapi.user.domain.User;
-import com.nhnacademy.bookstoreuserapi.cart.domain.CartUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.cart.domain.CartCreateRequest;
-import com.nhnacademy.bookstoreuserapi.cart.domain.ResponseCart;
-import com.nhnacademy.bookstoreuserapi.cart.exception.CartAlreadyExistException;
-import com.nhnacademy.bookstoreuserapi.cart.exception.CartNotFoundException;
 import com.nhnacademy.bookstoreuserapi.user.exception.UserNotFoundException;
-import com.nhnacademy.bookstoreuserapi.cart.repository.CartRepository;
 import com.nhnacademy.bookstoreuserapi.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
+import com.nhnacademy.bookstoreuserapi.cart.exception.GuestCartCreationException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
-
-import static com.nhnacademy.bookstoreuserapi.common.exception.OwnerShipValidator.validate;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class CartServiceImpl implements CartService {
+    private static final int MAX_ATTEMPTS = 5;
+
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
 
-
-
     @Override
-    public ResponseCart addCart(String userId, CartCreateRequest cart){
-        validate(userId, cart.userId());
-        ResponseCart findCart = cartRepository.findByUserIdAndBookId(cart.userId(), cart.bookId());
-        if (findCart != null) {
-            throw new CartAlreadyExistException(cart.userId(), cart.bookId());
+    public CartCreateResponse createCart(CartContext context) {
+        if (context.isUser()) {
+            return createUserCart(context.getUserId());
+        } else {
+            return createGuestCartWithRetry();
         }
-        User user = userRepository.findByUserId(cart.userId());
-
-        if (user == null) {
-            throw new UserNotFoundException(cart.userId());
-        }
-        Cart savedCart = cartRepository.save(new Cart(cart, user));
-        return new ResponseCart(
-                savedCart.getCartId(),
-                savedCart.getBookId(),
-                savedCart.getUser().getUserId(),
-                savedCart.getQuantity()
-        );
     }
 
-    @Override
-    public Optional<ResponseCart> editCart(String userId, long cartId, CartUpdateRequest cart) {
-        Cart findCart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new CartNotFoundException(cartId));
-        validate(userId, findCart.getUser().getUserId());
-        if (cart.quantity() == 0) {
-            deleteCart(userId, cartId);
-            return Optional.empty();
+    private CartCreateResponse createUserCart(String userId) {
+        if (cartRepository.existsByUser_UserId(userId)) {
+            throw new CartAlreadyExistsException(userId);
         }
-        findCart.setQuantity(cart.quantity());
-        return Optional.of(new ResponseCart(
-                findCart.getCartId(),
-                findCart.getBookId(),
-                findCart.getUser().getUserId(),
-                findCart.getQuantity()
-        ));
-    }
-
-    @Override
-    public ResponseCart getCart(String userId, long cartId) {
-        Cart findCart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new CartNotFoundException(cartId));
-        validate(userId, findCart.getUser().getUserId());
-        return new ResponseCart(
-                findCart.getCartId(),
-                findCart.getBookId(),
-                findCart.getUser().getUserId(),
-                findCart.getQuantity()
-        );
-    }
-
-    @Override
-    public Page<ResponseCart> getCartsByUserId(String userId, Pageable pageable) {
-        if (!userRepository.existsByUserId(userId)) {
+        if(!userRepository.existsByUserId(userId)) {
             throw new UserNotFoundException(userId);
         }
-        return cartRepository.findAllByUserId(userId, pageable);
+        User user = userRepository.findByUserId(userId);
+
+        Cart cart = new Cart(user);
+        Cart saved = cartRepository.save(cart);
+
+        return CartCreateResponse.builder()
+                .cartId(saved.getCartId())
+                .userId(user.getUserId())
+                .ownerType(saved.getOwnerType())
+                .createdAt(saved.getCreatedAt())
+                .build();
+    }
+
+    private CartCreateResponse createGuestCartWithRetry() {
+        for(int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+            String guestUUID = UUID.randomUUID().toString();
+            Cart cart = new Cart(guestUUID);
+            try {
+                Cart saved = cartRepository.save(cart);
+                return CartCreateResponse.builder()
+                        .cartId(saved.getCartId())
+                        .guestUUID(saved.getGuestUUID())
+                        .ownerType(saved.getOwnerType())
+                        .createdAt(saved.getCreatedAt())
+                        .build();
+            } catch (DataIntegrityViolationException e) {
+                if(attempt == MAX_ATTEMPTS) {
+                    throw new GuestCartCreationException("UUID 생성 재시도 실패");
+                }
+            }
+        }
+        throw new GuestCartCreationException("Guest Cart 생성 중 알 수 없는 오류");
     }
 
     @Override
-    public void deleteCart(String userId, long cartId) {
-        Cart findCart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new CartNotFoundException(cartId));
-        validate(userId, findCart.getUser().getUserId());
-        cartRepository.delete(findCart);
+    @Transactional(readOnly = true)
+    public CartResponse getCart(CartContext context) {
+        Cart cart = findCart(context);
+        return getCurrentCartResponse(cart);
     }
 
     @Override
-    public void deleteCartsByUserId(String userId) {
+    public CartResponse addItem(CartContext context, CartAddItemRequest request) {
+        Cart cart = findCart(context);
+        cart.addItem(request.itemId(), request.quantity());
+        return getCurrentCartResponse(cart);
+    }
 
-        if (!userRepository.existsByUserId(userId)) {
-            throw new UserNotFoundException(userId);
+    @Override
+    public CartResponse updateItem(CartContext context, Long itemId, CartUpdateRequest request) {
+        Cart cart = findCart(context);
+        cart.getItems().stream()
+                .filter(i -> i.getItemId().equals(itemId))
+                .findFirst()
+                .orElseThrow(() -> new CartItemNotFoundException(itemId))
+                .updateQuantity(request.quantity());
+        return getCurrentCartResponse(cart);
+    }
+
+    @Override
+    public CartResponse deleteItem(CartContext context, Long itemId) {
+        Cart cart = findCart(context);
+        cart.removeItem(itemId);
+        return getCurrentCartResponse(cart);
+    }
+
+    @Override
+    public CartResponse deleteItems(CartContext context, List<Long> itemIds) {
+        Cart cart = findCart(context);
+        itemIds.forEach(cart::removeItem);
+        return getCurrentCartResponse(cart);
+    }
+
+
+
+    private Cart findCart(CartContext context) {
+        if (context.isUser()) {
+            return cartRepository.findByOwnerTypeAndUser_UserId(OwnerType.USER, context.getUserId())
+                    .orElseThrow(() -> new CartNotFoundException("해당 사용자(userId: " + context.getUserId() + ")의 장바구니를 찾을 수 없습니다."));
+        } else {
+            return cartRepository.findByOwnerTypeAndGuestUUID(OwnerType.GUEST, context.getGuestUUID())
+                    .orElseThrow(() -> new CartNotFoundException("해당 게스트(UUID: " + context.getGuestUUID() + ")의 장바구니를 찾을 수 없습니다."));
         }
-        List<Cart> carts = cartRepository.findAllByUser_UserId(userId);
-        if (carts.isEmpty()) {
-            return;
-        }
-        cartRepository.deleteAll(carts);
+    }
+
+    private CartResponse getCurrentCartResponse(Cart cart) {
+        List<CartItemDto> itemDtos = cart.getItems().stream()
+                .map(CartItemDto::from)
+                .toList();
+
+        return CartResponse.builder()
+                .cartId(cart.getCartId())
+                .items(itemDtos)
+                .build();
     }
 }

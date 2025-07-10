@@ -1,23 +1,20 @@
 package com.nhnacademy.bookstoreuserapi.cart.controller;
 
-import com.nhnacademy.bookstoreuserapi.common.annotation.AuthenticatedUserId;
-import com.nhnacademy.bookstoreuserapi.cart.domain.CartUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.cart.domain.CartCreateRequest;
-import com.nhnacademy.bookstoreuserapi.cart.domain.ResponseCart;
-import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
+import com.nhnacademy.bookstoreuserapi.cart.context.CartContext;
+import com.nhnacademy.bookstoreuserapi.cart.dto.request.CartAddItemRequest;
+import com.nhnacademy.bookstoreuserapi.cart.dto.request.CartUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.cart.dto.response.CartCreateResponse;
+import com.nhnacademy.bookstoreuserapi.cart.dto.response.CartResponse;
 import com.nhnacademy.bookstoreuserapi.cart.service.CartService;
+import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,42 +23,55 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping
-    public ResponseEntity<ResponseCart> addCart(@AuthenticatedUserId  String userId, @Valid @RequestBody CartCreateRequest cart, BindingResult bindingResult){
-        if(bindingResult.hasErrors()) {
-            throw new ValidationFailedException(bindingResult);
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body(cartService.addCart(userId, cart));
-    }
-
-    @PutMapping("/{cartId}")
-    public ResponseEntity<ResponseCart> updateCart(@AuthenticatedUserId String userId, @PathVariable @NotNull @Min(1) Long cartId, @Valid @RequestBody CartUpdateRequest cart, BindingResult bindingResult){
-        if(bindingResult.hasErrors()) {
-            throw new ValidationFailedException(bindingResult);
-        }
-        Optional<ResponseCart> result = cartService.editCart(userId, cartId, cart);
-        return result.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.noContent().build());
-    }
-
-    @GetMapping("/{cartId}")
-    public ResponseEntity<ResponseCart> getCart(@AuthenticatedUserId String userId, @PathVariable @NotNull @Min(1) Long cartId) {
-        return ResponseEntity.ok().body(cartService.getCart(userId, cartId));
+    public ResponseEntity<CartCreateResponse> createCart(CartContext ctx) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(cartService.createCart(ctx));
     }
 
     @GetMapping
-    public ResponseEntity<Page<ResponseCart>> getCartByUserId(@AuthenticatedUserId String userId, Pageable pageable) {
-        return ResponseEntity.ok().body(cartService.getCartsByUserId(userId, pageable));
+    public ResponseEntity<CartResponse> getCart(CartContext ctx) {
+        return ResponseEntity.ok(cartService.getCart(ctx));
     }
 
-    @DeleteMapping("/{cartId}")
-    public ResponseEntity<Void> deleteCart(@AuthenticatedUserId String userId, @PathVariable @NotNull @Min(1) Long cartId) {
-        cartService.deleteCart(userId, cartId);
-        return ResponseEntity.noContent().build();
+    @PostMapping("/items")
+    public ResponseEntity<CartResponse> addItemToCart(
+            CartContext ctx,
+            @Valid @RequestBody CartAddItemRequest request,
+            BindingResult bindingResult
+    ) {
+        validate(bindingResult);
+        return ResponseEntity.status(HttpStatus.CREATED).body(cartService.addItem(ctx, request));
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteCartsByUserId(@AuthenticatedUserId String userId) {
-        cartService.deleteCartsByUserId(userId);
-        return ResponseEntity.noContent().build();
+    @PutMapping("/items/{itemId}")
+    public ResponseEntity<CartResponse> updateItemQuantity(
+            CartContext ctx,
+            @PathVariable("itemId") Long itemId,
+            @Valid @RequestBody CartUpdateRequest request,
+            BindingResult bindingResult
+    ) {
+        validate(bindingResult);
+        return ResponseEntity.ok(cartService.updateItem(ctx, itemId, request));
+    }
+
+    @DeleteMapping("/items/{itemId}")
+    public ResponseEntity<CartResponse> deleteItemFromCart(
+            CartContext ctx,
+            @PathVariable("itemId") Long itemId
+    ) {
+        return ResponseEntity.ok(cartService.deleteItem(ctx, itemId));
+    }
+
+    @DeleteMapping("/items")
+    public ResponseEntity<CartResponse> deleteItemsFromCart(
+            CartContext ctx,
+            @RequestBody List<Long> itemIds
+    ) {
+        return ResponseEntity.ok(cartService.deleteItems(ctx, itemIds));
+    }
+
+    private void validate(BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new ValidationFailedException(bindingResult);
+        }
     }
 }

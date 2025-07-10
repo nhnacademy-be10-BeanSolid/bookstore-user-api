@@ -250,19 +250,25 @@ public class UserServiceImpl implements UserService {
                         .collect(Collectors.toMap(UserOrderAmountResponse::userNo, UserOrderAmountResponse::getpureOrderAmount));
 
         for (UserGrade grade : userGrades) {
-            List<Long> userNosToUpdate = userNoToPureOrderAmount.entrySet().stream()
+            List<Long> userNosToCheck = userNoToPureOrderAmount.entrySet().stream()
                     .filter(entry -> entry.getValue() >= grade.getRequiredMoney())
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toList());
 
-            if (!userNosToUpdate.isEmpty()) {
-                long updated = userRepository.bulkUpdateUserGrade(grade, userNosToUpdate);
-                System.out.println(updated + " users updated to " + grade.getGradeName());
-                userNosToUpdate.forEach(userNoToPureOrderAmount::remove);
+            if (!userNosToCheck.isEmpty()) {
+                // 등급이 다른 사용자만 필터링
+                List<Long> userNosToUpdate = userRepository.findUserNosWithDifferentGrade(userNosToCheck, grade.getGradeName());
+
+                if (!userNosToUpdate.isEmpty()) {
+                    long updated = userRepository.bulkUpdateUserGrade(grade, userNosToUpdate);
+                    System.out.println(updated + " users updated to " + grade.getGradeName());
+                    userNosToUpdate.forEach(userNoToPureOrderAmount::remove);
+                } else {
+                    userNosToCheck.forEach(userNoToPureOrderAmount::remove);
+                }
             }
         }
 
-        // 벌크 업데이트 이후 영속성 컨텍스트를 clear하여 엔티티 상태와 DB 상태 불일치 방지
         entityManager.flush();
         entityManager.clear();
     }

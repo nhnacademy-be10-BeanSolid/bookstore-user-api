@@ -21,7 +21,19 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         return queryFactory
                 .update(user)
                 .set(user.userGrade, grade)
-                .where(user.userNo.in(userNos))
+                .where(user.userNo.in(userNos)
+                        .and(user.userGrade.ne(grade)))
                 .execute();
+    }
+
+    @Override
+    public List<Long> findUserNosWithDifferentGrade(List<Long> userNos, UserGrade.Grade gradeName) {
+        QUser user = QUser.user;
+        return queryFactory
+                .select(user.userNo)
+                .from(user)
+                .where(user.userNo.in(userNos)
+                        .and(user.userGrade.gradeName.ne(gradeName)))
+                .fetch();
     }
 }

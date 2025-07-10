@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
-@FeignClient(name = "gateway-service", contextId = "orderAdapter")
+@FeignClient(name = "order-api", contextId = "orderAdapter")
 public interface OrderAdapter {
 
-    @GetMapping("order-api/internal/orders")
+    @GetMapping("internal/orders")
     ResponseEntity<List<UserOrderAmountResponse>> getOrderAmountGroupByUserLastThreeMonth();
 }

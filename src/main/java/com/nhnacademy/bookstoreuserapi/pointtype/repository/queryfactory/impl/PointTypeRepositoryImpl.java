@@ -26,7 +26,8 @@ public class PointTypeRepositoryImpl implements PointTypeRepositoryCustom {
                         qPointType.typeName,
                         qPointType.earningPoint,
                         qPointType.earningRate,
-                        qPointType.userGrade.gradeName.stringValue()))
+                        qPointType.userGrade.gradeName.stringValue(),
+                        qPointType.isActive))
                 .from(qPointType)
                 .where(qPointType.userGrade.gradeName.eq(gradeName))
                 .offset(pageable.getOffset())

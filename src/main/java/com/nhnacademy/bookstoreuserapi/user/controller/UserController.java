@@ -103,10 +103,6 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUserStatus(userId, status));
     }
 
-    @PutMapping("/me/grade")
-    public ResponseEntity<ResponseUser> updateUserGradeName(@AuthenticatedUserId String userId) {
-        return ResponseEntity.ok(userService.updateUserGradeName(userId));
-    }
 // 전체회원등급 조정api
     @PutMapping("/bulk/grade")
     public ResponseEntity<Void> bulkUpdateUserGrades() {

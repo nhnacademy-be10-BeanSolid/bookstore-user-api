@@ -2,18 +2,8 @@ package com.nhnacademy.bookstoreuserapi.user.service.impl;
 
 import com.nhnacademy.bookstoreuserapi.adapter.OrderAdapter;
 import com.nhnacademy.bookstoreuserapi.point.domain.PointCreateRequest;
-import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
-import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
-import com.nhnacademy.bookstoreuserapi.user.domain.Oauth2UserCreateRequest;
-import com.nhnacademy.bookstoreuserapi.point.domain.PointCreateRequest;
-import com.nhnacademy.bookstoreuserapi.user.domain.UserCreateRequest;
-import com.nhnacademy.bookstoreuserapi.user.domain.UserUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUser;
-import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUserId;
-import com.nhnacademy.bookstoreuserapi.usergrade.exception.UserGradeNotFoundException;
-import com.nhnacademy.bookstoreuserapi.usergrade.repository.UserGradeRepository;
 import com.nhnacademy.bookstoreuserapi.point.service.PointService;
-import com.nhnacademy.bookstoreuserapi.pointtype.repository.PointTypeRepository;
+import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
 import com.nhnacademy.bookstoreuserapi.user.domain.*;
 import com.nhnacademy.bookstoreuserapi.user.exception.UserAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.user.exception.UserNotFoundException;
@@ -21,7 +11,6 @@ import com.nhnacademy.bookstoreuserapi.user.repository.UserRepository;
 import com.nhnacademy.bookstoreuserapi.user.service.UserService;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
 import com.nhnacademy.bookstoreuserapi.usergrade.repository.UserGradeRepository;
-import com.nhnacademy.bookstoreuserapi.usergrade.service.UserGradeService;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +33,6 @@ public class UserServiceImpl implements UserService {
     private final UserGradeRepository userGradeRepository;
     private final PointService pointService;
     private final OrderAdapter orderAdapter;
-    private final UserGradeService userGradeService;
     private final EntityManager entityManager;
     private final PointTypeService pointTypeService;
 
@@ -229,35 +217,6 @@ public class UserServiceImpl implements UserService {
         }
 
         userRepository.updateStatusByUserId(userId, status);
-
-        return new ResponseUser(userRepository.findByUserId(userId));
-    }
-
-    @Override
-    public ResponseUser updateUserGradeName(String userId) {    // Deprecated but retained for emergency manual use
-        User user = userRepository.findByUserId(userId);
-        if (user == null) {
-            throw new UserNotFoundException(userId);
-        }
-
-        List<UserGrade> userGrades = userGradeRepository.findAll();
-        userGrades.sort(Comparator.comparing(UserGrade::getRequiredMoney).reversed());
-
-        Long pureOrderAmount = Optional.ofNullable(orderAdapter.getOrderAmountGroupByUserLastThreeMonth().getBody())
-                .orElse(Collections.emptyList())
-                .stream()
-                .filter(resp -> Objects.equals(resp.userNo(), user.getUserNo()))
-                .map(UserOrderAmountResponse::getpureOrderAmount)
-                .findFirst()
-                .orElse(0L);
-
-        for (UserGrade grade : userGrades) {
-            if (pureOrderAmount >= grade.getRequiredMoney()) {
-                UserGrade.Grade enumGrade = UserGrade.Grade.valueOf(String.valueOf(grade.getGradeName()));
-                userRepository.updateUserGrade_gradeNameByUserId(userId, enumGrade);
-                break; // Apply the highest matching grade only once
-            }
-        }
 
         return new ResponseUser(userRepository.findByUserId(userId));
     }

@@ -16,6 +16,7 @@ import com.nhnacademy.bookstoreuserapi.cart.service.CartService;
 import com.nhnacademy.bookstoreuserapi.user.domain.User;
 import com.nhnacademy.bookstoreuserapi.user.exception.UserNotFoundException;
 import com.nhnacademy.bookstoreuserapi.user.repository.UserRepository;
+import com.nhnacademy.bookstoreuserapi.cart.exception.GuestCartCreationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -76,11 +77,11 @@ public class CartServiceImpl implements CartService {
                         .build();
             } catch (DataIntegrityViolationException e) {
                 if(attempt == MAX_ATTEMPTS) {
-                    throw new RuntimeException("UUID 생성 재시도 실패", e);
+                    throw new GuestCartCreationException("UUID 생성 재시도 실패");
                 }
             }
         }
-        throw new RuntimeException("Guest Cart 생성 중 알 수 없는 오류");
+        throw new GuestCartCreationException("Guest Cart 생성 중 알 수 없는 오류");
     }
 
     @Override
@@ -122,6 +123,8 @@ public class CartServiceImpl implements CartService {
         return getCurrentCartResponse(cart);
     }
 
+
+
     private Cart findCart(CartContext context) {
         if (context.isUser()) {
             return cartRepository.findByOwnerTypeAndUser_UserId(OwnerType.USER, context.getUserId())
@@ -134,10 +137,7 @@ public class CartServiceImpl implements CartService {
 
     private CartResponse getCurrentCartResponse(Cart cart) {
         List<CartItemDto> itemDtos = cart.getItems().stream()
-                .map(item -> CartItemDto.builder()
-                        .itemId(item.getItemId())
-                        .quantity(item.getQuantity())
-                        .build())
+                .map(CartItemDto::from)
                 .toList();
 
         return CartResponse.builder()

@@ -1,11 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.user.service;
 
-import com.nhnacademy.bookstoreuserapi.user.domain.User;
-import com.nhnacademy.bookstoreuserapi.user.domain.Oauth2UserCreateRequest;
-import com.nhnacademy.bookstoreuserapi.user.domain.UserCreateRequest;
-import com.nhnacademy.bookstoreuserapi.user.domain.UserUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUser;
-import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUserId;
+import com.nhnacademy.bookstoreuserapi.user.domain.*;
 
 public interface UserService {
 
@@ -27,7 +22,7 @@ public interface UserService {
 
     ResponseUser updateUserStatus(String userId, User.Status status);
 
-    ResponseUser updateUserGradeName(String userId, String gradeName);
+    void bulkUpdateUserGrades();
 
     ResponseUser deleteUser(String userId);
 

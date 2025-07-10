@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 public record PointCreateRequest (@NotBlank @Size(max = 20) String userId,
                                   @NotNull @Min(1) Long typeId,
-                                  @Min(1) Long paymentId,
+                                  Long orderNo,
                                   @NotNull LocalDateTime earnedAndUsedAt,
-                                  @NotNull int earnedAndUsedPoint){
+                                  @NotBlank String earnedAndUsedPoint){
 }

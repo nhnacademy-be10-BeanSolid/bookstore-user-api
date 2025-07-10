@@ -1,16 +1,11 @@
 package com.nhnacademy.bookstoreuserapi.user.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nhnacademy.bookstoreuserapi.address.domain.Address;
-import com.nhnacademy.bookstoreuserapi.cart.domain.Cart;
-import com.nhnacademy.bookstoreuserapi.review.domain.Review;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -70,18 +65,6 @@ public class User {
 
     @Column(name = "last_login_at")
     private LocalDateTime lastLoginAt;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<Address> address;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<Review> reviews;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<Cart> carts;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "grade_name", nullable = false)

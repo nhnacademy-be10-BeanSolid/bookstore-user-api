@@ -36,13 +36,11 @@ class PointTypeRepositoryTest {
         pointType.setTypeName("순수금액");
         pointType.setEarningPoint(100);
         pointType.setEarningRate(1);
-
+        pointType.setIsActive(true);
         UserGrade userGrade = new UserGrade();
         userGrade.setGradeName(BASIC);
         userGrade.setRequiredMoney(100L);
-
         pointType.setUserGrade(userGrade);
-
         userGradeRepository.save(userGrade);
         pointTypeRepository.save(pointType);
     }
@@ -52,8 +50,36 @@ class PointTypeRepositoryTest {
     void testFindByGradeName() {
         Pageable pageable = PageRequest.of(0, 10);
         Page<ResponsePointType> result = pointTypeRepository.findPointTypeByGradeName(BASIC, pageable);
-
         assertThat(result).hasSize(1);
         assertThat(result.getContent().getFirst().getTypeName()).isEqualTo("순수금액");
+    }
+
+    @Test
+    @DisplayName("typeName으로 earningPoint 조회")
+    void testFindEarningPointByTypeName() {
+        int earningPoint = pointTypeRepository.findEarningPointByTypeName("순수금액");
+        assertThat(earningPoint).isEqualTo(100);
+    }
+
+    @Test
+    @DisplayName("typeName으로 isActive 조회")
+    void testIsActiveByTypeName() {
+        boolean active = pointTypeRepository.isActiveByTypeName("순수금액");
+        assertThat(active).isTrue();
+    }
+
+    @Test
+    @DisplayName("typeName으로 typeId 조회")
+    void testFindTypeIdByTypeName() {
+        Long typeId = pointTypeRepository.findTypeIdByTypeName("순수금액");
+        assertThat(typeId).isNotNull();
+    }
+
+    @Test
+    @DisplayName("typeId로 isActive 조회")
+    void testFindIsActiveByTypeId() {
+        Long typeId = pointTypeRepository.findTypeIdByTypeName("순수금액");
+        boolean isActive = pointTypeRepository.findIsActiveByTypeId(typeId);
+        assertThat(isActive).isTrue();
     }
 }

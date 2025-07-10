@@ -1,18 +1,11 @@
 package com.nhnacademy.bookstoreuserapi.usergrade.domain;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nhnacademy.bookstoreuserapi.user.domain.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "user_grades")
 public class UserGrade {
@@ -23,10 +16,6 @@ public class UserGrade {
 
     @Column(name = "required_money", nullable = false)
     private long requiredMoney;
-
-    @OneToMany(mappedBy = "userGrade")
-    @JsonIgnore
-    private List<User> user;
 
     public UserGrade(UserGradeCreateRequest userGrade) {
         this.gradeName = Grade.valueOf(userGrade.gradeName());
@@ -39,6 +28,7 @@ public class UserGrade {
     }
 
     public enum Grade {
+        COMMON,
         BASIC,     //1퍼 적립혜택   1퍼
         ROYAL,      //+1퍼 적립혜택  2퍼
         GOLD,       //+1퍼 적립혜택  3퍼

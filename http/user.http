@@ -69,10 +69,13 @@ Content-Type: application/json
 X-USER-ID: withdrawnUser
 
 ### 회원 등급 수정
-PUT http://localhost:10348/users/me/grade?gradeName=PLATINUM
+PUT http://localhost:10348/users/me/grade
 Content-Type: application/json
-X-USER-ID: admin
+X-USER-ID: test
 
 
+### 회원 전체등급 수정
+PUT http://localhost:10348/users/bulk/grade
+Content-Type: application/json
 
 

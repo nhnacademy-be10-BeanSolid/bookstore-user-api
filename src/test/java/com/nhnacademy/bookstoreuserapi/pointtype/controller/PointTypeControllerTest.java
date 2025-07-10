@@ -2,6 +2,7 @@ package com.nhnacademy.bookstoreuserapi.pointtype.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointTypeCreateRequest;
+import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointTypeUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.ResponsePointType;
 import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
@@ -46,12 +47,11 @@ class PointTypeControllerTest {
     @DisplayName("전체 포인트 타입 조회 성공")
     void getAllPointTypes() throws Exception {
         List<ResponsePointType> mockList = List.of(
-                new ResponsePointType(1L, "회원가입", 100, 5, "GOLD"),
-                new ResponsePointType(2L, "리뷰작성", 200, 10, "GOLD")
+                new ResponsePointType(1L, "회원가입", 100, 5, "GOLD", true),
+                new ResponsePointType(2L, "리뷰작성", 200, 10, "GOLD", true)
         );
         Pageable pageable = PageRequest.of(0, 20);
         Page<ResponsePointType> mockPage = new PageImpl<>(mockList, pageable, mockList.size());
-
         Mockito.when(pointTypeService.getAllPointTypes(any(Pageable.class))).thenReturn(mockPage);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/users/pointType"))
@@ -59,49 +59,42 @@ class PointTypeControllerTest {
                 .andReturn();
 
         String content = result.getResponse().getContentAsString();
-
         assertThat(content).contains("회원가입", "리뷰작성");
-        Mockito.verify(pointTypeService, Mockito.times(1)).getAllPointTypes(pageable);
+        Mockito.verify(pointTypeService, Mockito.times(1)).getAllPointTypes(any(Pageable.class));
     }
 
     @Test
     @DisplayName("등급명으로 포인트 타입 조회 성공")
     void getPointTypeByGradeName() throws Exception {
         Pageable pageable = PageRequest.of(0, 20);
-
         List<ResponsePointType> mockList = List.of(
-                new ResponsePointType(1L, "가입", 100, 5, "GOLD")
+                new ResponsePointType(1L, "가입", 100, 5, "GOLD", true)
         );
         Page<ResponsePointType> mockPage = new PageImpl<>(mockList, pageable, mockList.size());
-
         Mockito.when(pointTypeService.getPointTypeByGradeName(eq(GOLD), any(Pageable.class)))
                 .thenReturn(mockPage);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/users/pointType")
                         .param("gradeName", "GOLD"))
                 .andExpect(status().isOk());
-
         Mockito.verify(pointTypeService).getPointTypeByGradeName(eq(GOLD), any(Pageable.class));
     }
 
     @Test
     @DisplayName("포인트 타입 생성 성공")
     void createPointType() throws Exception {
-        PointTypeCreateRequest request = new PointTypeCreateRequest("순수 주문금액", 200, 20, "BRONZE");
-
+        PointTypeCreateRequest request = new PointTypeCreateRequest("순수 주문금액", 200, 20, "BRONZE", true);
         mockMvc.perform(MockMvcRequestBuilders.post("/users/pointType")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated());
-
         Mockito.verify(pointTypeService).savePointType(request);
     }
 
     @Test
     @DisplayName("포인트 타입 생성 실패 - 유효성 검사")
     void createPointTypeValidationFail() throws Exception {
-        PointTypeCreateRequest request = new PointTypeCreateRequest("", 0, 0, "BRONZE");
-
+        PointTypeCreateRequest request = new PointTypeCreateRequest("", 0, 0, "BRONZE", true);
         mockMvc.perform(MockMvcRequestBuilders.post("/users/pointType")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -114,40 +107,49 @@ class PointTypeControllerTest {
     void deletePointType() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/users/pointType/{typeId}", 1L))
                 .andExpect(status().isNoContent());
-
         Mockito.verify(pointTypeService).deletePointType(1L);
     }
 
     @Test
-    @DisplayName("earningPoint 업데이트 성공")
-    void updateEarningPoint() throws Exception {
-        ResponsePointType response = new ResponsePointType(1L, "주문", 999, 5, "BRONZE");
-        Mockito.when(pointTypeService.updateEarningPoint(999, 1L)).thenReturn(response);
-
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/users/pointType/{typeId}/point", 1L)
-                        .param("point", "999"))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String content = result.getResponse().getContentAsString();
-        assertThat(content).contains("999");
-        Mockito.verify(pointTypeService).updateEarningPoint(999, 1L);
+    @DisplayName("포인트 타입 isActive 상태 변경 성공")
+    void updateIsActive() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/users/pointType/{typeId}/isActive", 1L))
+                .andExpect(status().isOk());
+        Mockito.verify(pointTypeService).updatePointTypeisActive(1L);
     }
 
     @Test
-    @DisplayName("earningRate 업데이트 성공")
-    void updateEarningRate() throws Exception {
-        ResponsePointType response = new ResponsePointType(1L, "주문", 500, 15, "SILVER");
-        Mockito.when(pointTypeService.updateEarningRate(15, 1L)).thenReturn(response);
-
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/users/pointType/{typeId}/rate", 1L)
-                        .param("rate", "15"))
+    @DisplayName("포인트 타입 isActive 상태 조회 성공")
+    void getIsActive() throws Exception {
+        Mockito.when(pointTypeService.getPointTypeIsActive(1L)).thenReturn(true);
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/users/pointType/{typeId}/isActive", 1L))
                 .andExpect(status().isOk())
                 .andReturn();
+        assertThat(result.getResponse().getContentAsString()).isEqualTo("true");
+        Mockito.verify(pointTypeService).getPointTypeIsActive(1L);
+    }
 
+    @Test
+    @DisplayName("포인트 타입 정보 수정 성공")
+    void updatePointType() throws Exception {
+        PointTypeUpdateRequest request = new PointTypeUpdateRequest("수정타입", 500, 15, "GOLD");
+        mockMvc.perform(MockMvcRequestBuilders.put("/users/pointType/{typeId}/edit", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+        Mockito.verify(pointTypeService).updatePointTypeInfo(request, 1L);
+    }
+
+    @Test
+    @DisplayName("포인트 타입 단건 조회 성공")
+    void getPointType() throws Exception {
+        ResponsePointType response = new ResponsePointType(1L, "회원가입", 100, 5, "GOLD", true);
+        Mockito.when(pointTypeService.getPointTypeInfo(1L)).thenReturn(response);
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/users/pointType/{typeId}", 1L))
+                .andExpect(status().isOk())
+                .andReturn();
         String content = result.getResponse().getContentAsString();
-        assertThat(content).contains("15");
-        Mockito.verify(pointTypeService).updateEarningRate(15, 1L);
+        assertThat(content).contains("회원가입");
+        Mockito.verify(pointTypeService).getPointTypeInfo(1L);
     }
 }
-

@@ -25,7 +25,7 @@ public class PointRepositoryImpl implements PointRepositoryCustom {
                         point.pointId,
                         point.user.userId,
                         point.pointType.typeId,
-                        point.paymentId,
+                        point.orderNo,
                         point.earnedAndUsedAt,
                         point.earnedAndUsedPoint))
                 .from(point)

@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.pointtype.service;
 
+import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointTypeUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointTypeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.ResponsePointType;
@@ -16,7 +17,17 @@ public interface PointTypeService {
 
     void deletePointType(Long id);
 
-    ResponsePointType updateEarningPoint(int point, Long typeId);
+    boolean isActivePointType(String typeName);
 
-    ResponsePointType updateEarningRate(int rate, Long typeId);
+    int getEarningPointByTypeName(String typeName);
+
+    Long getTypeIdByName(String typeName);
+
+    void updatePointTypeisActive(Long typeId);
+
+    boolean getPointTypeIsActive(Long typeId);
+
+    void updatePointTypeInfo(PointTypeUpdateRequest request, Long typeId);
+
+    ResponsePointType getPointTypeInfo(Long typeId);
 }

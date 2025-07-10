@@ -2,11 +2,14 @@ package com.nhnacademy.bookstoreuserapi.common.controller.advice;
 
 import com.nhnacademy.bookstoreuserapi.common.exception.CustomHttpException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.Objects;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -46,5 +49,18 @@ public class GlobalExceptionHandler {
                 e.getMessage()
         );
         return ResponseEntity.status(status.getCode()).body(errorMessage);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorMessage> handleDataIntegrityViolation(DataIntegrityViolationException e, HttpServletRequest request) {
+        int statusCode = HttpStatus.CONFLICT.value();
+        String reasonPhrase = HttpStatus.CONFLICT.getReasonPhrase();
+        ErrorMessage errorMessage = new ErrorMessage(
+                statusCode,
+                reasonPhrase,
+                request.getRequestURI(),
+                Objects.requireNonNull(e.getRootCause()).getMessage()
+        );
+        return ResponseEntity.status(statusCode).body(errorMessage);
     }
 }

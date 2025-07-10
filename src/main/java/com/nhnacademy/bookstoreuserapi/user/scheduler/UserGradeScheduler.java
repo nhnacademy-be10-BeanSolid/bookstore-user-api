@@ -11,8 +11,7 @@ public class UserGradeScheduler {
 
     private final UserService userService;
 
-//    @Scheduled(cron = "0 0 1 * * *")
-    @Scheduled(cron = "*/10 * * * * *")
+    @Scheduled(cron = "0 0 1 1 * *")
     public void scheduledBulkUpdateUserGrades() {
         userService.bulkUpdateUserGrades();
     }

@@ -42,7 +42,7 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.CREATED).body(cartService.addItem(ctx, request));
     }
 
-    @PatchMapping("/items/{itemId}")
+    @PutMapping("/items/{itemId}")
     public ResponseEntity<CartResponse> updateItemQuantity(
             CartContext ctx,
             @PathVariable("itemId") Long itemId,

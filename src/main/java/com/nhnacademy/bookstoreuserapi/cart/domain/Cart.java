@@ -67,6 +67,12 @@ public class Cart extends BaseTimeEntity {
     }
 
     public void removeItem(Long itemId) {
-        this.items.removeIf(i -> i.getItemId().equals(itemId));
+        this.items.removeIf(i -> {
+            boolean removed = i.getItemId().equals(itemId);
+            if (removed) {
+                i.setCart(null);
+            }
+            return removed;
+        });
     }
 }

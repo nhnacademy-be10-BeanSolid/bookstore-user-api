@@ -1,28 +1,26 @@
 package com.nhnacademy.bookstoreuserapi.user.service.impl;
 
-import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
-import com.nhnacademy.bookstoreuserapi.user.domain.Oauth2UserCreateRequest;
+import com.nhnacademy.bookstoreuserapi.adapter.OrderAdapter;
 import com.nhnacademy.bookstoreuserapi.point.domain.PointCreateRequest;
-import com.nhnacademy.bookstoreuserapi.user.domain.UserCreateRequest;
-import com.nhnacademy.bookstoreuserapi.user.domain.UserUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUser;
-import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUserId;
-import com.nhnacademy.bookstoreuserapi.usergrade.exception.UserGradeNotFoundException;
-import com.nhnacademy.bookstoreuserapi.pointtype.repository.PointTypeRepository;
-import com.nhnacademy.bookstoreuserapi.usergrade.repository.UserGradeRepository;
 import com.nhnacademy.bookstoreuserapi.point.service.PointService;
-import com.nhnacademy.bookstoreuserapi.user.service.UserService;
-import com.nhnacademy.bookstoreuserapi.user.domain.User;
+import com.nhnacademy.bookstoreuserapi.pointtype.repository.PointTypeRepository;
+import com.nhnacademy.bookstoreuserapi.user.domain.*;
 import com.nhnacademy.bookstoreuserapi.user.exception.UserAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.user.exception.UserNotFoundException;
 import com.nhnacademy.bookstoreuserapi.user.repository.UserRepository;
+import com.nhnacademy.bookstoreuserapi.user.service.UserService;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
+import com.nhnacademy.bookstoreuserapi.usergrade.repository.UserGradeRepository;
+import com.nhnacademy.bookstoreuserapi.usergrade.service.UserGradeService;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade.BASIC;
 
@@ -36,6 +34,9 @@ public class UserServiceImpl implements UserService {
     private final UserGradeRepository userGradeRepository;
     private final PointTypeRepository pointTypeRepository;
     private final PointService pointService;
+    private final OrderAdapter orderAdapter;
+    private final UserGradeService userGradeService;
+    private final EntityManager entityManager;
 
     @Override
     public ResponseUser getUser(String userId) {
@@ -209,24 +210,61 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseUser updateUserGradeName(String userId, String gradeName) {
-        if(!userRepository.existsByUserId(userId)){
+    public ResponseUser updateUserGradeName(String userId) {    // Deprecated but retained for emergency manual use
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
             throw new UserNotFoundException(userId);
         }
-        UserGrade.Grade grade;
-        try {
-            grade = UserGrade.Grade.valueOf(gradeName);
-        } catch (IllegalArgumentException e) {
-            throw new UserGradeNotFoundException(gradeName);
-        }
 
-        UserGrade userGrade = userGradeRepository.findByGradeName(grade);
-        if (userGrade == null) {
-            throw new UserGradeNotFoundException(gradeName);
+        List<UserGrade> userGrades = userGradeRepository.findAll();
+        userGrades.sort(Comparator.comparing(UserGrade::getRequiredMoney).reversed());
+
+        Long pureOrderAmount = Optional.ofNullable(orderAdapter.getOrderAmountGroupByUserLastThreeMonth().getBody())
+                .orElse(Collections.emptyList())
+                .stream()
+                .filter(resp -> Objects.equals(resp.userNo(), user.getUserNo()))
+                .map(UserOrderAmountResponse::getpureOrderAmount)
+                .findFirst()
+                .orElse(0L);
+
+        for (UserGrade grade : userGrades) {
+            if (pureOrderAmount >= grade.getRequiredMoney()) {
+                UserGrade.Grade enumGrade = UserGrade.Grade.valueOf(String.valueOf(grade.getGradeName()));
+                userRepository.updateUserGrade_gradeNameByUserId(userId, enumGrade);
+                break; // Apply the highest matching grade only once
+            }
         }
-        userRepository.updateUserGrade_gradeNameByUserId(userId, userGrade.getGradeName());
 
         return new ResponseUser(userRepository.findByUserId(userId));
+    }
+
+    @Override
+    public void bulkUpdateUserGrades() {
+        List<UserGrade> userGrades = userGradeRepository.findAll();
+        userGrades.sort(Comparator.comparing(UserGrade::getRequiredMoney).reversed());
+
+        Map<Long, Long> userNoToPureOrderAmount =
+                Optional.ofNullable(orderAdapter.getOrderAmountGroupByUserLastThreeMonth().getBody())
+                        .orElse(Collections.emptyList())
+                        .stream()
+                        .collect(Collectors.toMap(UserOrderAmountResponse::userNo, UserOrderAmountResponse::getpureOrderAmount));
+
+        for (UserGrade grade : userGrades) {
+            List<Long> userNosToUpdate = userNoToPureOrderAmount.entrySet().stream()
+                    .filter(entry -> entry.getValue() >= grade.getRequiredMoney())
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList());
+
+            if (!userNosToUpdate.isEmpty()) {
+                long updated = userRepository.bulkUpdateUserGrade(grade, userNosToUpdate);
+                System.out.println(updated + " users updated to " + grade.getGradeName());
+                userNosToUpdate.forEach(userNoToPureOrderAmount::remove);
+            }
+        }
+
+        // 벌크 업데이트 이후 영속성 컨텍스트를 clear하여 엔티티 상태와 DB 상태 불일치 방지
+        entityManager.flush();
+        entityManager.clear();
     }
 
     @Override

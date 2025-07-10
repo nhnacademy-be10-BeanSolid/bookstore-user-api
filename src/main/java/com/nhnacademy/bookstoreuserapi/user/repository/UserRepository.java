@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long>, UserRepositoryCustom {
 
     User findByUserId(String userId);
 
@@ -31,5 +31,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByUserId(String userId);
 
     User findByUserNameAndUserEmail(String userName, String userEmail);
+
+    User findByUserNo(Long userNo);
 
 }

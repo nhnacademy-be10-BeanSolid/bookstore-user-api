@@ -481,7 +481,7 @@ class UserControllerTest {
         user.setUserStatus(User.Status.ACTIVE);
         user.setUserGrade(new UserGrade(ROYAL, 100000L));
 
-        Mockito.when(userService.updateUserGradeName("user123", ROYAL.toString()))
+        Mockito.when(userService.updateUserGradeName("user123"))
                 .thenReturn(new ResponseUser(user));
 
         mockMvc.perform(put("/users/me/grade")

@@ -220,7 +220,7 @@ class UserServiceTest {
     @Test
     @DisplayName("회원 등급 업데이트")
     void updateGrade() {
-        userService.updateUserGradeName(userId, "ROYAL");
+        userService.updateUserGradeName(userId);
         User updated = userRepository.findByUserId(userId);
         assertThat(updated.getUserGrade().getGradeName()).isEqualTo(ROYAL);
     }
@@ -228,21 +228,21 @@ class UserServiceTest {
     @Test
     @DisplayName("존재하지 않는 사용자 등급 업데이트 실패")
     void updateGrade_notFound() {
-        assertThatThrownBy(() -> userService.updateUserGradeName("unknown", "ROYAL"))
+        assertThatThrownBy(() -> userService.updateUserGradeName("unknown"))
                 .isInstanceOf(UserNotFoundException.class);
     }
 
     @Test
     @DisplayName("존재하지 않는 사용자 등급 업데이트 실패 - 잘못된 등급")
     void updateGrade_invalidGrade() {
-        assertThatThrownBy(() -> userService.updateUserGradeName(userId, "INVALID"))
+        assertThatThrownBy(() -> userService.updateUserGradeName(userId))
                 .isInstanceOf(UserGradeNotFoundException.class);
     }
 
     @Test
     @DisplayName("존재하지 않는 사용자 등급 업데이트 실패 - 저장되지 않은 등급")
     void updateGrade_notSavedGrade() {
-        assertThatThrownBy(() -> userService.updateUserGradeName(userId, "PLATINUM"))
+        assertThatThrownBy(() -> userService.updateUserGradeName(userId))
                 .isInstanceOf(UserGradeNotFoundException.class);
     }
 

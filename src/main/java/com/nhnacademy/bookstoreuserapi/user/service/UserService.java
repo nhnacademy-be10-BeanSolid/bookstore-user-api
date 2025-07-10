@@ -6,6 +6,7 @@ import com.nhnacademy.bookstoreuserapi.user.domain.UserCreateRequest;
 import com.nhnacademy.bookstoreuserapi.user.domain.UserUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUser;
 import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUserId;
+import jakarta.transaction.Transactional;
 
 public interface UserService {
 
@@ -27,7 +28,10 @@ public interface UserService {
 
     ResponseUser updateUserStatus(String userId, User.Status status);
 
-    ResponseUser updateUserGradeName(String userId, String gradeName);
+    ResponseUser updateUserGradeName(String userId);
+
+    @Transactional
+    void bulkUpdateUserGrades();
 
     ResponseUser deleteUser(String userId);
 

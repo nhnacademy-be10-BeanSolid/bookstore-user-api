@@ -1,18 +1,12 @@
 package com.nhnacademy.bookstoreuserapi.user.controller;
 
 import com.nhnacademy.bookstoreuserapi.common.annotation.AuthenticatedUserId;
-import com.nhnacademy.bookstoreuserapi.user.domain.Oauth2UserCreateRequest;
-import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUser;
-import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUserId;
-import com.nhnacademy.bookstoreuserapi.user.service.UserService;
-import com.nhnacademy.bookstoreuserapi.user.domain.User;
-import com.nhnacademy.bookstoreuserapi.user.domain.UserCreateRequest;
-import com.nhnacademy.bookstoreuserapi.user.domain.UserUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
+import com.nhnacademy.bookstoreuserapi.user.domain.*;
+import com.nhnacademy.bookstoreuserapi.user.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -110,8 +104,14 @@ public class UserController {
     }
 
     @PutMapping("/me/grade")
-    public ResponseEntity<ResponseUser> updateUserGradeName(@AuthenticatedUserId String userId, @RequestParam @NotBlank @Size(max = 10) String gradeName) {
-        return ResponseEntity.ok(userService.updateUserGradeName(userId, gradeName));
+    public ResponseEntity<ResponseUser> updateUserGradeName(@AuthenticatedUserId String userId) {
+        return ResponseEntity.ok(userService.updateUserGradeName(userId));
+    }
+// 전체회원등급 조정api
+    @PutMapping("/bulk/grade")
+    public ResponseEntity<Void> bulkUpdateUserGrades() {
+        userService.bulkUpdateUserGrades();
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/findId")

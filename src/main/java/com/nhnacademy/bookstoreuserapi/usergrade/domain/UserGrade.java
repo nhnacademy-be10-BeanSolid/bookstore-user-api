@@ -28,6 +28,7 @@ public class UserGrade {
     }
 
     public enum Grade {
+        COMMON,
         BASIC,     //1퍼 적립혜택   1퍼
         ROYAL,      //+1퍼 적립혜택  2퍼
         GOLD,       //+1퍼 적립혜택  3퍼

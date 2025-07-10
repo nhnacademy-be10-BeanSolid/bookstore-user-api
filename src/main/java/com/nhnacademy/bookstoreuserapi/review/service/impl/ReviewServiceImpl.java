@@ -47,25 +47,25 @@ public class ReviewServiceImpl implements ReviewService {
         }
         Review savedReview = reviewRepository.save(new Review(review, user));
 
+        if(pointTypeService.isActivePointType("리뷰작성")){
 
-        pointTypeService.isActivePointType("리뷰작성");
+            int reviewPoint = pointTypeService.getEarningPointByTypeName("리뷰작성");
+            long typeId = pointTypeService.getTypeIdByName("리뷰작성");
 
-        int reviewPoint = pointTypeService.getEarningPointByTypeName("리뷰작성");
-        long typeId = pointTypeService.getTypeIdByName("리뷰작성");
+            String reviewPointPlus = reviewPoint + " 적립";
 
-        String reviewPointPlus = reviewPoint + " 적립";
+            userRepository.updatePointByUserId(review.userId(), reviewPoint);
 
-        userRepository.updatePointByUserId(review.userId(), reviewPoint);
+            PointCreateRequest pointCreateRequest = new PointCreateRequest(
+                    userId,
+                    typeId,
+                    null,
+                    LocalDateTime.now(),
+                    reviewPointPlus
+            );
 
-        PointCreateRequest pointCreateRequest = new PointCreateRequest(
-                userId,
-                typeId,
-                null,
-                LocalDateTime.now(),
-                reviewPointPlus
-        );
-
-        pointService.savePoint(userId,pointCreateRequest);
+            pointService.savePoint(userId,pointCreateRequest);
+        }
 
         return new ResponseReview(
                 savedReview.getReviewId(),

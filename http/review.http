@@ -2,14 +2,14 @@
 
 POST http://localhost:10348/reviews/me
 Content-Type: application/json
-X-USER-ID: pointTest
+X-USER-ID: admin
 
 {
   "evaluationScore": 5,
   "reviewContent": "정말 재밌어요!",
   "reviewPhoto": "",
-  "userId": "pointTest",
-  "bookId": 108
+  "userId": "admin",
+  "bookId": 103
 }
 
 

@@ -6,14 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class ResponsePointType {
 
     private Long typeId;
     private String typeName;
-    private Integer earningPoint;
-    private Integer earningRate;
+    private int earningPoint;
+    private int earningRate;
     private String gradeName;
 
     @JsonProperty("isActive")

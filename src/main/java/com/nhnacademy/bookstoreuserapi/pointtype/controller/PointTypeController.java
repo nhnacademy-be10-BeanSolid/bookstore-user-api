@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.pointtype.controller;
 
 import com.nhnacademy.bookstoreuserapi.common.controller.interfaces.PointTypeControllerDoc;
+import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointTypeUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointTypeCreateRequest;
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.ResponsePointType;
@@ -50,20 +51,37 @@ public class PointTypeController implements PointTypeControllerDoc {
     @DeleteMapping("/{typeId}")
     @Override
     public ResponseEntity<Void> deletePointType(@PathVariable @NotNull @Min(1) Long typeId) {
+
         pointTypeService.deletePointType(typeId);
+
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{typeId}/point")
-    @Override
-    public ResponseEntity<ResponsePointType> updateEarningPoint(@PathVariable @NotNull @Min(1) Long typeId, @RequestParam @NotNull @Min(0) int point) {
+    @PutMapping("/{typeId}/isActive")
+    public void updateIsActive(@PathVariable @NotNull @Min(1) Long typeId) {
 
-        return ResponseEntity.ok().body(pointTypeService.updateEarningPoint(point, typeId));
+        pointTypeService.updatePointTypeisActive(typeId);
     }
 
-    @PutMapping("/{typeId}/rate")
-    @Override
-    public ResponseEntity<ResponsePointType> updateRatePoint(@PathVariable @NotNull @Min(1) Long typeId, @RequestParam int rate) {
-        return ResponseEntity.ok().body(pointTypeService.updateEarningRate(rate, typeId));
+    @GetMapping("/{typeId}/isActive")
+    public boolean getIsActive(@PathVariable @NotNull @Min(1) Long typeId) {
+
+        return pointTypeService.getPointTypeIsActive(typeId);
+    }
+
+    @PutMapping("/{typeId}/edit")
+    public void updatePointType(@Valid @RequestBody PointTypeUpdateRequest request, BindingResult bindingResult, @PathVariable @NotNull @Min(1) Long typeId) {
+
+        if(bindingResult.hasErrors()) {
+            throw new ValidationFailedException(bindingResult);
+        }
+
+        pointTypeService.updatePointTypeInfo(request, typeId);
+    }
+
+    @GetMapping("/{typeId}")
+    public ResponseEntity<ResponsePointType> getPointType(@PathVariable @NotNull @Min(1) Long typeId) {
+
+        return ResponseEntity.ok().body(pointTypeService.getPointTypeInfo(typeId));
     }
 }

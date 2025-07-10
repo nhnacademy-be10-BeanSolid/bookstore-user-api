@@ -14,10 +14,11 @@ POST http://localhost:10348/users/pointType
 Content-Type: application/json
 
 {
-  "typeName": "리뷰작성",
+  "typeName": "테스트1",
   "earningPoint": 500,
   "earningRate": 1,
-  "gradeName": "BASIC"
+  "gradeName": "BASIC",
+  "isActive": true
 }
 
 ### 유형별 적립포인트 등록 3
@@ -41,8 +42,19 @@ GET http://localhost:10348/users/pointType
 ### 유형 식별키를 이용해 유형별 적립포인트 내역 삭제
 DELETE http://localhost:10348/users/pointType/3
 
-### 유형에 따른 적립포인트 포인트 수정 수정
-PUT http://localhost:10348/users/pointType/1/point?point=300
+### 적립포인트 내역 수정
+PUT http://localhost:10348/users/pointType/22/edit
+Content-Type: application/json
 
-### 유형에 따른 적립포인트 적립률 수정
-PUT http://localhost:10348/users/pointType/1/rate?rate=0
+{
+  "typeName": "테스트용",
+  "earningPoint": 400,
+  "earningRate": 1,
+  "gradeName": "BASIC"
+}
+
+### 활성화 여부 수정
+PUT http://localhost:10348/users/pointType/21/isActive?isActive=false
+
+### 유형별 적립포인트 단건 조회
+GET http://localhost:10348/users/pointType/22

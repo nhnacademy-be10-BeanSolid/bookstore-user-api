@@ -80,17 +80,7 @@ public class UserServiceImpl implements UserService {
         );
 
         user.setAuth(false);
-
-        // 유형별 적립테이블의 회원가입 값에 따라 포인트 적립 액수가 달라짐
-
-        pointTypeService.isActivePointType("회원가입");
-
-        int welcomePoint = pointTypeService.getEarningPointByTypeName("회원가입");
-        Long typeId = pointTypeService.getTypeIdByName("회원가입");
-
-        user.setUserPoint(welcomePoint);
-
-        String welcomePointPlus = welcomePoint + " 적립";
+        user.setUserPoint(0);
 
         user.setCreatedAt(LocalDateTime.now());
         user.setUserGrade(basicGrade);
@@ -98,15 +88,26 @@ public class UserServiceImpl implements UserService {
 
         User savedUser = userRepository.save(user);
 
-        PointCreateRequest pointCreateRequest = new PointCreateRequest(
-                request.userId(),
-                typeId,
-                null,
-                LocalDateTime.now(),
-                welcomePointPlus
-        );
+        // 유형별 적립테이블의 회원가입 값에 따라 포인트 적립 액수가 달라짐
+        if(pointTypeService.isActivePointType("회원가입")){
 
-        pointService.savePoint(request.userId(),pointCreateRequest);
+            int welcomePoint = pointTypeService.getEarningPointByTypeName("회원가입");
+            Long typeId = pointTypeService.getTypeIdByName("회원가입");
+
+            user.setUserPoint(welcomePoint);
+
+            String welcomePointPlus = welcomePoint + " 적립";
+
+            PointCreateRequest pointCreateRequest = new PointCreateRequest(
+                    request.userId(),
+                    typeId,
+                    null,
+                    LocalDateTime.now(),
+                    welcomePointPlus
+            );
+
+            pointService.savePoint(request.userId(),pointCreateRequest);
+        }
 
         return new ResponseUser(savedUser);
     }
@@ -130,37 +131,36 @@ public class UserServiceImpl implements UserService {
         user.setUserPhoneNumber(request.userPhoneNumber());
         user.setUserEmail(request.userEmail());
         user.setUserBirth(request.userBirth());
+        user.setUserPoint(0);
 
         user.setAuth(false);
 
-        // 유형별 적립테이블의 회원가입 값에 따라 포인트 적립 액수가 달라짐
-
-
-
-        pointTypeService.isActivePointType("회원가입");
-
-        int welcomePoint = pointTypeService.getEarningPointByTypeName("회원가입");
-        Long typeId = pointTypeService.getTypeIdByName("회원가입");
-
-        user.setUserPoint(welcomePoint);
-
-        String welcomePointPlus = welcomePoint + " 적립";
-
+        user.setCreatedAt(LocalDateTime.now());
         user.setUserGrade(basicGrade);
         user.setUserStatus(User.Status.ACTIVE);
-        user.setCreatedAt(LocalDateTime.now());
 
         User savedUser = userRepository.save(user);
 
-        PointCreateRequest pointCreateRequest = new PointCreateRequest(
-                userId,
-                typeId,
-                null,
-                LocalDateTime.now(),
-                welcomePointPlus
-        );
+        // 유형별 적립테이블의 회원가입 값에 따라 포인트 적립 액수가 달라짐
+        if(pointTypeService.isActivePointType("회원가입")){
 
-        pointService.savePoint(userId,pointCreateRequest);
+            int welcomePoint = pointTypeService.getEarningPointByTypeName("회원가입");
+            Long typeId = pointTypeService.getTypeIdByName("회원가입");
+
+            user.setUserPoint(welcomePoint);
+
+            String welcomePointPlus = welcomePoint + " 적립";
+
+            PointCreateRequest pointCreateRequest = new PointCreateRequest(
+                    userId,
+                    typeId,
+                    null,
+                    LocalDateTime.now(),
+                    welcomePointPlus
+            );
+
+            pointService.savePoint(userId,pointCreateRequest);
+        }
 
         return new ResponseUser(savedUser);
     }

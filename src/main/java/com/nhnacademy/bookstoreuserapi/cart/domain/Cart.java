@@ -44,10 +44,10 @@ public class Cart extends BaseTimeEntity {
 
     @BatchSize(size = 100)
     @OneToMany(
+            mappedBy = "cart",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    @JoinColumn(name = "cart_id")
     private List<CartItem> items = new ArrayList<>();
 
     public Cart(User user) {

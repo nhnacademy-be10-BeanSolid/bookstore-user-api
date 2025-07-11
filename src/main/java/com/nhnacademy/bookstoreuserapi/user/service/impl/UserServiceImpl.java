@@ -16,6 +16,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.nhnacademy.bookstoreuserapi.client.CouponClient;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -35,6 +36,7 @@ public class UserServiceImpl implements UserService {
     private final OrderAdapter orderAdapter;
     private final EntityManager entityManager;
     private final PointTypeService pointTypeService;
+    private final CouponClient couponClient;
 
     @Override
     public ResponseUser getUser(String userId) {
@@ -107,6 +109,7 @@ public class UserServiceImpl implements UserService {
 
             pointService.savePoint(request.userId(),pointCreateRequest);
         }
+        couponClient.issueWelcomeCoupon(savedUser.getUserId()); //가입 직후 쿠폰 서버에 HTTP 요청보내서 welcome 쿠폰 발급 !!
 
         return new ResponseUser(savedUser);
     }
@@ -160,6 +163,7 @@ public class UserServiceImpl implements UserService {
 
             pointService.savePoint(userId,pointCreateRequest);
         }
+        couponClient.issueWelcomeCoupon(savedUser.getUserId());
 
         return new ResponseUser(savedUser);
     }

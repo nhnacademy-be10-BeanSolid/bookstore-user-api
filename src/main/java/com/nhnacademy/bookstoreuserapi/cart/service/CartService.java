@@ -2,6 +2,7 @@ package com.nhnacademy.bookstoreuserapi.cart.service;
 
 import com.nhnacademy.bookstoreuserapi.cart.context.CartContext;
 import com.nhnacademy.bookstoreuserapi.cart.dto.request.CartAddItemRequest;
+import com.nhnacademy.bookstoreuserapi.cart.dto.request.CartUpdateItemsRequest;
 import com.nhnacademy.bookstoreuserapi.cart.dto.request.CartUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.cart.dto.response.CartCreateResponse;
 import com.nhnacademy.bookstoreuserapi.cart.dto.response.CartResponse;
@@ -15,4 +16,5 @@ public interface CartService {
     CartResponse updateItem(CartContext context, Long itemId, CartUpdateRequest request);
     CartResponse deleteItem(CartContext context, Long itemId);
     CartResponse deleteItems(CartContext context, List<Long> itemIds);
+    CartResponse updateItems(CartContext context, CartUpdateItemsRequest request);
 }

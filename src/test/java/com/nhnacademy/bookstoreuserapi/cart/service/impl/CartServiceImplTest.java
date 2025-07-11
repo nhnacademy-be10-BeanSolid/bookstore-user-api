@@ -4,6 +4,7 @@ import com.nhnacademy.bookstoreuserapi.cart.context.CartContext;
 import com.nhnacademy.bookstoreuserapi.cart.domain.Cart;
 import com.nhnacademy.bookstoreuserapi.cart.domain.OwnerType;
 import com.nhnacademy.bookstoreuserapi.cart.dto.request.CartAddItemRequest;
+import com.nhnacademy.bookstoreuserapi.cart.dto.request.CartUpdateItemsRequest;
 import com.nhnacademy.bookstoreuserapi.cart.dto.request.CartUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.cart.dto.response.CartCreateResponse;
 import com.nhnacademy.bookstoreuserapi.cart.dto.response.CartResponse;
@@ -241,5 +242,36 @@ class CartServiceImplTest {
         assertNotNull(response);
         assertEquals(1, response.getItems().size());
         assertEquals(200L, response.getItems().getFirst().getItemId());
+    }
+
+    @Test
+    void updateItems_success() {
+        guestCart.addItem(100L, 1);
+        guestCart.addItem(200L, 2);
+        when(cartRepository.findByOwnerTypeAndGuestUUID(any(OwnerType.class), anyString())).thenReturn(Optional.of(guestCart));
+        CartUpdateItemsRequest request = new CartUpdateItemsRequest(
+                Arrays.asList(
+                        new CartUpdateItemsRequest.CartItemUpdate(100L, 5),
+                        new CartUpdateItemsRequest.CartItemUpdate(200L, 10)
+                )
+        );
+
+        CartResponse response = cartService.updateItems(guestCartContext, request);
+
+        assertNotNull(response);
+        assertEquals(2, response.getItems().size());
+        assertEquals(5, response.getItems().stream().filter(i -> i.getItemId() == 100L).findFirst().get().getQuantity());
+        assertEquals(10, response.getItems().stream().filter(i -> i.getItemId() == 200L).findFirst().get().getQuantity());
+    }
+
+    @Test
+    void updateItems_itemNotFound() {
+        guestCart.addItem(100L, 1);
+        when(cartRepository.findByOwnerTypeAndGuestUUID(any(OwnerType.class), anyString())).thenReturn(Optional.of(guestCart));
+        CartUpdateItemsRequest request = new CartUpdateItemsRequest(
+                Collections.singletonList(new CartUpdateItemsRequest.CartItemUpdate(999L, 5))
+        );
+
+        assertThrows(CartItemNotFoundException.class, () -> cartService.updateItems(guestCartContext, request));
     }
 }

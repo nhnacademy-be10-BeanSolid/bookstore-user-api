@@ -38,6 +38,7 @@ class UserServiceTest {
     @Mock private PasswordEncoder passwordEncoder;
     @Mock private PointService pointService;
     @Mock private PointTypeService pointTypeService;
+    @Mock private com.nhnacademy.bookstoreuserapi.client.CouponClient couponClient;
 
     private final String userId = "test";
 

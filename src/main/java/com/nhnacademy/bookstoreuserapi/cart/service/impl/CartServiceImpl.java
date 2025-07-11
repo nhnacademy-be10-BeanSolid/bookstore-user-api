@@ -123,6 +123,19 @@ public class CartServiceImpl implements CartService {
         return getCurrentCartResponse(cart);
     }
 
+    @Override
+    public CartResponse updateItems(CartContext context, com.nhnacademy.bookstoreuserapi.cart.dto.request.CartUpdateItemsRequest request) {
+        Cart cart = findCart(context);
+        request.items().forEach(item -> {
+            cart.getItems().stream()
+                    .filter(i -> i.getItemId().equals(item.bookId()))
+                    .findFirst()
+                    .orElseThrow(() -> new CartItemNotFoundException(item.bookId()))
+                    .updateQuantity(item.quantity());
+        });
+        return getCurrentCartResponse(cart);
+    }
+
 
 
     private Cart findCart(CartContext context) {

@@ -21,4 +21,7 @@ public interface PointTypeRepository extends JpaRepository<PointType, Long>, Poi
 
     @Query("select p.isActive from PointType p where p.typeId = :typeId")
     boolean findIsActiveByTypeId(Long typeId);
+
+    @Query("select p from PointType p where p.earningRate != 0 and p.userGrade.gradeName = :gradeName")
+    PointType findEarningRateByGradeName(String gradeName);
 }

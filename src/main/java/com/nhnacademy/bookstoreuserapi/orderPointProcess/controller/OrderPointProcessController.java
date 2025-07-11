@@ -1,0 +1,9 @@
+package com.nhnacademy.bookstoreuserapi.orderPointProcess.controller;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/users/me/order-point-process")
+public class OrderPointProcessController {
+}

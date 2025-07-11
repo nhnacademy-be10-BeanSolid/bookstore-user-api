@@ -14,4 +14,12 @@ public record PointCreateRequest (@NotBlank @Size(max = 20) String userId,
                                   Long orderNo,
                                   @NotNull LocalDateTime earnedAndUsedAt,
                                   @NotBlank String earnedAndUsedPoint){
+
+    public PointCreateRequest(String userId, Long typeId, Long orderNo, LocalDateTime earnedAndUsedAt, String earnedAndUsedPoint) {
+        this.userId = userId;
+        this.typeId = typeId;
+        this.orderNo = orderNo;
+        this.earnedAndUsedAt = earnedAndUsedAt;
+        this.earnedAndUsedPoint = earnedAndUsedPoint;
+    }
 }

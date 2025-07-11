@@ -376,7 +376,7 @@ class UserControllerTest {
         UserGrade userGrade = new UserGrade(BASIC, 0L);
         user.setUserGrade(userGrade);
 
-        Mockito.when(userService.updatePoint(eq("user123"), any(Integer.class)))
+        Mockito.when(userService.plusPoint(eq("user123"), any(Integer.class)))
                 .thenReturn(new ResponseUser(user));
 
 

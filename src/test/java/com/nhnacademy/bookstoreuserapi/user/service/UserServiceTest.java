@@ -143,7 +143,7 @@ class UserServiceTest {
         when(userRepository.existsByUserId(userId)).thenReturn(true);
         when(userRepository.findByUserId(userId)).thenReturn(user);
 
-        userService.updatePoint(userId, 1000);
+        userService.plusPoint(userId, 1000);
 
         verify(userRepository).updatePointByUserId(userId, 1000);
     }

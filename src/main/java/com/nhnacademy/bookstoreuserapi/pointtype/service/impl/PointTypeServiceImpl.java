@@ -150,4 +150,20 @@ public class PointTypeServiceImpl implements PointTypeService {
 
         return responsePointType;
     }
+
+    @Override
+    public ResponsePointType getEarningRateByGradeNameAndTypeName(UserGrade.Grade gradeName) {
+
+        PointType pointType =  pointTypeRepository.findEarningRateByGradeName(gradeName.name());
+
+        ResponsePointType responsePointType = new ResponsePointType();
+        responsePointType.setTypeId(pointType.getTypeId());
+        responsePointType.setTypeName(pointType.getTypeName());
+        responsePointType.setEarningPoint(pointType.getEarningPoint());
+        responsePointType.setEarningRate(pointType.getEarningRate());
+        responsePointType.setGradeName(gradeName.name());
+        responsePointType.setActive(pointType.getIsActive());
+
+        return responsePointType;
+    }
 }

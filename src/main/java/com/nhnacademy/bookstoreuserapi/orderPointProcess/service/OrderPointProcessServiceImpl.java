@@ -25,18 +25,18 @@ public class OrderPointProcessServiceImpl implements OrderPointProcessService {
     private final PointTypeService pointTypeService;
 
     @Override
-    public void orderPointPlusProcess(OrderPointPlusProcessRequest request) {
+    public void orderPointPlusProcess(String userId, OrderPointPlusProcessRequest request) {
 
         Long orderNo = request.orderNo();
         int purePrice = request.purePrice();
 
-        ResponseUser responseUser = userService.getUser(request.userId());
+        ResponseUser responseUser = userService.getUser(userId);
 
         ResponsePointType responsePointType = pointTypeService.getEarningRateByGradeNameAndTypeName(UserGrade.Grade.valueOf(responseUser.getUserGradeName()));
 
-        int plusPoint = purePrice + (purePrice * responsePointType.getEarningRate() / 100);
+        int plusPoint = (int) (purePrice * (responsePointType.getEarningRate() / 100.0));
 
-        String userId = responseUser.getUserId();
+        userId = responseUser.getUserId();
 
         userService.plusPoint(userId, plusPoint);
 
@@ -50,13 +50,13 @@ public class OrderPointProcessServiceImpl implements OrderPointProcessService {
     }
 
     @Override
-    public void orderPointMinusProcess(OrderPointMinusProcessRequest request) {
+    public void orderPointMinusProcess(String userId, OrderPointMinusProcessRequest request) {
 
         Long orderNo = request.orderNo();
 
-        ResponseUser responseUser = userService.getUser(request.userId());
+        ResponseUser responseUser = userService.getUser(userId);
 
-        String userId = responseUser.getUserId();
+        userId = responseUser.getUserId();
 
         int minusPoint = request.usePoint();
 

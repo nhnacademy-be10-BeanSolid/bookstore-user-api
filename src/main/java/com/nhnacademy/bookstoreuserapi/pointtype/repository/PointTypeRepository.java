@@ -2,6 +2,7 @@ package com.nhnacademy.bookstoreuserapi.pointtype.repository;
 
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointType;
 import com.nhnacademy.bookstoreuserapi.pointtype.repository.queryfactory.PointTypeRepositoryCustom;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -23,5 +24,5 @@ public interface PointTypeRepository extends JpaRepository<PointType, Long>, Poi
     boolean findIsActiveByTypeId(Long typeId);
 
     @Query("select p from PointType p where p.earningRate != 0 and p.userGrade.gradeName = :gradeName")
-    PointType findEarningRateByGradeName(String gradeName);
+    PointType findEarningRateByGradeName(UserGrade.Grade gradeName);
 }

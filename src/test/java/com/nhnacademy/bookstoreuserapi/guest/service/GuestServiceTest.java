@@ -1,26 +1,28 @@
 package com.nhnacademy.bookstoreuserapi.guest.service;
 
-import com.nhnacademy.bookstoreuserapi.guest.domain.*;
+import com.nhnacademy.bookstoreuserapi.guest.domain.Guest;
 import com.nhnacademy.bookstoreuserapi.guest.dto.request.GuestCreateRequest;
-import com.nhnacademy.bookstoreuserapi.guest.dto.request.GuestUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.guest.dto.response.ResponseGuest;
+import com.nhnacademy.bookstoreuserapi.guest.exception.GuestAlreadyExistsException;
 import com.nhnacademy.bookstoreuserapi.guest.exception.GuestNotFoundException;
 import com.nhnacademy.bookstoreuserapi.guest.repository.GuestRepository;
 import com.nhnacademy.bookstoreuserapi.guest.service.impl.GuestServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class GuestServiceTest {
-
-    @InjectMocks
-    private GuestServiceImpl guestService;
 
     @Mock
     private GuestRepository guestRepository;
@@ -28,110 +30,106 @@ class GuestServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @InjectMocks
+    private GuestServiceImpl guestService;
+
+    private Guest guest;
+    private GuestCreateRequest guestCreateRequest;
+    private Long orderId;
+    private String rawPassword;
+    private String encodedPassword;
+
     @BeforeEach
-    void setup() {
-        MockitoAnnotations.openMocks(this);
-        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
-        when(passwordEncoder.matches(anyString(), anyString())).then(invocation -> {
-            String encoded = invocation.getArgument(1);
-
-            return "encodedPassword".equals(encoded);
-        });
-    }
-
-    private Guest createGuest(String email, String name, String password) {
-        Guest guest = new Guest();
-        guest.setGuestId(1L);
-        guest.setGuestEmail(email);
-        guest.setGuestName(name);
-        guest.setGuestPassword(password);
-        guest.setGuestPhoneNumber("010-1234-5678");
-        guest.setGuestAddress("서울시");
-        return guest;
+    void setUp() {
+        orderId = 1L;
+        rawPassword = "testPassword123!";
+        encodedPassword = "encodedTestPassword123!";
+        guest = new Guest(1L, encodedPassword, orderId);
+        guestCreateRequest = new GuestCreateRequest(rawPassword, orderId);
     }
 
     @Test
-    @DisplayName("게스트 조회 성공")
-    void testGetGuest_success() {
-        Guest guest = createGuest("hong@test.com", "홍길동", "encodedPassword");
-        when(guestRepository.findByGuestEmail("hong@test.com")).thenReturn(guest);
+    void getGuest_success() {
+        when(guestRepository.findByOrderId(orderId)).thenReturn(Optional.of(guest));
 
-        ResponseGuest response = guestService.getGuest("hong@test.com");
+        ResponseGuest result = guestService.getGuest(orderId);
 
-        assertThat(response).isNotNull();
-        assertThat(response.getGuestName()).isEqualTo("홍길동");
-        assertThat(response.getGuestEmail()).isEqualTo("hong@test.com");
+        assertNotNull(result);
+        assertEquals(guest.getGuestId(), result.getGuestId());
+        assertEquals(guest.getOrderId(), result.getOrderId());
+        verify(guestRepository, times(1)).findByOrderId(orderId);
     }
 
     @Test
-    @DisplayName("게스트 조회 실패")
-    void testGetGuest_notFound() {
-        when(guestRepository.findByGuestEmail("notfound@test.com")).thenReturn(null);
+    void getGuest_notFound() {
+        when(guestRepository.findByOrderId(orderId)).thenReturn(Optional.empty());
 
-        assertThrows(GuestNotFoundException.class,
-                () -> guestService.getGuest("notfound@test.com"));
+        assertThrows(GuestNotFoundException.class, () -> guestService.getGuest(orderId));
+        verify(guestRepository, times(1)).findByOrderId(orderId);
     }
 
     @Test
-    @DisplayName("게스트 등록 성공")
-    void testAddGuest_success() {
-        GuestCreateRequest request = new GuestCreateRequest(
-                "myPassword", "장보고", "010-9999-9999", "청해진", "jang@test.com"
-        );
-        Guest guest = new Guest(request);
-        guest.setGuestPassword("encodedPassword");
+    void addGuest_success() {
+        when(guestRepository.findByOrderId(orderId)).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(rawPassword)).thenReturn(encodedPassword);
         when(guestRepository.save(any(Guest.class))).thenReturn(guest);
 
-        ResponseGuest response = guestService.addGuest(request);
+        ResponseGuest result = guestService.addGuest(guestCreateRequest);
 
-        assertThat(response.getGuestEmail()).isEqualTo("jang@test.com");
-        assertThat(passwordEncoder.matches("myPassword", response.getGuestPassword())).isTrue();
-        assertThat(response.getGuestName()).isEqualTo("장보고");
+        assertNotNull(result);
+        assertEquals(guest.getGuestId(), result.getGuestId());
+        assertEquals(guest.getOrderId(), result.getOrderId());
+        verify(guestRepository, times(1)).findByOrderId(orderId);
+        verify(passwordEncoder, times(1)).encode(rawPassword);
+        verify(guestRepository, times(1)).save(any(Guest.class));
     }
 
     @Test
-    @DisplayName("게스트 정보 수정 성공")
-    void testUpdateGuest_success() {
-        GuestUpdateRequest updateRequest = new GuestUpdateRequest(
-                "updatedPw", "홍길순", "010-0000-0000", "서울시"
-        );
-        Guest guest = createGuest("hong@test.com", "홍길동", "oldPassword");
-        when(guestRepository.findByGuestEmail("hong@test.com")).thenReturn(guest);
+    void addGuest_alreadyExists() {
+        when(guestRepository.findByOrderId(orderId)).thenReturn(Optional.of(guest));
 
-        ResponseGuest updated = guestService.updateGuest("hong@test.com", updateRequest);
-
-        assertThat(passwordEncoder.matches("updatedPw", updated.getGuestPassword())).isTrue();
-        assertThat(updated.getGuestName()).isEqualTo("홍길순");
-        assertThat(updated.getGuestPhoneNumber()).isEqualTo("010-0000-0000");
+        assertThrows(GuestAlreadyExistsException.class, () -> guestService.addGuest(guestCreateRequest));
+        verify(guestRepository, times(1)).findByOrderId(orderId);
+        verify(passwordEncoder, never()).encode(anyString());
+        verify(guestRepository, never()).save(any(Guest.class));
     }
 
     @Test
-    @DisplayName("게스트 정보 수정 실패")
-    void testUpdateGuest_notFound() {
-        GuestUpdateRequest updateRequest = new GuestUpdateRequest("pw", "이름", "010", "주소");
-        when(guestRepository.findByGuestEmail("notfound@test.com")).thenReturn(null);
+    void deleteGuest_success() {
+        when(guestRepository.findByOrderId(orderId)).thenReturn(Optional.of(guest));
+        doNothing().when(guestRepository).delete(guest);
 
-        assertThrows(GuestNotFoundException.class,
-                () -> guestService.updateGuest("notfound@test.com", updateRequest));
+        guestService.deleteGuest(orderId);
+
+        verify(guestRepository, times(1)).findByOrderId(orderId);
+        verify(guestRepository, times(1)).delete(guest);
     }
 
     @Test
-    @DisplayName("게스트 삭제 성공")
-    void testDeleteGuest_success() {
-        Guest guest = createGuest("hong@test.com", "홍길동", "encodedPassword");
-        when(guestRepository.findByGuestEmail("hong@test.com")).thenReturn(guest);
+    void deleteGuest_notFound() {
+        when(guestRepository.findByOrderId(orderId)).thenReturn(Optional.empty());
 
-        guestService.deleteGuest("hong@test.com");
-
-        verify(guestRepository).deleteByGuestEmail("hong@test.com");
+        assertThrows(GuestNotFoundException.class, () -> guestService.deleteGuest(orderId));
+        verify(guestRepository, times(1)).findByOrderId(orderId);
+        verify(guestRepository, never()).delete(any(Guest.class));
     }
 
     @Test
-    @DisplayName("게스트 삭제 실패")
-    void testDeleteGuest_notFound() {
-        when(guestRepository.findByGuestEmail("nonexistent@test.com")).thenReturn(null);
+    void getGuestEncodedPassword_success() {
+        when(guestRepository.findByOrderId(orderId)).thenReturn(Optional.of(guest));
 
-        assertThrows(GuestNotFoundException.class,
-                () -> guestService.deleteGuest("nonexistent@test.com"));
+        String result = guestService.getGuestEncodedPassword(orderId);
+
+        assertNotNull(result);
+        assertEquals(encodedPassword, result);
+        verify(guestRepository, times(1)).findByOrderId(orderId);
+    }
+
+    @Test
+    void getGuestEncodedPassword_notFound() {
+        when(guestRepository.findByOrderId(orderId)).thenReturn(Optional.empty());
+
+        assertThrows(GuestNotFoundException.class, () -> guestService.getGuestEncodedPassword(orderId));
+        verify(guestRepository, times(1)).findByOrderId(orderId);
     }
 }

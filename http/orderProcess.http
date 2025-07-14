@@ -5,7 +5,7 @@ X-USER-ID: 1test
 
 {
   "orderNo": 1,
-  "purePrice": 1000
+  "purePrice": 10000
 }
 
 ### 주문 시 포인트 사용
@@ -15,5 +15,5 @@ X-USER-ID: 1test
 
 {
   "orderNo": 1,
-  "usePoint": 100000
+  "usePoint": 1000
 }

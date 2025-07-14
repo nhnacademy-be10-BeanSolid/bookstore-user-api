@@ -263,12 +263,12 @@ class UserControllerTest {
     @DisplayName("회원 정보 수정 - 실패 - 없는 사용자")
     void updatePersonalInfo_fail_blank() throws Exception {
         UserUpdateRequest request = new UserUpdateRequest(
-                 "newPassword", "이수정", "01011112222",
+                "newPassword", "이수정", "01011112222",
                 "test@test", LocalDate.of(1995, 5, 5));
         mockMvc.perform(put("/users/me/personalinformation")
                         .header("X-USER-ID", "")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -276,7 +276,7 @@ class UserControllerTest {
     @DisplayName("회원 정보 수정 - 실패 - 255자 초과 사용자 ID")
     void updatePersonalInfo_fail_exceed255Letter() throws Exception {
         UserUpdateRequest request = new UserUpdateRequest(
-                 "newPassword", "이수정", "01011112222",
+                "newPassword", "이수정", "01011112222",
                 "test@test", LocalDate.of(1995, 5, 5));
         mockMvc.perform(put("/users/me/personalinformation")
                         .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm".repeat(20))
@@ -341,12 +341,6 @@ class UserControllerTest {
     @Test
     @DisplayName("마지막 로그인 시간 갱신 - 실패 - 빈 사용자 ID")
     void updateLastLoginAtFailBlank() throws Exception {
-        User user = new User("user123", "pw", "홍길동", "01012345678",
-                "hong@test.com", LocalDate.of(1990, 1, 1));
-        user.setUserStatus(User.Status.ACTIVE);
-        UserGrade userGrade = new UserGrade(BASIC, 0L);
-        user.setUserGrade(userGrade);
-
         mockMvc.perform(put("/users/me/lastloginat")
                         .header("X-USER-ID", ""))
                 .andExpect(status().isBadRequest());
@@ -355,20 +349,14 @@ class UserControllerTest {
     @Test
     @DisplayName("마지막 로그인 시간 갱신 - 실패 - 255자 초과 사용자 ID")
     void updateLastLoginAtFailExceed255Letter() throws Exception {
-        User user = new User("user123", "pw", "홍길동", "01012345678",
-                "hong@test.com", LocalDate.of(1990, 1, 1));
-        user.setUserStatus(User.Status.ACTIVE);
-        UserGrade userGrade = new UserGrade(BASIC, 0L);
-        user.setUserGrade(userGrade);
-
         mockMvc.perform(put("/users/me/lastloginat")
                         .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm".repeat(20)))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    @DisplayName("포인트 수정")
-    void updatePoint() throws Exception {
+    @DisplayName("포인트 증가")
+    void plusPoint_success() throws Exception {
         User user = new User("user123", "pw", "홍길동", "01012345678",
                 "hong@test.com", LocalDate.of(1990, 1, 1));
         user.setUserPoint(2000);
@@ -379,44 +367,78 @@ class UserControllerTest {
         Mockito.when(userService.plusPoint(eq("user123"), any(Integer.class)))
                 .thenReturn(new ResponseUser(user));
 
-
-        mockMvc.perform(put("/users/me/point")
+        mockMvc.perform(put("/users/me/plus-point")
                         .param("point", "2000")
-                .header("X-USER-ID", "user123"))
+                        .header("X-USER-ID", "user123"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userPoint").value(2000));
     }
 
     @Test
-    @DisplayName("포인트 수정- 실패 - 빈 사용자 ID")
-    void updatePointFailBlank() throws Exception {
-        User user = new User("user123", "pw", "홍길동", "01012345678",
-                "hong@test.com", LocalDate.of(1990, 1, 1));
-        user.setUserPoint(2000);
-        user.setUserStatus(User.Status.ACTIVE);
-        UserGrade userGrade = new UserGrade(BASIC, 0L);
-        user.setUserGrade(userGrade);
-
-        mockMvc.perform(put("/users/me/point")
-                        .param("point", "2000")
+    @DisplayName("포인트 증가 실패 - 빈 사용자 ID")
+    void plusPoint_fail_blank() throws Exception {
+        mockMvc.perform(put("/users/me/plus-point")
+                        .param("point", "1000")
                         .header("X-USER-ID", ""))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    @DisplayName("포인트 수정- 실패 - 255자 초과 사용자 ID")
-    void updatePointFailExceed255Letter() throws Exception {
+    @DisplayName("포인트 증가 실패 - 255자 초과 사용자 ID")
+    void plusPoint_fail_exceed255Letter() throws Exception {
+        mockMvc.perform(put("/users/me/plus-point")
+                        .param("point", "1000")
+                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm".repeat(20)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("포인트 감소")
+    void minusPoint_success() throws Exception {
         User user = new User("user123", "pw", "홍길동", "01012345678",
                 "hong@test.com", LocalDate.of(1990, 1, 1));
-        user.setUserPoint(2000);
+        user.setUserPoint(-500);
         user.setUserStatus(User.Status.ACTIVE);
         UserGrade userGrade = new UserGrade(BASIC, 0L);
         user.setUserGrade(userGrade);
 
-        mockMvc.perform(put("/users/me/point")
-                        .param("point", "2000")
+        Mockito.when(userService.minusPoint(eq("user123"), any(Integer.class)))
+                .thenReturn(new ResponseUser(user));
+
+        mockMvc.perform(put("/users/me/minus-point")
+                        .param("point", "-500")
+                        .header("X-USER-ID", "user123"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.userPoint").value(-500));
+    }
+
+    @Test
+    @DisplayName("포인트 감소 실패 - 빈 사용자 ID")
+    void minusPoint_fail_blank() throws Exception {
+        mockMvc.perform(put("/users/me/minus-point")
+                        .param("point", "-1000")
+                        .header("X-USER-ID", ""))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("포인트 감소 실패 - 255자 초과 사용자 ID")
+    void minusPoint_fail_exceed255Letter() throws Exception {
+        mockMvc.perform(put("/users/me/minus-point")
+                        .param("point", "-1000")
                         .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm".repeat(20)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("내 포인트 조회")
+    void getMyPoint_success() throws Exception {
+        Mockito.when(userService.getUserPoint("user123")).thenReturn(2000);
+
+        mockMvc.perform(get("/users/me/my-point")
+                        .header("X-USER-ID", "user123"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(2000));
     }
 
     @Test
@@ -439,13 +461,6 @@ class UserControllerTest {
     @Test
     @DisplayName("상태 변경 - 실패 - 빈 사용자 ID")
     void updateStatusFailBlank() throws Exception {
-        User user = new User("user123", "pw", "홍길동", "01012345678",
-                "hong@test.com", LocalDate.of(1990, 1, 1));
-        user.setUserStatus(User.Status.WITHDRAWN);
-        UserGrade userGrade = new UserGrade(BASIC, 0L);
-        user.setUserGrade(userGrade);
-
-
         mockMvc.perform(put("/users/me/status")
                         .param("status", "WITHDRAWN")
                         .header("X-USER-ID", ""))
@@ -455,12 +470,6 @@ class UserControllerTest {
     @Test
     @DisplayName("상태 변경 - 실패 - 255자 초과 사용자 ID")
     void updateStatusFailExceed255Letter() throws Exception {
-        User user = new User("user123", "pw", "홍길동", "01012345678",
-                "hong@test.com", LocalDate.of(1990, 1, 1));
-        user.setUserStatus(User.Status.WITHDRAWN);
-        UserGrade userGrade = new UserGrade(BASIC, 0L);
-        user.setUserGrade(userGrade);
-
         mockMvc.perform(put("/users/me/status")
                         .param("status", "WITHDRAWN")
                         .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm".repeat(20)))
@@ -468,4 +477,3 @@ class UserControllerTest {
     }
 
 }
-

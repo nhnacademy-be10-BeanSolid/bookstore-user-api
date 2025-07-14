@@ -18,7 +18,7 @@ import org.springframework.data.domain.*;
 import java.util.List;
 import java.util.Optional;
 
-import static com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade.GOLD;
+import static com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -78,9 +78,9 @@ class PointTypeServiceTest {
     void testSavePointType() {
         PointTypeCreateRequest req = new PointTypeCreateRequest("순수 주문금액", 2000, 20, "ROYAL", true);
         UserGrade userGrade = new UserGrade();
-        userGrade.setGradeName(UserGrade.Grade.ROYAL);
+        userGrade.setGradeName(ROYAL);
 
-        when(userGradeRepository.findByGradeName(UserGrade.Grade.ROYAL)).thenReturn(userGrade);
+        when(userGradeRepository.findByGradeName(ROYAL)).thenReturn(userGrade);
 
         pointTypeService.savePointType(req);
 
@@ -159,7 +159,104 @@ class PointTypeServiceTest {
         assertThat(pt.getUserGrade().getGradeName()).isEqualTo(GOLD);
     }
 
-    // 헬퍼 메서드
+    @Test
+    @DisplayName("포인트 타입 isActive 조회 실패 - 존재하지 않는 타입 ID")
+    void testGetPointTypeIsActiveNotFound() {
+        when(pointTypeRepository.existsById(123L)).thenReturn(false);
+
+        assertThatThrownBy(() -> pointTypeService.getPointTypeIsActive(123L))
+                .isInstanceOf(PointTypeNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("포인트 타입 isActiveByTypeName 조회 성공")
+    void testIsActivePointType() {
+        when(pointTypeRepository.existsByTypeName("회원가입")).thenReturn(true);
+        when(pointTypeRepository.isActiveByTypeName("회원가입")).thenReturn(true);
+
+        boolean result = pointTypeService.isActivePointType("회원가입");
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    @DisplayName("포인트 타입 isActiveByTypeName 조회 실패 - 존재하지 않는 타입명")
+    void testIsActivePointTypeNotFound() {
+        when(pointTypeRepository.existsByTypeName("없는타입")).thenReturn(false);
+        when(pointTypeRepository.findTypeIdByTypeName("없는타입")).thenReturn(123L);
+
+        assertThatThrownBy(() -> pointTypeService.isActivePointType("없는타입"))
+                .isInstanceOf(PointTypeNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("포인트 타입 earningPoint 조회 실패 - 존재하지 않는 타입명")
+    void testGetEarningPointByTypeNameNotFound() {
+        when(pointTypeRepository.existsByTypeName("없는타입")).thenReturn(false);
+        when(pointTypeRepository.findTypeIdByTypeName("없는타입")).thenReturn(123L);
+
+        assertThatThrownBy(() -> pointTypeService.getEarningPointByTypeName("없는타입"))
+                .isInstanceOf(PointTypeNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("포인트 타입 ID 조회 성공")
+    void testGetTypeIdByName() {
+        when(pointTypeRepository.existsByTypeName("회원가입")).thenReturn(true);
+        when(pointTypeRepository.findTypeIdByTypeName("회원가입")).thenReturn(1L);
+
+        Long typeId = pointTypeService.getTypeIdByName("회원가입");
+        assertThat(typeId).isEqualTo(1L);
+    }
+
+    @Test
+    @DisplayName("포인트 타입 ID 조회 실패 - 존재하지 않는 타입명")
+    void testGetTypeIdByNameNotFound() {
+        when(pointTypeRepository.existsByTypeName("없는타입")).thenReturn(false);
+        when(pointTypeRepository.findTypeIdByTypeName("없는타입")).thenReturn(123L);
+
+        assertThatThrownBy(() -> pointTypeService.getTypeIdByName("없는타입"))
+                .isInstanceOf(PointTypeNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("포인트 타입 상세 정보 조회 성공")
+    void testGetPointTypeInfo() {
+        PointType pt = createPointType(1L, "회원가입", 100, 5, GOLD, true);
+        when(pointTypeRepository.findById(1L)).thenReturn(Optional.of(pt));
+
+        ResponsePointType result = pointTypeService.getPointTypeInfo(1L);
+
+        assertThat(result.getTypeId()).isEqualTo(1L);
+        assertThat(result.getTypeName()).isEqualTo("회원가입");
+        assertThat(result.getEarningPoint()).isEqualTo(100);
+        assertThat(result.getEarningRate()).isEqualTo(5);
+        assertThat(result.getGradeName()).isEqualTo(GOLD.name());
+        assertThat(result.isActive()).isTrue();
+    }
+
+    @Test
+    @DisplayName("포인트 타입 상세 정보 조회 실패 - 존재하지 않는 ID")
+    void testGetPointTypeInfoNotFound() {
+        when(pointTypeRepository.findById(123L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> pointTypeService.getPointTypeInfo(123L))
+                .isInstanceOf(PointTypeNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("등급명으로 earningRate 조회 성공")
+    void testGetEarningRateByGradeNameAndTypeName() {
+        PointType pt = createPointType(1L, "회원가입", 100, 5, GOLD, true);
+        when(pointTypeRepository.findEarningRateByGradeName(GOLD)).thenReturn(pt);
+
+        ResponsePointType result = pointTypeService.getEarningRateByGradeNameAndTypeName(GOLD);
+
+        assertThat(result.getTypeId()).isEqualTo(1L);
+        assertThat(result.getTypeName()).isEqualTo("회원가입");
+        assertThat(result.getEarningRate()).isEqualTo(5);
+        assertThat(result.getGradeName()).isEqualTo(GOLD.name());
+    }
+
     private PointType createPointType(Long id, String name, int point, int rate, UserGrade.Grade grade, boolean isActive) {
         PointType pt = new PointType();
         pt.setTypeId(id);

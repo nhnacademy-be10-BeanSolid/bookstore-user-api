@@ -44,7 +44,7 @@ public class OrderPointProcessServiceImpl implements OrderPointProcessService {
                                                 responsePointType.getTypeId(),
                                                 orderNo,
                                                 LocalDateTime.now(),
-                plusPoint + " 적립");
+                plusPoint + "p 적립");
 
         pointService.savePoint(userId, pointCreateRequest);
     }
@@ -68,7 +68,7 @@ public class OrderPointProcessServiceImpl implements OrderPointProcessService {
                 typeId,
                 orderNo,
                 LocalDateTime.now(),
-                minusPoint + " 차감");
+                minusPoint + "p 차감");
 
         pointService.savePoint(userId, pointCreateRequest);
     }

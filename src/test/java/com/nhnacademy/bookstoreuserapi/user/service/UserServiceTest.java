@@ -4,6 +4,7 @@ import com.nhnacademy.bookstoreuserapi.point.domain.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.point.service.PointService;
 import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
 import com.nhnacademy.bookstoreuserapi.user.domain.*;
+import com.nhnacademy.bookstoreuserapi.user.exception.PointNotEnoughException;
 import com.nhnacademy.bookstoreuserapi.user.exception.UserAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.user.exception.UserNotFoundException;
 import com.nhnacademy.bookstoreuserapi.user.repository.UserRepository;
@@ -20,24 +21,32 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade.BASIC;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class UserServiceTest {
 
     @InjectMocks
     private UserServiceImpl userService;
 
-    @Mock private UserRepository userRepository;
-    @Mock private UserGradeRepository userGradeRepository;
-    @Mock private PasswordEncoder passwordEncoder;
-    @Mock private PointService pointService;
-    @Mock private PointTypeService pointTypeService;
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private UserGradeRepository userGradeRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private PointService pointService;
+
+    @Mock
+    private PointTypeService pointTypeService;
 
     private final String userId = "test";
 
@@ -50,8 +59,21 @@ class UserServiceTest {
     private UserGrade createUserGrade(UserGrade.Grade grade) {
         UserGrade userGrade = new UserGrade();
         userGrade.setGradeName(grade);
-        userGrade.setRequiredMoney(0L); // 필요하다면 추가 세팅
+        userGrade.setRequiredMoney(0L);
         return userGrade;
+    }
+
+    private User createUser(String userId) {
+        User user = new User();
+        user.setUserId(userId);
+        user.setUserPassword("encodedPassword");
+        user.setUserName("test");
+        user.setUserEmail("test@test.com");
+        user.setUserPoint(1000);
+        user.setUserStatus(User.Status.ACTIVE);
+        user.setUserGrade(createUserGrade(BASIC));
+        user.setLastLoginAt(LocalDateTime.now());
+        return user;
     }
 
     @Test
@@ -122,6 +144,46 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("사용자 번호로 조회 성공")
+    void getUserByUserNo_success() {
+        User user = createUser(userId);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        ResponseUser response = userService.getUserByUserNo(1L);
+
+        assertThat(response.getUserId()).isEqualTo(userId);
+    }
+
+    @Test
+    @DisplayName("사용자 번호로 조회 실패")
+    void getUserByUserNo_notFound() {
+        when(userRepository.findById(2L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> userService.getUserByUserNo(2L))
+                .isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("이름+이메일로 아이디 조회 성공")
+    void getUserIdByUserNameAndUserEmail_success() {
+        User user = createUser(userId);
+        when(userRepository.findByUserNameAndUserEmail("홍길동", "hong@test.com")).thenReturn(user);
+
+        ResponseUserId response = userService.getUserIdByUserNameAndUserEmail("홍길동", "hong@test.com");
+
+        assertThat(response.getUserId()).isEqualTo(userId);
+    }
+
+    @Test
+    @DisplayName("이름+이메일로 아이디 조회 실패")
+    void getUserIdByUserNameAndUserEmail_notFound() {
+        when(userRepository.findByUserNameAndUserEmail("홍길동", "hong@test.com")).thenReturn(null);
+
+        assertThatThrownBy(() -> userService.getUserIdByUserNameAndUserEmail("홍길동", "hong@test.com"))
+                .isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
     @DisplayName("개인정보 수정")
     void updatePersonalInformation() {
         User user = createUser(userId);
@@ -137,40 +199,152 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("포인트 업데이트")
-    void updatePoint() {
-        User user = createUser(userId);
-        when(userRepository.existsByUserId(userId)).thenReturn(true);
-        when(userRepository.findByUserId(userId)).thenReturn(user);
+    @DisplayName("개인정보 수정 실패 - 없는 사용자")
+    void updatePersonalInformation_notFound() {
+        when(userRepository.existsByUserId(userId)).thenReturn(false);
 
-        userService.plusPoint(userId, 1000);
+        UserUpdateRequest request = new UserUpdateRequest("pw", "이름", "010", "email", LocalDate.now());
 
-        verify(userRepository).updatePointByUserId(userId, 1000);
+        assertThatThrownBy(() -> userService.updatePersonalInformation(userId, request))
+                .isInstanceOf(UserNotFoundException.class);
     }
 
     @Test
-    @DisplayName("사용자 삭제(상태 변경)")
-    void deleteUser() {
+    @DisplayName("마지막 로그인 시간 갱신 성공")
+    void updateLastLoginAt_success() {
         User user = createUser(userId);
         when(userRepository.existsByUserId(userId)).thenReturn(true);
         when(userRepository.findByUserId(userId)).thenReturn(user);
 
-        userService.deleteUser(userId);
+        ResponseUser response = userService.updateLastLoginAt(userId);
 
-        verify(userRepository).updateStatusByUserId(userId, User.Status.WITHDRAWN);
+        verify(userRepository).updateLastLoginByUserId(eq(userId), any(LocalDateTime.class));
+        assertThat(response.getUserId()).isEqualTo(userId);
     }
 
-    // UserGrade의 gradeName이 반드시 null이 아니게 생성
-    private User createUser(String userId) {
-        User user = new User();
-        user.setUserId(userId);
-        user.setUserPassword("encodedPassword");
-        user.setUserName("test");
-        user.setUserEmail("test@test.com");
-        user.setUserPoint(0);
-        user.setUserStatus(User.Status.ACTIVE);
-        user.setUserGrade(createUserGrade(BASIC));
-        user.setLastLoginAt(LocalDateTime.now());
-        return user;
+    @Test
+    @DisplayName("마지막 로그인 시간 갱신 실패")
+    void updateLastLoginAt_notFound() {
+        when(userRepository.existsByUserId(userId)).thenReturn(false);
+
+        assertThatThrownBy(() -> userService.updateLastLoginAt(userId))
+                .isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("포인트 적립 성공")
+    void plusPoint_success() {
+        User user = createUser(userId);
+        when(userRepository.existsByUserId(userId)).thenReturn(true);
+        when(userRepository.findByUserId(userId)).thenReturn(user);
+
+        ResponseUser response = userService.plusPoint(userId, 1000);
+
+        verify(userRepository).updatePointByUserId(userId, 1000);
+        assertThat(response.getUserId()).isEqualTo(userId);
+    }
+
+    @Test
+    @DisplayName("포인트 적립 실패 - 사용자 없음")
+    void plusPoint_notFound() {
+        when(userRepository.existsByUserId(userId)).thenReturn(false);
+
+        assertThatThrownBy(() -> userService.plusPoint(userId, 1000))
+                .isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("포인트 차감 성공")
+    void minusPoint_success() {
+        User user = createUser(userId);
+        when(userRepository.existsByUserId(userId)).thenReturn(true);
+        when(userRepository.findByUserId(userId)).thenReturn(user);
+        when(userRepository.findUserPointByUserId(userId)).thenReturn(1000);
+
+        ResponseUser response = userService.minusPoint(userId, 500);
+
+        verify(userRepository).updatePointByUserId(userId, -500);
+        assertThat(response.getUserId()).isEqualTo(userId);
+    }
+
+    @Test
+    @DisplayName("포인트 차감 실패 - 사용자 없음")
+    void minusPoint_notFound() {
+        when(userRepository.existsByUserId(userId)).thenReturn(false);
+
+        assertThatThrownBy(() -> userService.minusPoint(userId, 1000))
+                .isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("포인트 차감 실패 - 포인트 부족")
+    void minusPoint_notEnough() {
+        when(userRepository.existsByUserId(userId)).thenReturn(true);
+        when(userRepository.findUserPointByUserId(userId)).thenReturn(100);
+
+        assertThatThrownBy(() -> userService.minusPoint(userId, 200))
+                .isInstanceOf(PointNotEnoughException.class);
+    }
+
+    @Test
+    @DisplayName("상태 변경 성공")
+    void updateUserStatus_success() {
+        User user = createUser(userId);
+        when(userRepository.existsByUserId(userId)).thenReturn(true);
+        when(userRepository.findByUserId(userId)).thenReturn(user);
+
+        ResponseUser response = userService.updateUserStatus(userId, User.Status.WITHDRAWN);
+
+        verify(userRepository).updateStatusByUserId(userId, User.Status.WITHDRAWN);
+        assertThat(response.getUserId()).isEqualTo(userId);
+    }
+
+    @Test
+    @DisplayName("상태 변경 실패 - 사용자 없음")
+    void updateUserStatus_notFound() {
+        when(userRepository.existsByUserId(userId)).thenReturn(false);
+
+        assertThatThrownBy(() -> userService.updateUserStatus(userId, User.Status.WITHDRAWN))
+                .isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴(deleteUser) 성공")
+    void deleteUser_success() {
+        User user = createUser(userId);
+        when(userRepository.existsByUserId(userId)).thenReturn(true);
+        when(userRepository.findByUserId(userId)).thenReturn(user);
+
+        ResponseUser response = userService.deleteUser(userId);
+
+        verify(userRepository).updateStatusByUserId(userId, User.Status.WITHDRAWN);
+        assertThat(response.getUserId()).isEqualTo(userId);
+    }
+
+    @Test
+    @DisplayName("회원 존재 여부 확인")
+    void isUserExist() {
+        when(userRepository.existsByUserId(userId)).thenReturn(true);
+        assertThat(userService.isUserExist(userId)).isTrue();
+    }
+
+    @Test
+    @DisplayName("포인트 조회 성공")
+    void getUserPoint_success() {
+        when(userRepository.existsByUserId(userId)).thenReturn(true);
+        when(userRepository.findUserPointByUserId(userId)).thenReturn(1234);
+
+        int point = userService.getUserPoint(userId);
+
+        assertThat(point).isEqualTo(1234);
+    }
+
+    @Test
+    @DisplayName("포인트 조회 실패 - 사용자 없음")
+    void getUserPoint_notFound() {
+        when(userRepository.existsByUserId(userId)).thenReturn(false);
+
+        assertThatThrownBy(() -> userService.getUserPoint(userId))
+                .isInstanceOf(UserNotFoundException.class);
     }
 }

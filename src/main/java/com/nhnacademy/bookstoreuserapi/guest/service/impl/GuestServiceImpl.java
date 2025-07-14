@@ -23,7 +23,7 @@ public class GuestServiceImpl implements GuestService {
     public ResponseGuest getGuest(Long orderId) {
         Guest guest = guestRepository.findByOrderId(orderId)
                 .orElseThrow(() -> new GuestNotFoundException(orderId));
-        return new ResponseGuest(guest.getGuestId(), guest.getGuestPassword(), guest.getOrderId());
+        return new ResponseGuest(guest.getGuestId(), guest.getOrderId());
     }
 
     @Override
@@ -35,7 +35,7 @@ public class GuestServiceImpl implements GuestService {
         String encodedPassword = passwordEncoder.encode(guestCreateRequest.guestPassword());
         Guest guest = new Guest(encodedPassword, guestCreateRequest.orderId());
         Guest savedGuest = guestRepository.save(guest);
-        return new ResponseGuest(savedGuest.getGuestId(), savedGuest.getGuestPassword(), savedGuest.getOrderId());
+        return new ResponseGuest(savedGuest.getGuestId(), savedGuest.getOrderId());
     }
 
     @Override
@@ -44,5 +44,12 @@ public class GuestServiceImpl implements GuestService {
         Guest guest = guestRepository.findByOrderId(orderId)
                 .orElseThrow(() -> new GuestNotFoundException(orderId));
         guestRepository.delete(guest);
+    }
+
+    @Override
+    public String getGuestEncodedPassword(Long orderId) {
+        Guest guest = guestRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new GuestNotFoundException(orderId));
+        return guest.getGuestPassword();
     }
 }

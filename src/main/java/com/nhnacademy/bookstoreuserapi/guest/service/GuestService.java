@@ -10,4 +10,6 @@ public interface GuestService {
     ResponseGuest addGuest(GuestCreateRequest guestCreateRequest);
 
     void deleteGuest(Long orderId);
+
+    String getGuestEncodedPassword(Long orderId);
 }

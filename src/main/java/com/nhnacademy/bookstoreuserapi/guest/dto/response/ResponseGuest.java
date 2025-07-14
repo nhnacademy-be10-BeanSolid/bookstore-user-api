@@ -9,6 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResponseGuest {
     private Long guestId;
-    private String guestPassword;
     private Long orderId;
 }

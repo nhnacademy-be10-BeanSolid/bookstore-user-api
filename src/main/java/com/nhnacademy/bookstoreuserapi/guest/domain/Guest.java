@@ -20,7 +20,7 @@ public class Guest {
     @Column(name = "guest_password", nullable = false)
     private String guestPassword;
 
-    @Column(name = "order_id", nullable = false)
+    @Column(name = "order_id", nullable = false, unique = true)
     private Long orderId;
 
     public Guest(String encodedPassword, Long orderId) {

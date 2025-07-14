@@ -7,6 +7,8 @@ import com.nhnacademy.bookstoreuserapi.guest.service.GuestService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import java.net.URI;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +26,12 @@ public class GuestController {
             throw new ValidationFailedException(bindingResult);
         }
 
-        return ResponseEntity.ok().body(guestService.addGuest(guest));
+        ResponseGuest responseGuest = guestService.addGuest(guest);
+        URI locationUri = ServletUriComponentsBuilder.fromCurrentRequestUri()
+                .path("/{orderId}")
+                .buildAndExpand(responseGuest.getOrderId())
+                .toUri();
+        return ResponseEntity.created(locationUri).body(responseGuest);
     }
 
     @GetMapping("/{orderId}")
@@ -39,5 +46,10 @@ public class GuestController {
         guestService.deleteGuest(orderId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{orderId}/password")
+    public ResponseEntity<String> getGuestPassword(@PathVariable Long orderId) {
+        return ResponseEntity.ok().body(guestService.getGuestEncodedPassword(orderId));
     }
 }

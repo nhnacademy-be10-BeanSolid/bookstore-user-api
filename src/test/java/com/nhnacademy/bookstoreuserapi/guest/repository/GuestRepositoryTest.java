@@ -2,21 +2,20 @@ package com.nhnacademy.bookstoreuserapi.guest.repository;
 
 import com.nhnacademy.bookstoreuserapi.common.config.QuerydslConfig;
 import com.nhnacademy.bookstoreuserapi.guest.domain.Guest;
-import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
+import jakarta.persistence.EntityManager;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @ActiveProfiles("test")
-@Transactional
 @Import(QuerydslConfig.class)
 class GuestRepositoryTest {
 
@@ -24,55 +23,62 @@ class GuestRepositoryTest {
     private GuestRepository guestRepository;
 
     @Autowired
-    EntityManager entityManager;
+    private EntityManager entityManager;
+
+    private Guest guest;
+    private Long orderId;
+    private String guestPassword;
 
     @BeforeEach
-    void setup() {
-        Guest guest = new Guest();
-        guest.setGuestEmail("test@example.com");
-        guest.setGuestPassword("password");
-        guest.setGuestName("홍길동");
-        guest.setGuestPhoneNumber("010-1234-5678");
-        guest.setGuestAddress("서울");
+    void setUp() {
+        orderId = 12345L;
+        guestPassword = "testPassword123!";
+        guest = new Guest(guestPassword, orderId);
+    }
 
+    @Test
+    void findByOrderId_found() {
         guestRepository.save(guest);
-    }
-
-    @Test
-    @DisplayName("이메일로 Guest 조회")
-    void testFindByGuestEmail() {
-        Guest found = guestRepository.findByGuestEmail("test@example.com");
-
-        assertThat(found).isNotNull();
-        assertThat(found.getGuestName()).isEqualTo("홍길동");
-    }
-
-    @Test
-    @DisplayName("Guest 정보 수정")
-    void testUpdateGuest() {
-
-        Guest updated = guestRepository.findByGuestEmail("test@example.com");
-
-        updated.setGuestPassword("newPassword");
-        updated.setGuestName("새이름");
-        updated.setGuestPhoneNumber("010-1111-2222");
-        updated.setGuestAddress("신주소");
-
         entityManager.flush();
         entityManager.clear();
 
-        assertThat(updated.getGuestPassword()).isEqualTo("newPassword");
-        assertThat(updated.getGuestName()).isEqualTo("새이름");
-        assertThat(updated.getGuestPhoneNumber()).isEqualTo("010-1111-2222");
-        assertThat(updated.getGuestAddress()).isEqualTo("신주소");
+        Optional<Guest> foundGuest = guestRepository.findByOrderId(orderId);
+
+        assertTrue(foundGuest.isPresent());
+        assertEquals(orderId, foundGuest.get().getOrderId());
+        assertEquals(guestPassword, foundGuest.get().getGuestPassword());
     }
 
     @Test
-    @DisplayName("이메일로 Guest 삭제")
-    void testDeleteByGuestEmail() {
-        guestRepository.deleteByGuestEmail("test@example.com");
+    void findByOrderId_notFound() {
+        Optional<Guest> foundGuest = guestRepository.findByOrderId(99999L);
 
-        Guest deleted = guestRepository.findByGuestEmail("test@example.com");
-        assertThat(deleted).isNull();
+        assertFalse(foundGuest.isPresent());
+    }
+
+    @Test
+    void saveGuest() {
+        Guest savedGuest = guestRepository.save(guest);
+        entityManager.flush();
+        entityManager.clear();
+
+        assertNotNull(savedGuest.getGuestId());
+        Optional<Guest> foundGuest = guestRepository.findById(savedGuest.getGuestId());
+        assertTrue(foundGuest.isPresent());
+        assertEquals(orderId, foundGuest.get().getOrderId());
+    }
+
+    @Test
+    void deleteGuest() {
+        guestRepository.save(guest);
+        entityManager.flush();
+        entityManager.clear();
+
+        guestRepository.delete(guest);
+        entityManager.flush();
+        entityManager.clear();
+
+        Optional<Guest> foundGuest = guestRepository.findByOrderId(orderId);
+        assertFalse(foundGuest.isPresent());
     }
 }

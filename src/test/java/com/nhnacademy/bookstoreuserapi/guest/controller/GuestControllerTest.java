@@ -1,28 +1,25 @@
 package com.nhnacademy.bookstoreuserapi.guest.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstoreuserapi.guest.domain.GuestCreateRequest;
-import com.nhnacademy.bookstoreuserapi.guest.domain.GuestUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.guest.domain.ResponseGuest;
 import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
+import com.nhnacademy.bookstoreuserapi.guest.dto.request.GuestCreateRequest;
+import com.nhnacademy.bookstoreuserapi.guest.dto.response.ResponseGuest;
 import com.nhnacademy.bookstoreuserapi.guest.service.GuestService;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(GuestController.class)
-@AutoConfigureMockMvc
 class GuestControllerTest {
 
     @Autowired
@@ -34,155 +31,78 @@ class GuestControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private GuestCreateRequest guestCreateRequest;
+    private ResponseGuest responseGuest;
+    private Long orderId;
+    private String encodedPassword;
+
+    @BeforeEach
+    void setUp() {
+        orderId = 1L;
+        String rawPassword = "testPassword123!";
+        encodedPassword = "encodedTestPassword123!";
+        guestCreateRequest = new GuestCreateRequest(rawPassword, orderId);
+        responseGuest = new ResponseGuest(1L, orderId);
+    }
+
     @Test
-    @DisplayName("게스트 등록 성공")
-    void registerGuest_Success() throws Exception {
-        GuestCreateRequest request = new GuestCreateRequest(
-                "password123",
-                "Guest User",
-                "01012345678",
-                "Seoul, Korea",
-                "guest@example.com"
-        );
+    void register_success() throws Exception {
+        when(guestService.addGuest(any(GuestCreateRequest.class))).thenReturn(responseGuest);
 
-        ResponseGuest response = new ResponseGuest(
-                "password123",
-                "Guest User",
-                "01012345678",
-                "Seoul, Korea",
-                "guest@example.com"
-        );
-
-        Mockito.when(guestService.addGuest(Mockito.any(GuestCreateRequest.class))).thenReturn(response);
-
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/guests/register")
+        mockMvc.perform(post("/guests")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andReturn();
+                        .content(objectMapper.writeValueAsString(guestCreateRequest)))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "http://localhost/guests/" + orderId))
+                .andExpect(jsonPath("$.guestId").value(responseGuest.getGuestId()))
+                .andExpect(jsonPath("$.orderId").value(responseGuest.getOrderId()));
 
-        String content = result.getResponse().getContentAsString();
-
-        assertThat(content).contains(
-                "password123",
-                "Guest User",
-                "01012345678",
-                "Seoul, Korea",
-                "guest@example.com"
-        );
-
-        Mockito.verify(guestService).addGuest(Mockito.any(GuestCreateRequest.class));
+        verify(guestService, times(1)).addGuest(any(GuestCreateRequest.class));
     }
 
     @Test
-    @DisplayName("게스트 등록 실패 - 유효성 검사 실패")
-    void registerGuest_ValidationFail() throws Exception {
-        GuestCreateRequest request = new GuestCreateRequest(
-                "", "", "", "", "invalid-email"
-        );
+    void register_validationFailed() throws Exception {
+        GuestCreateRequest invalidRequest = new GuestCreateRequest("", null);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/guests/register")
+        mockMvc.perform(post("/guests")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(result -> assertThat(result.getResolvedException()).isInstanceOf(ValidationFailedException.class));
+                        .content(objectMapper.writeValueAsString(invalidRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertInstanceOf(ValidationFailedException.class, result.getResolvedException()));
+
+        verify(guestService, never()).addGuest(any(GuestCreateRequest.class));
     }
 
     @Test
-    @DisplayName("게스트 조회 성공")
-    void getGuest_Success() throws Exception {
-        String email = "guest@example.com";
+    void getGuest_success() throws Exception {
+        when(guestService.getGuest(orderId)).thenReturn(responseGuest);
 
-        ResponseGuest response = new ResponseGuest(
-                "password123",
-                "Guest User",
-                "01012345678",
-                "Seoul, Korea",
-                email
-        );
-
-        Mockito.when(guestService.getGuest(email)).thenReturn(response);
-
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/guests/{guestEmail}", email))
+        mockMvc.perform(get("/guests/{orderId}", orderId))
                 .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(jsonPath("$.guestId").value(responseGuest.getGuestId()))
+                .andExpect(jsonPath("$.orderId").value(responseGuest.getOrderId()));
 
-        String content = result.getResponse().getContentAsString();
-
-        assertThat(content).contains(
-                "password123",
-                "Guest User",
-                "01012345678",
-                "Seoul, Korea",
-                email
-        );
-
-        Mockito.verify(guestService).getGuest(email);
+        verify(guestService, times(1)).getGuest(orderId);
     }
 
     @Test
-    @DisplayName("게스트 삭제 성공")
-    void deleteGuest_Success() throws Exception {
-        String email = "guest@example.com";
+    void deleteGuest_success() throws Exception {
+        doNothing().when(guestService).deleteGuest(orderId);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/guests/{guestEmail}", email))
+        mockMvc.perform(delete("/guests/{orderId}", orderId))
                 .andExpect(status().isNoContent());
 
-        Mockito.verify(guestService).deleteGuest(email);
+        verify(guestService, times(1)).deleteGuest(orderId);
     }
 
     @Test
-    @DisplayName("게스트 수정 성공")
-    void updateGuest_Success() throws Exception {
-        String email = "guest@example.com";
+    void getGuestPassword_success() throws Exception {
+        when(guestService.getGuestEncodedPassword(orderId)).thenReturn(encodedPassword);
 
-        GuestUpdateRequest updateRequest = new GuestUpdateRequest(
-                "newpassword",
-                "Updated User",
-                "01098765432",
-                "Busan, Korea"
-        );
-
-        ResponseGuest response = new ResponseGuest(
-                "newpassword",
-                "Updated User",
-                "01098765432",
-                "Busan, Korea",
-                email
-        );
-
-        Mockito.when(guestService.updateGuest(Mockito.eq(email), Mockito.any(GuestUpdateRequest.class))).thenReturn(response);
-
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/guests/{guestEmail}", email)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateRequest)))
+        mockMvc.perform(get("/guests/{orderId}/password", orderId))
                 .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(content().string(encodedPassword));
 
-        String content = result.getResponse().getContentAsString();
-
-        assertThat(content).contains(
-                "newpassword",
-                "Updated User",
-                "01098765432",
-                "Busan, Korea",
-                email
-        );
-
-        Mockito.verify(guestService).updateGuest(Mockito.eq(email), Mockito.any(GuestUpdateRequest.class));
-    }
-
-    @Test
-    @DisplayName("게스트 수정 실패 - 유효성 검사 실패")
-    void updateGuest_ValidationFail() throws Exception {
-        String email = "guest@example.com";
-
-        GuestUpdateRequest updateRequest = new GuestUpdateRequest(
-                "", "", "", ""
-        );
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/guests/{guestEmail}", email)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateRequest)))
-                .andExpect(result -> assertThat(result.getResolvedException()).isInstanceOf(ValidationFailedException.class));
+        verify(guestService, times(1)).getGuestEncodedPassword(orderId);
     }
 }

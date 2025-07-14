@@ -2,8 +2,8 @@ package com.nhnacademy.bookstoreuserapi.guest.service.impl;
 
 import com.nhnacademy.bookstoreuserapi.guest.domain.Guest;
 import com.nhnacademy.bookstoreuserapi.guest.dto.request.GuestCreateRequest;
-import com.nhnacademy.bookstoreuserapi.guest.dto.request.GuestUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.guest.dto.response.ResponseGuest;
+import com.nhnacademy.bookstoreuserapi.guest.exception.GuestAlreadyExistsException;
 import com.nhnacademy.bookstoreuserapi.guest.exception.GuestNotFoundException;
 import com.nhnacademy.bookstoreuserapi.guest.repository.GuestRepository;
 import com.nhnacademy.bookstoreuserapi.guest.service.GuestService;
@@ -20,76 +20,29 @@ public class GuestServiceImpl implements GuestService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public ResponseGuest getGuest(String guestEmail) {
-
-        Guest guest = guestRepository.findByGuestEmail(guestEmail);
-
-        if(guest == null) {
-            throw new GuestNotFoundException(guestEmail);
-        }
-
-       return new ResponseGuest(
-                guest.getGuestPassword(),
-                guest.getGuestName(),
-                guest.getGuestPhoneNumber(),
-                guest.getGuestAddress(),
-                guest.getGuestEmail()
-        );
+    public ResponseGuest getGuest(Long orderId) {
+        Guest guest = guestRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new GuestNotFoundException(orderId));
+        return new ResponseGuest(guest.getGuestId(), guest.getGuestPassword(), guest.getOrderId());
     }
 
     @Override
     @Transactional
     public ResponseGuest addGuest(GuestCreateRequest guestCreateRequest) {
-
-        Guest guest = new Guest(guestCreateRequest);
-
-        guest.setGuestPassword(passwordEncoder.encode(guest.getGuestPassword()));
-
-        Guest saveGuest = guestRepository.save(guest);
-
-        return new ResponseGuest(
-                saveGuest.getGuestPassword(),
-                saveGuest.getGuestName(),
-                saveGuest.getGuestPhoneNumber(),
-                saveGuest.getGuestAddress(),
-                saveGuest.getGuestEmail()
-        );
+        if (guestRepository.findByOrderId(guestCreateRequest.orderId()).isPresent()) {
+            throw new GuestAlreadyExistsException(guestCreateRequest.orderId());
+        }
+        String encodedPassword = passwordEncoder.encode(guestCreateRequest.guestPassword());
+        Guest guest = new Guest(encodedPassword, guestCreateRequest.orderId());
+        Guest savedGuest = guestRepository.save(guest);
+        return new ResponseGuest(savedGuest.getGuestId(), savedGuest.getGuestPassword(), savedGuest.getOrderId());
     }
 
     @Override
     @Transactional
-    public void deleteGuest(String guestEmail) {
-
-        Guest guest = guestRepository.findByGuestEmail(guestEmail);
-
-        if(guest == null) {
-            throw new GuestNotFoundException(guestEmail);
-        }
-
-        guestRepository.deleteByGuestEmail(guestEmail);
-    }
-
-    @Override
-    @Transactional
-    public ResponseGuest updateGuest(String guestEmail, GuestUpdateRequest guestUpdateRequest) {
-
-        Guest guest = guestRepository.findByGuestEmail(guestEmail);
-
-        if(guest == null) {
-            throw new GuestNotFoundException(guestEmail);
-        }
-
-        guest.setGuestPassword(passwordEncoder.encode(guestUpdateRequest.guestPassword()));
-        guest.setGuestName(guestUpdateRequest.guestName());
-        guest.setGuestPhoneNumber(guestUpdateRequest.guestPhoneNumber());
-        guest.setGuestAddress(guestUpdateRequest.guestAddress());
-
-        return new ResponseGuest(
-                guest.getGuestPassword(),
-                guest.getGuestName(),
-                guest.getGuestPhoneNumber(),
-                guest.getGuestAddress(),
-                guestEmail
-        );
+    public void deleteGuest(Long orderId) {
+        Guest guest = guestRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new GuestNotFoundException(orderId));
+        guestRepository.delete(guest);
     }
 }

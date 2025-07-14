@@ -1,7 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.guest.controller;
 
 import com.nhnacademy.bookstoreuserapi.guest.dto.request.GuestCreateRequest;
-import com.nhnacademy.bookstoreuserapi.guest.dto.request.GuestUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.guest.dto.response.ResponseGuest;
 import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.guest.service.GuestService;
@@ -18,9 +17,9 @@ public class GuestController {
 
     private final GuestService guestService;
 
-    @PostMapping("/register")
-    public ResponseEntity<ResponseGuest> register(@Valid @RequestBody GuestCreateRequest guest, BindingResult bindingResult) {
-
+    @PostMapping
+    public ResponseEntity<ResponseGuest> register(@Valid @RequestBody GuestCreateRequest guest,
+                                                  BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
         }
@@ -28,27 +27,17 @@ public class GuestController {
         return ResponseEntity.ok().body(guestService.addGuest(guest));
     }
 
-    @GetMapping("/{guestEmail}")
-    public ResponseEntity<ResponseGuest> getGuest(@PathVariable String guestEmail) {
+    @GetMapping("/{orderId}")
+    public ResponseEntity<ResponseGuest> getGuest(@PathVariable Long orderId) {
 
-        return ResponseEntity.ok().body(guestService.getGuest(guestEmail));
+        return ResponseEntity.ok().body(guestService.getGuest(orderId));
     }
 
-    @DeleteMapping("/{guestEmail}")
-    public ResponseEntity<String> deleteGuest(@PathVariable String guestEmail){
+    @DeleteMapping("/{orderId}")
+    public ResponseEntity<Void> deleteGuest(@PathVariable Long orderId){
 
-        guestService.deleteGuest(guestEmail);
+        guestService.deleteGuest(orderId);
 
         return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/{guestEmail}")
-    public ResponseEntity<ResponseGuest> updateGuest(@PathVariable String guestEmail, @Valid @RequestBody GuestUpdateRequest guestUpdateRequest, BindingResult bindingResult) {
-
-        if(bindingResult.hasErrors()) {
-            throw new ValidationFailedException(bindingResult);
-        }
-
-        return ResponseEntity.ok().body(guestService.updateGuest(guestEmail, guestUpdateRequest));
     }
 }

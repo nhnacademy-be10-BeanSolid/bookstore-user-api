@@ -8,10 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseGuest {
-
+    private Long guestId;
     private String guestPassword;
-    private String guestName;
-    private String guestPhoneNumber;
-    private String guestAddress;
-    private String guestEmail;
+    private Long orderId;
 }

@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.guest.domain;
+package com.nhnacademy.bookstoreuserapi.guest.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

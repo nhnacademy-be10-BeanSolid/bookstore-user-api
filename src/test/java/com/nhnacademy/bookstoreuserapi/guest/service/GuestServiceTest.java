@@ -1,6 +1,9 @@
 package com.nhnacademy.bookstoreuserapi.guest.service;
 
 import com.nhnacademy.bookstoreuserapi.guest.domain.*;
+import com.nhnacademy.bookstoreuserapi.guest.dto.request.GuestCreateRequest;
+import com.nhnacademy.bookstoreuserapi.guest.dto.request.GuestUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.guest.dto.response.ResponseGuest;
 import com.nhnacademy.bookstoreuserapi.guest.exception.GuestNotFoundException;
 import com.nhnacademy.bookstoreuserapi.guest.repository.GuestRepository;
 import com.nhnacademy.bookstoreuserapi.guest.service.impl.GuestServiceImpl;

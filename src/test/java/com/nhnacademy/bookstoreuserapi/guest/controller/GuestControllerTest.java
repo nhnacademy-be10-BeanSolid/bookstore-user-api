@@ -1,9 +1,9 @@
 package com.nhnacademy.bookstoreuserapi.guest.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstoreuserapi.guest.domain.GuestCreateRequest;
-import com.nhnacademy.bookstoreuserapi.guest.domain.GuestUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.guest.domain.ResponseGuest;
+import com.nhnacademy.bookstoreuserapi.guest.dto.request.GuestCreateRequest;
+import com.nhnacademy.bookstoreuserapi.guest.dto.request.GuestUpdateRequest;
+import com.nhnacademy.bookstoreuserapi.guest.dto.response.ResponseGuest;
 import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.guest.service.GuestService;
 import org.junit.jupiter.api.DisplayName;

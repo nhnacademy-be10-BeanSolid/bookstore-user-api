@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.guest.domain;
 
+import com.nhnacademy.bookstoreuserapi.guest.dto.request.GuestCreateRequest;
 import jakarta.persistence.*;
 import lombok.*;
 

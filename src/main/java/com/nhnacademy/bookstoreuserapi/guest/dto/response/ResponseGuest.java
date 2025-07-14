@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.guest.domain;
+package com.nhnacademy.bookstoreuserapi.guest.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

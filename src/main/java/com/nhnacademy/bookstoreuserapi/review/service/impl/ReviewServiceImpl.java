@@ -52,7 +52,7 @@ public class ReviewServiceImpl implements ReviewService {
             int reviewPoint = pointTypeService.getEarningPointByTypeName("리뷰작성");
             long typeId = pointTypeService.getTypeIdByName("리뷰작성");
 
-            String reviewPointPlus = reviewPoint + " 적립";
+            String reviewPointPlus = reviewPoint + "p 적립";
 
             userRepository.updatePointByUserId(review.userId(), reviewPoint);
 

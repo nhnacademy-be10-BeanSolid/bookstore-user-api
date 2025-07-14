@@ -58,19 +58,26 @@ X-USER-ID: PAYCO142421-123df-11e4-000003ef34
 PUT http://localhost:10348/users/me/lastloginat
 X-USER-ID: PAYCO142421-123df-11e4-000003ef34
 
-### 회원 포인트 수정
-PUT http://localhost:10348/users/me/point?point=10000
-Content-Type: application/json
-X-USER-ID: PAYCO142421-123df-11e4-000003ef34
-
 ### 회원 상태 수정
 PUT http://localhost:10348/users/me/status?status=WITHDRAWN
 Content-Type: application/json
 X-USER-ID: withdrawnUser
 
-
 ### 회원 전체등급 수정
 PUT http://localhost:10348/users/bulk/grade
 Content-Type: application/json
 
+### 회원 포인트 조회
+GET localhost:10348/users/me/my-point
+Content-Type: application/json
+X-USER-ID: ttestt
 
+### 회원 포인트 적립
+PUT localhost:10348/users/me/plus-point?point=5000
+Content-Type: application/json
+X-USER-ID: ttestt
+
+### 회원 포인트 차감
+PUT localhost:10348/users/me/minus-point?point=3000
+Content-Type: application/json
+X-USER-ID: ttestt

@@ -34,4 +34,7 @@ public interface UserRepository extends JpaRepository<User, Long>, UserRepositor
 
     User findByUserNo(Long userNo);
 
+    @Query("select u.userPoint from User u where u.userId = :userId")
+    int findUserPointByUserId(String userId);
+
 }

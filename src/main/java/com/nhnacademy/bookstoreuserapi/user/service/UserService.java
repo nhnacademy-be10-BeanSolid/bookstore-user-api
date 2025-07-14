@@ -18,7 +18,9 @@ public interface UserService {
 
     ResponseUser updateLastLoginAt(String userId);
 
-    ResponseUser updatePoint(String userId, int point);
+    ResponseUser plusPoint(String userId, int point);
+
+    ResponseUser minusPoint(String userId, int point);
 
     ResponseUser updateUserStatus(String userId, User.Status status);
 
@@ -27,4 +29,6 @@ public interface UserService {
     ResponseUser deleteUser(String userId);
 
     boolean isUserExist(String userId);
+
+    int getUserPoint(String userId);
 }

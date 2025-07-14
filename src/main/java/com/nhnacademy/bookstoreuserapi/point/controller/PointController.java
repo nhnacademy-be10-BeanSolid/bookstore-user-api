@@ -33,4 +33,5 @@ public class PointController {
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(pointService.savePoint(userId, pointCreateRequest));
     }
+
 }

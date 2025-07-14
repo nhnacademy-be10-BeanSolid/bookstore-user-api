@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import org.springframework.web.client.RestTemplate; // Added
+
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -35,6 +37,7 @@ public class UserServiceImpl implements UserService {
     private final OrderAdapter orderAdapter;
     private final EntityManager entityManager;
     private final PointTypeService pointTypeService;
+    private final RestTemplate restTemplate; // Added
 
     @Override
     public ResponseUser getUser(String userId) {
@@ -108,6 +111,10 @@ public class UserServiceImpl implements UserService {
             pointService.savePoint(request.userId(),pointCreateRequest);
         }
 
+        // 쿠폰 API 호출
+        String couponApiUrl = "http://coupon-api/coupons/users/" + savedUser.getUserNo() + "/issue-welcome";
+        restTemplate.postForEntity(couponApiUrl, null, String.class);
+
         return new ResponseUser(savedUser);
     }
 
@@ -160,6 +167,10 @@ public class UserServiceImpl implements UserService {
 
             pointService.savePoint(userId,pointCreateRequest);
         }
+
+        // 쿠폰 API 호출
+        String couponApiUrl = "http://coupon-api/coupons/users/" + savedUser.getUserNo() + "/issue-welcome";
+        restTemplate.postForEntity(couponApiUrl, null, String.class);
 
         return new ResponseUser(savedUser);
     }

@@ -54,23 +54,13 @@ CREATE TABLE `point_types` (
 );
 
 
-CREATE TABLE `guests` (
-    `guest_id`	BIGINT	NOT NULL AUTO_INCREMENT,
-    `guest_password`	VARCHAR(255)	NOT NULL,
-    `guest_name`	VARCHAR(20)	NOT NULL,
-    `guest_phone_number`	VARCHAR(15)	NOT NULL,
-    `guest_address`	VARCHAR(255)	NOT NULL,
-    `guest_email`	VARCHAR(255)	NOT NULL UNIQUE,
-
-    primary key (guest_id)
-);
-
 CREATE TABLE guests
 (
     guest_id       BIGINT AUTO_INCREMENT NOT NULL,
     guest_password VARCHAR(255)          NOT NULL,
     order_id       BIGINT                NOT NULL,
     CONSTRAINT pk_guests PRIMARY KEY (guest_id),
+    CONSTRAINT uc_guests_order UNIQUE (order_id),
     CONSTRAINT fk_guest_order
         FOREIGN KEY (order_id) REFERENCES orders(id)
             ON DELETE CASCADE

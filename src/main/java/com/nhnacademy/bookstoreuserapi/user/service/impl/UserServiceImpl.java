@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.user.service.impl;
 
 import com.nhnacademy.bookstoreuserapi.adapter.OrderAdapter;
+import com.nhnacademy.bookstoreuserapi.client.CouponClient;
 import com.nhnacademy.bookstoreuserapi.point.domain.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.point.service.PointService;
 import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
@@ -14,10 +15,9 @@ import com.nhnacademy.bookstoreuserapi.usergrade.repository.UserGradeRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import org.springframework.web.client.RestTemplate; // Added
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 import static com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade.BASIC;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -37,7 +38,7 @@ public class UserServiceImpl implements UserService {
     private final OrderAdapter orderAdapter;
     private final EntityManager entityManager;
     private final PointTypeService pointTypeService;
-    private final RestTemplate restTemplate; // Added
+    private final CouponClient couponClient;
 
     @Override
     public ResponseUser getUser(String userId) {
@@ -112,8 +113,11 @@ public class UserServiceImpl implements UserService {
         }
 
         // 쿠폰 API 호출
-        String couponApiUrl = "http://coupon-api/coupons/users/" + savedUser.getUserNo() + "/issue-welcome";
-        restTemplate.postForEntity(couponApiUrl, null, String.class);
+        try {
+            couponClient.issueWelcomeCoupon(String.valueOf(savedUser.getUserNo()));
+        } catch (Exception e) {
+            log.error("Failed to issue welcome coupon for user {}: {}", savedUser.getUserNo(), e.getMessage());
+        }
 
         return new ResponseUser(savedUser);
     }
@@ -169,8 +173,11 @@ public class UserServiceImpl implements UserService {
         }
 
         // 쿠폰 API 호출
-        String couponApiUrl = "http://coupon-api/coupons/users/" + savedUser.getUserNo() + "/issue-welcome";
-        restTemplate.postForEntity(couponApiUrl, null, String.class);
+        try {
+            couponClient.issueWelcomeCoupon(String.valueOf(savedUser.getUserNo()));
+        } catch (Exception e) {
+            log.error("Failed to issue welcome coupon for user {}: {}", savedUser.getUserNo(), e.getMessage());
+        }
 
         return new ResponseUser(savedUser);
     }

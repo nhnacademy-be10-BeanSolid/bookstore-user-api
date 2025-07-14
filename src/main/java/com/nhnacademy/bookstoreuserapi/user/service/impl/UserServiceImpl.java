@@ -5,6 +5,7 @@ import com.nhnacademy.bookstoreuserapi.point.domain.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.point.service.PointService;
 import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
 import com.nhnacademy.bookstoreuserapi.user.domain.*;
+import com.nhnacademy.bookstoreuserapi.user.exception.PointNotEnoughException;
 import com.nhnacademy.bookstoreuserapi.user.exception.UserAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.user.exception.UserNotFoundException;
 import com.nhnacademy.bookstoreuserapi.user.repository.UserRepository;
@@ -197,14 +198,32 @@ public class UserServiceImpl implements UserService {
         return new ResponseUser(userRepository.findByUserId(userId));
     }
 
+    // 포인트 적립
     @Override
-    public ResponseUser updatePoint(String userId, int point) {
+    public ResponseUser plusPoint(String userId, int point) {
 
         if(!userRepository.existsByUserId(userId)){
             throw new UserNotFoundException(userId);
         }
 
         userRepository.updatePointByUserId(userId, point);
+
+        return new ResponseUser(userRepository.findByUserId(userId));
+    }
+
+    // 포인트 차감
+    @Override
+    public ResponseUser minusPoint(String userId, int point) {
+
+        if(!isUserExist(userId)){
+            throw new UserNotFoundException(userId);
+        }
+
+        if(getUserPoint(userId) < point){
+            throw new PointNotEnoughException(userId, point);
+        }
+
+        userRepository.updatePointByUserId(userId, -point);
 
         return new ResponseUser(userRepository.findByUserId(userId));
     }
@@ -265,5 +284,15 @@ public class UserServiceImpl implements UserService {
     public boolean isUserExist(String userId) {
 
         return userRepository.existsByUserId(userId);
+    }
+
+    @Override
+    public int getUserPoint(String userId) {
+
+        if(!userRepository.existsByUserId(userId)){
+            throw new UserNotFoundException(userId);
+        }
+
+        return userRepository.findUserPointByUserId(userId);
     }
 }

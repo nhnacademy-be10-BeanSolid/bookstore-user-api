@@ -5,6 +5,7 @@ import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedExceptio
 import com.nhnacademy.bookstoreuserapi.user.domain.*;
 import com.nhnacademy.bookstoreuserapi.user.service.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -93,17 +94,29 @@ public class UserController {
         return ResponseEntity.ok(userService.updateLastLoginAt(userId));
     }
 
-    @PutMapping("/me/point")
-    public ResponseEntity<ResponseUser> updatePoint(@AuthenticatedUserId String userId, @RequestParam @Min(0) int point){
-        return ResponseEntity.ok(userService.updatePoint(userId, point));
+    @PutMapping("/me/plus-point")
+    public ResponseEntity<ResponseUser> plusPoint(@AuthenticatedUserId String userId, @RequestParam @Min(0) int point){
+        return ResponseEntity.ok(userService.plusPoint(userId, point));
     }
+
+    @PutMapping("/me/minus-point")
+    public ResponseEntity<ResponseUser> minusPoint(@AuthenticatedUserId String userId, @RequestParam @Max(0) int point){
+        return ResponseEntity.ok(userService.minusPoint(userId, point));
+    }
+
+    // 현재 내가 가지고 있는 포인트 액수 조회
+    @GetMapping("/me/my-point")
+    public ResponseEntity<Integer> getMyPoint(@AuthenticatedUserId String userId){
+        return ResponseEntity.ok(userService.getUserPoint(userId));
+    }
+
 
     @PutMapping("/me/status")
     public ResponseEntity<ResponseUser> updateStatus(@AuthenticatedUserId String userId, @RequestParam User.Status status){
         return ResponseEntity.ok(userService.updateUserStatus(userId, status));
     }
 
-// 전체회원등급 조정api
+    // 전체회원등급 조정api
     @PutMapping("/bulk/grade")
     public ResponseEntity<Void> bulkUpdateUserGrades() {
         userService.bulkUpdateUserGrades();

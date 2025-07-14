@@ -30,4 +30,6 @@ public interface PointTypeService {
     void updatePointTypeInfo(PointTypeUpdateRequest request, Long typeId);
 
     ResponsePointType getPointTypeInfo(Long typeId);
+
+    ResponsePointType getEarningRateByGradeNameAndTypeName(UserGrade.Grade gradeName);
 }

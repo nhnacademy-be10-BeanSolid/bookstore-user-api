@@ -2,6 +2,7 @@ package com.nhnacademy.bookstoreuserapi.cart.controller;
 
 import com.nhnacademy.bookstoreuserapi.cart.context.CartContext;
 import com.nhnacademy.bookstoreuserapi.cart.dto.request.CartAddItemRequest;
+import com.nhnacademy.bookstoreuserapi.cart.dto.request.CartUpdateItemsRequest;
 import com.nhnacademy.bookstoreuserapi.cart.dto.request.CartUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.cart.dto.response.CartCreateResponse;
 import com.nhnacademy.bookstoreuserapi.cart.dto.response.CartResponse;
@@ -67,6 +68,16 @@ public class CartController {
             @RequestBody List<Long> itemIds
     ) {
         return ResponseEntity.ok(cartService.deleteItems(ctx, itemIds));
+    }
+
+    @PutMapping("/items")
+    public ResponseEntity<CartResponse> updateItemsInCart(
+            CartContext ctx,
+            @Valid @RequestBody CartUpdateItemsRequest request,
+            BindingResult bindingResult
+    ) {
+        validate(bindingResult);
+        return ResponseEntity.ok(cartService.updateItems(ctx, request));
     }
 
     private void validate(BindingResult bindingResult) {

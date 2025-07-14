@@ -32,7 +32,20 @@ class UserServiceTest {
 
     @InjectMocks
     private UserServiceImpl userService;
+    @Mock
+    private UserRepository userRepository;
 
+    @Mock
+    private UserGradeRepository userGradeRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private PointService pointService;
+
+    @Mock
+    private PointTypeService pointTypeService;
     private final String userId = "test";
 
     @BeforeEach

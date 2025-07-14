@@ -1,29 +1,15 @@
 ### 비회원 등록
-POST http://localhost:10348/guests/register
+POST http://localhost:10348/guests
 Content-Type: application/json
 
 {
   "guestPassword": "1234",
-  "guestName": "비회원",
-  "guestPhoneNumber": "010-1234-5678",
-  "guestAddress": "조선대학교",
-  "guestEmail": "test@test.com"
+  "orderId": 43
 }
 
-### 비회원 조회
-GET http://localhost:10348/guests/test@test.com
+### 비회원 조회 (orderId로 조회)
+GET http://localhost:10348/guests/43
 Content-Type: application/json
 
-### 비회원 삭제
-DELETE http://localhost:10348/guests/test@test.com
-
-### 비회원 정보 수정
-PUT http://localhost:10348/guests/test@test.com
-Content-Type: application/json
-
-{
-  "guestPassword": "12345",
-  "guestName": "테스트",
-  "guestPhoneNumber": "010-1234-5678",
-  "guestAddress": "서울대학교"
-}
+### 비회원 삭제 (orderId로 삭제)
+DELETE http://localhost:10348/guests/43

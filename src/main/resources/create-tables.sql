@@ -65,6 +65,17 @@ CREATE TABLE `guests` (
     primary key (guest_id)
 );
 
+CREATE TABLE guests
+(
+    guest_id       BIGINT AUTO_INCREMENT NOT NULL,
+    guest_password VARCHAR(255)          NOT NULL,
+    order_id       BIGINT                NOT NULL,
+    CONSTRAINT pk_guests PRIMARY KEY (guest_id),
+    CONSTRAINT fk_guest_order
+        FOREIGN KEY (order_id) REFERENCES orders(id)
+            ON DELETE CASCADE
+);
+
 CREATE TABLE carts (
     cart_id       BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     user_no       BIGINT          NULL,
@@ -73,7 +84,7 @@ CREATE TABLE carts (
     created_at    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (cart_id),
-    UNIQUE KEY uq_quest_uuid (guest_uuid),
+    UNIQUE KEY uq_guest_uuid (guest_uuid),
     CONSTRAINT fk_cart_user
        FOREIGN KEY(user_no) REFERENCES users(user_no)
            ON DELETE CASCADE

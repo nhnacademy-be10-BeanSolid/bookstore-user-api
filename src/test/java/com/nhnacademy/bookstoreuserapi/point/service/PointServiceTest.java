@@ -60,7 +60,7 @@ class PointServiceTest {
         point.setPointId(pointId);
         point.setUser(user);
         point.setPointType(pointType);
-        point.setOrderNo(orderNo);
+        point.setOrderId(orderNo);
         point.setEarnedAndUsedAt(at);
         point.setEarnedAndUsedPoint(value);
         return point;
@@ -121,7 +121,7 @@ class PointServiceTest {
 
         assertThat(response).isNotNull();
         assertThat(response.getUserId()).isEqualTo(userId);
-        assertThat(response.getOrderNo()).isEqualTo(2L);
+        assertThat(response.getOrderId()).isEqualTo(2L);
         assertThat(response.getEarnedAndUsedPoint()).isEqualTo("1000");
     }
 

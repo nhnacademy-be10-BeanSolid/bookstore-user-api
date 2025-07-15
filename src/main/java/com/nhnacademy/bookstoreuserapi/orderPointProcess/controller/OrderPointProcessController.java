@@ -1,6 +1,5 @@
 package com.nhnacademy.bookstoreuserapi.orderPointProcess.controller;
 
-import com.nhnacademy.bookstoreuserapi.common.annotation.AuthenticatedUserId;
 import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.orderPointProcess.domain.request.OrderPointMinusProcessRequest;
 import com.nhnacademy.bookstoreuserapi.orderPointProcess.domain.request.OrderPointPlusProcessRequest;
@@ -18,8 +17,8 @@ public class OrderPointProcessController {
 
     private final OrderPointProcessService orderPointProcessService;
 
-    @PostMapping("/plus")
-    public ResponseEntity<Void> orderPointPlus(@AuthenticatedUserId String userId,
+    @PostMapping("/{userNo}/plus")
+    public ResponseEntity<Void> orderPointPlus(@PathVariable Long userNo,
                                                @Valid @RequestBody OrderPointPlusProcessRequest request,
                                                BindingResult bindingResult) {
 
@@ -27,20 +26,20 @@ public class OrderPointProcessController {
             throw new ValidationFailedException(bindingResult);
         }
 
-        orderPointProcessService.orderPointPlusProcess(userId, request);
+        orderPointProcessService.orderPointPlusProcess(userNo, request);
 
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/minus")
-    public ResponseEntity<Void> orderPointMinus(@AuthenticatedUserId String userId,
+    @PostMapping("/{userNo}/minus")
+    public ResponseEntity<Void> orderPointMinus(@PathVariable Long userNo,
                                                 @Valid @RequestBody OrderPointMinusProcessRequest request,
                                                 BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
         }
 
-        orderPointProcessService.orderPointMinusProcess(userId, request);
+        orderPointProcessService.orderPointMinusProcess(userNo, request);
 
         return ResponseEntity.ok().build();
     }

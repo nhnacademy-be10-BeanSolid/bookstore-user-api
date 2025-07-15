@@ -17,6 +17,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
@@ -32,6 +34,8 @@ class UserServiceTest {
 
     @InjectMocks
     private UserServiceImpl userService;
+
+    @MockBean
     @Mock
     private UserRepository userRepository;
 
@@ -46,12 +50,17 @@ class UserServiceTest {
 
     @Mock
     private PointTypeService pointTypeService;
+
+    @Mock
+    private RabbitTemplate rabbitTemplate;
+
     private final String userId = "test";
 
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+        doNothing().when(rabbitTemplate).convertAndSend(anyString(), anyString(), any(Object.class));
     }
 
     private UserGrade createUserGrade(UserGrade.Grade grade) {

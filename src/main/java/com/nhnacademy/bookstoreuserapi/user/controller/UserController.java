@@ -22,9 +22,9 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<ResponseUser> saveUser(@Valid @RequestBody  UserCreateRequest userCreateRequest, BindingResult bindingResult) {
+    public ResponseEntity<ResponseUser> saveUser(@Valid @RequestBody UserCreateRequest userCreateRequest, BindingResult bindingResult) {
 
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
         }
 
@@ -69,13 +69,13 @@ public class UserController {
     }
 
     @PutMapping("/me/personalinformation")
-    public ResponseEntity<ResponseUser> updatePersonalInformation(@AuthenticatedUserId String userId, @Valid @RequestBody UserUpdateRequest userUpdateRequest, BindingResult bindingResult){
+    public ResponseEntity<ResponseUser> updatePersonalInformation(@AuthenticatedUserId String userId, @Valid @RequestBody UserUpdateRequest userUpdateRequest, BindingResult bindingResult) {
 
         return updatePersonalInformationInternal(userId, userUpdateRequest, bindingResult);
     }
 
     @PutMapping("/{userId}/personalinformation")
-    public ResponseEntity<ResponseUser> updatePersonalInformationPathVariable(@PathVariable String userId, @Valid @RequestBody UserUpdateRequest userUpdateRequest, BindingResult bindingResult){
+    public ResponseEntity<ResponseUser> updatePersonalInformationPathVariable(@PathVariable String userId, @Valid @RequestBody UserUpdateRequest userUpdateRequest, BindingResult bindingResult) {
 
         return updatePersonalInformationInternal(userId, userUpdateRequest, bindingResult);
     }
@@ -90,29 +90,29 @@ public class UserController {
     }
 
     @PutMapping("/me/lastloginat")
-    public ResponseEntity<ResponseUser> updateLastLoginAt(@AuthenticatedUserId String userId){
+    public ResponseEntity<ResponseUser> updateLastLoginAt(@AuthenticatedUserId String userId) {
         return ResponseEntity.ok(userService.updateLastLoginAt(userId));
     }
 
     @PutMapping("/me/plus-point")
-    public ResponseEntity<ResponseUser> plusPoint(@AuthenticatedUserId String userId, @RequestParam @Min(0) int point){
+    public ResponseEntity<ResponseUser> plusPoint(@AuthenticatedUserId String userId, @RequestParam @Min(0) int point) {
         return ResponseEntity.ok(userService.plusPoint(userId, point));
     }
 
     @PutMapping("/me/minus-point")
-    public ResponseEntity<ResponseUser> minusPoint(@AuthenticatedUserId String userId, @RequestParam @Max(0) int point){
+    public ResponseEntity<ResponseUser> minusPoint(@AuthenticatedUserId String userId, @RequestParam @Max(0) int point) {
         return ResponseEntity.ok(userService.minusPoint(userId, point));
     }
 
     // 현재 내가 가지고 있는 포인트 액수 조회
     @GetMapping("/me/my-point")
-    public ResponseEntity<Integer> getMyPoint(@AuthenticatedUserId String userId){
+    public ResponseEntity<Integer> getMyPoint(@AuthenticatedUserId String userId) {
         return ResponseEntity.ok(userService.getUserPoint(userId));
     }
 
 
     @PutMapping("/me/status")
-    public ResponseEntity<ResponseUser> updateStatus(@AuthenticatedUserId String userId, @RequestParam User.Status status){
+    public ResponseEntity<ResponseUser> updateStatus(@AuthenticatedUserId String userId, @RequestParam User.Status status) {
         return ResponseEntity.ok(userService.updateUserStatus(userId, status));
     }
 
@@ -126,5 +126,10 @@ public class UserController {
     @GetMapping("/findId")
     public ResponseEntity<ResponseUserId> getUserIdByUserNameAndUserEmail(@RequestParam @NotBlank String userName, @RequestParam @NotBlank String userEmail) {
         return ResponseEntity.ok(userService.getUserIdByUserNameAndUserEmail(userName, userEmail));
+    }
+
+    @GetMapping("/id/{userId}")
+    public ResponseEntity<ResponseUserId> getUserIdByUserId(@PathVariable String userId) {
+        return ResponseEntity.ok(userService.getUserIdByUserId(userId));
     }
 }

@@ -22,15 +22,7 @@ public class BookstoreUserApiApplication {
 		SpringApplication.run(BookstoreUserApiApplication.class, args);
 	}
 
-	@Bean
-	public Jackson2JsonMessageConverter jackson2JsonMessageConverter() {
-		return new Jackson2JsonMessageConverter();
-	}
+	
 
-	@Bean
-	public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, Jackson2JsonMessageConverter jackson2JsonMessageConverter) {
-		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-		rabbitTemplate.setMessageConverter(jackson2JsonMessageConverter);
-		return rabbitTemplate;
-	}
+	
 }

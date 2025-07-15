@@ -308,4 +308,11 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.findUserPointByUserId(userId);
     }
+
+    @Override
+    public ResponseUserId getUserIdByUserId(String userId) {
+        User user = Optional.ofNullable(userRepository.findByUserId(userId))
+                .orElseThrow(() -> new UserNotFoundException(userId));
+        return new ResponseUserId(user);
+    }
 }

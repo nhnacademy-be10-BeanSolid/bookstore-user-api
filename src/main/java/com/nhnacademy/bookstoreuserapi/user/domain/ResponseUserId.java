@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResponseUserId {
     private String userId;
+    private Long userNo;
 
     public ResponseUserId(User user) {
         this.userId = user.getUserId();

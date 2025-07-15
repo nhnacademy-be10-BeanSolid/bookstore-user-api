@@ -31,4 +31,6 @@ public interface UserService {
     boolean isUserExist(String userId);
 
     int getUserPoint(String userId);
+
+    ResponseUserId getUserIdByUserId(String userId);
 }

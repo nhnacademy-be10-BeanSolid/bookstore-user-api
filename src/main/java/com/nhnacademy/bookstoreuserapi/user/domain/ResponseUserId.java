@@ -10,8 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResponseUserId {
     private String userId;
+    private Long userNo; // userNo 필드 추가
 
     public ResponseUserId(User user) {
         this.userId = user.getUserId();
+        this.userNo = user.getUserNo(); // userNo 설정 추가
     }
 }

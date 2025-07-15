@@ -5,9 +5,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.Objects;
 
@@ -60,6 +62,22 @@ public class GlobalExceptionHandler {
                 reasonPhrase,
                 request.getRequestURI(),
                 Objects.requireNonNull(e.getRootCause()).getMessage()
+        );
+        return ResponseEntity.status(statusCode).body(errorMessage);
+    }
+
+    @ExceptionHandler({
+            MethodArgumentTypeMismatchException.class,
+            HttpMessageNotReadableException.class
+    })
+    public ResponseEntity<ErrorMessage> handleBadRequest(Exception ex,  HttpServletRequest request) {
+        int statusCode = HttpStatus.BAD_REQUEST.value();
+        String reasonPhrase = HttpStatus.BAD_REQUEST.getReasonPhrase();
+        ErrorMessage errorMessage = new ErrorMessage(
+                statusCode,
+                reasonPhrase,
+                request.getRequestURI(),
+                ex.getMessage()
         );
         return ResponseEntity.status(statusCode).body(errorMessage);
     }

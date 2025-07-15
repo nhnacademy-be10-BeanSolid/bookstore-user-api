@@ -200,7 +200,9 @@ public class UserServiceImpl implements UserService {
 
     // 포인트 적립
     @Override
-    public ResponseUser plusPoint(String userId, int point) {
+    public ResponseUser plusPoint(Long userNo, int point) {
+
+        String userId = userRepository.findUserIdByUserNo(userNo);
 
         if(!userRepository.existsByUserId(userId)){
             throw new UserNotFoundException(userId);
@@ -213,7 +215,9 @@ public class UserServiceImpl implements UserService {
 
     // 포인트 차감
     @Override
-    public ResponseUser minusPoint(String userId, int point) {
+    public ResponseUser minusPoint(Long userNo, int point) {
+
+        String userId = userRepository.findUserIdByUserNo(userNo);
 
         if(!isUserExist(userId)){
             throw new UserNotFoundException(userId);

@@ -38,9 +38,10 @@ public class OrderPointProcessServiceImpl implements OrderPointProcessService {
 
         String userId = responseUser.getUserId();
 
-        userService.plusPoint(userId, plusPoint);
+        userService.plusPoint(userNo, plusPoint);
 
-        PointCreateRequest pointCreateRequest = new PointCreateRequest(userId,
+        PointCreateRequest pointCreateRequest = new PointCreateRequest(
+                                                userId,
                                                 responsePointType.getTypeId(),
                                                 orderNo,
                                                 LocalDateTime.now(),
@@ -62,9 +63,10 @@ public class OrderPointProcessServiceImpl implements OrderPointProcessService {
 
         Long typeId = pointTypeService.getTypeIdByName("주문");
 
-        userService.minusPoint(responseUser.getUserId(), minusPoint);
+        userService.minusPoint(userNo, minusPoint);
 
-        PointCreateRequest pointCreateRequest = new PointCreateRequest(userId,
+        PointCreateRequest pointCreateRequest = new PointCreateRequest(
+                userId,
                 typeId,
                 orderNo,
                 LocalDateTime.now(),

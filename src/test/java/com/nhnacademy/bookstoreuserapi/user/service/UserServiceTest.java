@@ -235,10 +235,12 @@ class UserServiceTest {
     @DisplayName("포인트 적립 성공")
     void plusPoint_success() {
         User user = createUser(userId);
+
+        when(userRepository.findUserIdByUserNo(1L)).thenReturn(userId);
         when(userRepository.existsByUserId(userId)).thenReturn(true);
         when(userRepository.findByUserId(userId)).thenReturn(user);
 
-        ResponseUser response = userService.plusPoint(userId, 1000);
+        ResponseUser response = userService.plusPoint(1L, 1000);
 
         verify(userRepository).updatePointByUserId(userId, 1000);
         assertThat(response.getUserId()).isEqualTo(userId);
@@ -247,42 +249,49 @@ class UserServiceTest {
     @Test
     @DisplayName("포인트 적립 실패 - 사용자 없음")
     void plusPoint_notFound() {
+        when(userRepository.findUserIdByUserNo(1L)).thenReturn(userId);
         when(userRepository.existsByUserId(userId)).thenReturn(false);
 
-        assertThatThrownBy(() -> userService.plusPoint(userId, 1000))
+        assertThatThrownBy(() -> userService.plusPoint(1L, 1000))
                 .isInstanceOf(UserNotFoundException.class);
     }
+
 
     @Test
     @DisplayName("포인트 차감 성공")
     void minusPoint_success() {
         User user = createUser(userId);
-        when(userRepository.existsByUserId(userId)).thenReturn(true);
-        when(userRepository.findByUserId(userId)).thenReturn(user);
-        when(userRepository.findUserPointByUserId(userId)).thenReturn(1000);
 
-        ResponseUser response = userService.minusPoint(userId, 500);
+        when(userRepository.findUserIdByUserNo(1L)).thenReturn(userId);
+        when(userRepository.existsByUserId(userId)).thenReturn(true);
+        when(userRepository.findUserPointByUserId(userId)).thenReturn(1000);
+        when(userRepository.findByUserId(userId)).thenReturn(user);
+
+        ResponseUser response = userService.minusPoint(1L, 500);
 
         verify(userRepository).updatePointByUserId(userId, -500);
         assertThat(response.getUserId()).isEqualTo(userId);
     }
 
+
     @Test
     @DisplayName("포인트 차감 실패 - 사용자 없음")
     void minusPoint_notFound() {
+        when(userRepository.findUserIdByUserNo(1L)).thenReturn(userId);
         when(userRepository.existsByUserId(userId)).thenReturn(false);
 
-        assertThatThrownBy(() -> userService.minusPoint(userId, 1000))
+        assertThatThrownBy(() -> userService.minusPoint(1L, 1000))
                 .isInstanceOf(UserNotFoundException.class);
     }
 
     @Test
     @DisplayName("포인트 차감 실패 - 포인트 부족")
     void minusPoint_notEnough() {
+        when(userRepository.findUserIdByUserNo(1L)).thenReturn(userId);
         when(userRepository.existsByUserId(userId)).thenReturn(true);
         when(userRepository.findUserPointByUserId(userId)).thenReturn(100);
 
-        assertThatThrownBy(() -> userService.minusPoint(userId, 200))
+        assertThatThrownBy(() -> userService.minusPoint(1L, 200))
                 .isInstanceOf(PointNotEnoughException.class);
     }
 

@@ -73,11 +73,10 @@ Content-Type: application/json
 X-USER-ID: ttestt
 
 ### 회원 포인트 적립
-PUT localhost:10348/users/me/plus-point?point=5000
+PUT localhost:10348/users/52/plus-point?point=5000
 Content-Type: application/json
-X-USER-ID: ttestt
+
 
 ### 회원 포인트 차감
-PUT localhost:10348/users/me/minus-point?point=3000
+PUT localhost:10348/users/52/minus-point?point=3000
 Content-Type: application/json
-X-USER-ID: ttestt

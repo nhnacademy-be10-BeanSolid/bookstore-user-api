@@ -1,5 +1,5 @@
 ### 주문 후 포인트 적립
-POST localhost:10348/users/order-point/1/plus
+POST localhost:10348/users/order-point/52/plus
 Content-Type: application/json
 
 {
@@ -8,7 +8,7 @@ Content-Type: application/json
 }
 
 ### 주문 시 포인트 사용
-POST localhost:10348/users/order-point/1/minus
+POST localhost:10348/users/order-point/52/minus
 Content-Type: application/json
 
 {

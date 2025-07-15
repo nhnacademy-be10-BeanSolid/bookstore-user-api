@@ -64,7 +64,7 @@ class OrderPointProcessServiceTest {
 
         int expectedPoints = (int) (purePrice * (earningRate / 100.0));
 
-        verify(userService, times(1)).plusPoint(eq(userId), eq(expectedPoints));
+        verify(userService, times(1)).plusPoint(eq(userNo), eq(expectedPoints));
         verify(pointService, times(1)).savePoint(eq(userId), any(PointCreateRequest.class));
     }
 
@@ -88,7 +88,7 @@ class OrderPointProcessServiceTest {
 
         orderPointProcessService.orderPointMinusProcess(userNo, request);
 
-        verify(userService, times(1)).minusPoint(eq(userId), eq(usePoint));
+        verify(userService, times(1)).minusPoint(eq(userNo), eq(usePoint));
         verify(pointService, times(1)).savePoint(eq(userId), any(PointCreateRequest.class));
     }
 }

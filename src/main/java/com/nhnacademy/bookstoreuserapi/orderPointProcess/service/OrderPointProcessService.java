@@ -5,7 +5,7 @@ import com.nhnacademy.bookstoreuserapi.orderPointProcess.domain.request.OrderPoi
 
 public interface OrderPointProcessService {
 
-    void orderPointPlusProcess(String userId, OrderPointPlusProcessRequest request);
+    void orderPointPlusProcess(Long userNo, OrderPointPlusProcessRequest request);
 
-    void orderPointMinusProcess(String userId, OrderPointMinusProcessRequest request);
+    void orderPointMinusProcess(Long userNo, OrderPointMinusProcessRequest request);
 }

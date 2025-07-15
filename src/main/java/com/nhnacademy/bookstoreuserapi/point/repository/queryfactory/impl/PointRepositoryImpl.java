@@ -30,6 +30,7 @@ public class PointRepositoryImpl implements PointRepositoryCustom {
                         point.earnedAndUsedPoint))
                 .from(point)
                 .where(point.user.userId.eq(userId))
+                .orderBy(point.earnedAndUsedAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

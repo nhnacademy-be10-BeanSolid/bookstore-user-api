@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService {
 
             user.setUserPoint(welcomePoint);
 
-            String welcomePointPlus = welcomePoint + " 적립";
+            String welcomePointPlus = welcomePoint + "p 적립";
 
             PointCreateRequest pointCreateRequest = new PointCreateRequest(
                     request.userId(),
@@ -149,7 +149,7 @@ public class UserServiceImpl implements UserService {
 
             user.setUserPoint(welcomePoint);
 
-            String welcomePointPlus = welcomePoint + " 적립";
+            String welcomePointPlus = welcomePoint + "p 적립";
 
             PointCreateRequest pointCreateRequest = new PointCreateRequest(
                     userId,

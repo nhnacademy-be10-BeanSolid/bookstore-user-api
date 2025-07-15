@@ -128,8 +128,5 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserIdByUserNameAndUserEmail(userName, userEmail));
     }
 
-    @GetMapping("/id/{userId}")
-    public ResponseEntity<ResponseUserId> getUserIdByUserId(@PathVariable String userId) {
-        return ResponseEntity.ok(userService.getUserIdByUserId(userId));
-    }
+    
 }

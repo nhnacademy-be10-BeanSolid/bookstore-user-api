@@ -32,5 +32,5 @@ public interface UserService {
 
     int getUserPoint(String userId);
 
-    ResponseUserId getUserIdByUserId(String userId);
+    
 }

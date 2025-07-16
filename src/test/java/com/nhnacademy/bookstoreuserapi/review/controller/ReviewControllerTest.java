@@ -36,7 +36,7 @@ class ReviewControllerTest {
 
     @Test
     void addReview() throws Exception {
-        ReviewCreateRequest review = new ReviewCreateRequest(5, "Great book!", "", "user123", 1L);
+        ReviewCreateRequest review = new ReviewCreateRequest(5, "Great book!", null, "user123", 1L);
         Mockito.when(reviewService.addReview("user123", review)).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/reviews/me")
@@ -49,7 +49,7 @@ class ReviewControllerTest {
 
     @Test
     void addReviewFailAlreadyExist() throws Exception {
-        ReviewCreateRequest review = new ReviewCreateRequest(5, "Great book!", "", "user123", 1L);
+        ReviewCreateRequest review = new ReviewCreateRequest(5, "Great book!", null, "user123", 1L);
         Mockito.when(reviewService.addReview("user123", review)).thenThrow(new ReviewAlreadyExistsBookException("user123", 1L));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/reviews/me")
@@ -62,7 +62,7 @@ class ReviewControllerTest {
 
     @Test
     void addReviewFailValidation() throws Exception {
-        ReviewCreateRequest review = new ReviewCreateRequest(0, "", "", "", 0);
+        ReviewCreateRequest review = new ReviewCreateRequest(0, "", null, "", 0);
         mockMvc.perform(MockMvcRequestBuilders.post("/reviews/me")
                         .header("X-USER-ID", "user123")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -75,7 +75,7 @@ class ReviewControllerTest {
     @Test
     void editReview() throws Exception {
         long reviewId = 1L;
-        ReviewUpdateRequest review = new ReviewUpdateRequest(5, "Updated review", "");
+        ReviewUpdateRequest review = new ReviewUpdateRequest(5, "Updated review", null);
         Mockito.when(reviewService.editReview("user123", reviewId, review)).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/reviews/me/" + reviewId)
@@ -89,7 +89,7 @@ class ReviewControllerTest {
     @Test
     void editReviewFailNotFound() throws Exception {
         long reviewId = 1L;
-        ReviewUpdateRequest review = new ReviewUpdateRequest(5, "Updated review", "");
+        ReviewUpdateRequest review = new ReviewUpdateRequest(5, "Updated review", null);
         Mockito.when(reviewService.editReview("user123", reviewId, review)).thenThrow(new ReviewNotFoundException(1L));
 
         mockMvc.perform(MockMvcRequestBuilders.put("/reviews/me/" + reviewId)
@@ -103,7 +103,7 @@ class ReviewControllerTest {
     @Test
     void editReviewFailValidation() throws Exception {
         long reviewId = 1L;
-        ReviewUpdateRequest review = new ReviewUpdateRequest(0, "", "");
+        ReviewUpdateRequest review = new ReviewUpdateRequest(0, "", null);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/reviews/me/" + reviewId)
                         .header("X-USER-ID", "user123")
@@ -146,5 +146,27 @@ class ReviewControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
         Mockito.verify(reviewService, Mockito.times(1)).getReviewsByBookId(bookId, pageable);
+    }
+
+    @Test
+    void countReviewsByBookId() throws Exception {
+        long bookId = 1L;
+        Mockito.when(reviewService.countReviewsByBookId(bookId)).thenReturn(10L);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/reviews/book/" + bookId + "/count")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful());
+        Mockito.verify(reviewService, Mockito.times(1)).countReviewsByBookId(bookId);
+    }
+
+    @Test
+    void getAverageEvaluationScoreByBookId() throws Exception {
+        long bookId = 1L;
+        Mockito.when(reviewService.getAverageEvaluationScoreByBookId(bookId)).thenReturn(4.5);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/reviews/book/" + bookId + "/average-score")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful());
+        Mockito.verify(reviewService, Mockito.times(1)).getAverageEvaluationScoreByBookId(bookId);
     }
 }

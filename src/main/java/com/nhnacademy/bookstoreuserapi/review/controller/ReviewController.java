@@ -2,10 +2,8 @@ package com.nhnacademy.bookstoreuserapi.review.controller;
 
 
 import com.nhnacademy.bookstoreuserapi.common.annotation.AuthenticatedUserId;
-import com.nhnacademy.bookstoreuserapi.review.domain.ReviewUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.review.domain.ReviewCreateRequest;
-import com.nhnacademy.bookstoreuserapi.review.domain.ResponseReview;
 import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
+import com.nhnacademy.bookstoreuserapi.review.domain.*;
 import com.nhnacademy.bookstoreuserapi.review.service.ReviewService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -47,13 +45,23 @@ public class ReviewController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<Page<ResponseReview>> getReviewByUserId(@PathVariable @NotBlank @Size(max = 20) String userId, Pageable pageable) {
+    public ResponseEntity<Page<ResponseSimpleReviewByUser>> getReviewByUserId(@PathVariable @NotBlank @Size(max = 20) String userId, Pageable pageable) {
         return ResponseEntity.ok().body(reviewService.getReviewsByUserId(userId, pageable));
     }
 
     @GetMapping("/book/{bookId}")
-    public ResponseEntity<Page<ResponseReview>> getReviewByBookId(@PathVariable @Min(1) long bookId, Pageable pageable) {
+    public ResponseEntity<Page<ResponseSimpleReview>> getReviewByBookId(@PathVariable @Min(1) long bookId, Pageable pageable) {
         return ResponseEntity.ok().body(reviewService.getReviewsByBookId(bookId, pageable));
+    }
+
+    @GetMapping("/book/{bookId}/count")
+    public ResponseEntity<Long> countReviewsByBookId(@PathVariable @Min(1) long bookId) {
+        return ResponseEntity.ok().body(reviewService.countReviewsByBookId(bookId));
+    }
+
+    @GetMapping("/book/{bookId}/average-score")
+    public ResponseEntity<Double> getAverageEvaluationScoreByBookId(@PathVariable @Min(1) long bookId) {
+        return ResponseEntity.ok().body(reviewService.getAverageEvaluationScoreByBookId(bookId));
     }
 
 }

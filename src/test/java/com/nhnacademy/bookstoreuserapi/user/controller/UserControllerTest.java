@@ -25,6 +25,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.nhnacademy.bookstoreuserapi.user.scheduler.BirthdayEventPublisher;
+
 @WebMvcTest(UserController.class)
 class UserControllerTest {
 
@@ -33,6 +35,9 @@ class UserControllerTest {
 
     @MockBean
     UserService userService;
+
+    @MockBean
+    BirthdayEventPublisher birthdayEventPublisher;
 
     @Autowired
     ObjectMapper objectMapper;

@@ -5,6 +5,7 @@ import com.nhnacademy.bookstoreuserapi.point.domain.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.point.service.PointService;
 import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
 import com.nhnacademy.bookstoreuserapi.user.domain.*;
+import com.nhnacademy.bookstoreuserapi.user.event.UserRegisteredEvent;
 import com.nhnacademy.bookstoreuserapi.user.exception.PointNotEnoughException;
 import com.nhnacademy.bookstoreuserapi.user.exception.UserAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.user.exception.UserNotFoundException;
@@ -15,6 +16,8 @@ import com.nhnacademy.bookstoreuserapi.usergrade.repository.UserGradeRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,7 @@ import java.util.stream.Collectors;
 
 import static com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade.BASIC;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -36,6 +40,7 @@ public class UserServiceImpl implements UserService {
     private final OrderAdapter orderAdapter;
     private final EntityManager entityManager;
     private final PointTypeService pointTypeService;
+    private final RabbitTemplate rabbitTemplate;
 
     @Override
     public ResponseUser getUser(String userId) {
@@ -109,6 +114,10 @@ public class UserServiceImpl implements UserService {
             pointService.savePoint(request.userId(),pointCreateRequest);
         }
 
+        // RabbitMQ로 웰컴 쿠폰 발급 이벤트 발행
+        rabbitTemplate.convertAndSend("user-exchange", "user.registered", new UserRegisteredEvent(savedUser.getUserNo()));
+        log.info("User registered event published for userNo={}", savedUser.getUserNo());
+
         return new ResponseUser(savedUser);
     }
 
@@ -161,6 +170,10 @@ public class UserServiceImpl implements UserService {
 
             pointService.savePoint(userId,pointCreateRequest);
         }
+
+        // RabbitMQ로 웰컴 쿠폰 발급 이벤트 발행
+        rabbitTemplate.convertAndSend("user-exchange", "user.registered", new UserRegisteredEvent(savedUser.getUserNo()));
+        log.info("User registered event published for userNo={}", savedUser.getUserNo());
 
         return new ResponseUser(savedUser);
     }
@@ -301,4 +314,6 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.findUserPointByUserId(userId);
     }
+
+    
 }

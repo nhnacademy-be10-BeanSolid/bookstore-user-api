@@ -2,8 +2,11 @@ package com.nhnacademy.bookstoreuserapi.user.controller;
 
 import com.nhnacademy.bookstoreuserapi.common.annotation.AuthenticatedUserId;
 import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
+import com.nhnacademy.bookstoreuserapi.pointtype.domain.ResponsePointType;
+import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
 import com.nhnacademy.bookstoreuserapi.user.domain.*;
 import com.nhnacademy.bookstoreuserapi.user.service.UserService;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final PointTypeService pointTypeService;
 
     @PostMapping("/register")
     public ResponseEntity<ResponseUser> saveUser(@Valid @RequestBody  UserCreateRequest userCreateRequest, BindingResult bindingResult) {
@@ -109,6 +113,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserPoint(userId));
     }
 
+    @GetMapping("/{userNo}/my-point")
+    public ResponseEntity<Integer> getUserPointByUserNo(@PathVariable Long userNo){
+        return ResponseEntity.ok(userService.getUserPointByUserNo(userNo));
+    }
+
     @PutMapping("/me/status")
     public ResponseEntity<ResponseUser> updateStatus(@AuthenticatedUserId String userId, @RequestParam User.Status status){
         return ResponseEntity.ok(userService.updateUserStatus(userId, status));
@@ -124,5 +133,11 @@ public class UserController {
     @GetMapping("/findId")
     public ResponseEntity<ResponseUserId> getUserIdByUserNameAndUserEmail(@RequestParam @NotBlank String userName, @RequestParam @NotBlank String userEmail) {
         return ResponseEntity.ok(userService.getUserIdByUserNameAndUserEmail(userName, userEmail));
+    }
+
+    @GetMapping("/{userNo}/earning-rate")
+    public ResponseEntity<ResponsePointType> getEarningRateByUserNo(@PathVariable Long userNo) {
+        UserGrade.Grade userGrade = userService.getUserGradeByUserNo(userNo);
+        return ResponseEntity.ok(pointTypeService.getEarningRateByGradeNameAndTypeName(userGrade));
     }
 }

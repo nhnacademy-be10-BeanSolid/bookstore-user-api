@@ -32,5 +32,7 @@ public interface UserService {
 
     int getUserPoint(String userId);
 
-    
+    int getUserPointByUserNo(Long userNo);
+
+    com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade getUserGradeByUserNo(Long userNo);
 }

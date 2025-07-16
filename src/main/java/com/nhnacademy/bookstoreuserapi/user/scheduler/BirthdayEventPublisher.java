@@ -20,7 +20,7 @@ public class BirthdayEventPublisher {
     private final UserRepository userRepository;
     private final RabbitTemplate rabbitTemplate;
 
-    @Scheduled(cron = "0 0 0 * * ?") // 매일 자정 실행
+    @Scheduled(fixedRate = 60000) // 매분 실행
     public void publishBirthdayEvents() {
         log.info("Birthday event publisher started.");
 

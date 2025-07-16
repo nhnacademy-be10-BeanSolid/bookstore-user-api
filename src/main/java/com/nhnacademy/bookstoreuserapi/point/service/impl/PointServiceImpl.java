@@ -40,7 +40,7 @@ public class PointServiceImpl implements PointService {
         }
         Point point = new Point();
         point.setUser(user);
-        point.setOrderNo(pointCreateRequest.orderNo());
+        point.setOrderId(pointCreateRequest.orderId());
 
         PointType pointType = pointTypeRepository.findById(pointCreateRequest.typeId())
                 .orElseThrow(() -> new PointTypeNotFoundException(pointCreateRequest.typeId()));
@@ -53,7 +53,7 @@ public class PointServiceImpl implements PointService {
         return new ResponsePoint(
                 savedPoint.getPointId(),
                 savedPoint.getUser().getUserId(),
-                savedPoint.getOrderNo(),
+                savedPoint.getOrderId(),
                 savedPoint.getPointType().getTypeId(),
                 savedPoint.getEarnedAndUsedAt(),
                 savedPoint.getEarnedAndUsedPoint()

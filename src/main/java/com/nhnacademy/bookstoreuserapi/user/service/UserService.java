@@ -18,11 +18,11 @@ public interface UserService {
 
     ResponseUser updateLastLoginAt(String userId);
 
-    ResponseUser plusPoint(String userId, int point);
+    ResponseUser plusPoint(Long userNo, int point);
 
-    ResponseUser minusPoint(String userId, int point);
+    ResponseUser minusPoint(Long userNo, int point);
 
-    ResponseUser updateUserStatus(String userId, User.Status status);
+    ResponseUser updateUserStatus(String userId, String status);
 
     void bulkUpdateUserGrades();
 
@@ -31,4 +31,6 @@ public interface UserService {
     boolean isUserExist(String userId);
 
     int getUserPoint(String userId);
+
+    
 }

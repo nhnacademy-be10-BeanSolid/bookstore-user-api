@@ -1,16 +1,15 @@
 package com.nhnacademy.bookstoreuserapi.guest.service;
 
-import com.nhnacademy.bookstoreuserapi.guest.domain.GuestCreateRequest;
-import com.nhnacademy.bookstoreuserapi.guest.domain.GuestUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.guest.domain.ResponseGuest;
+import com.nhnacademy.bookstoreuserapi.guest.dto.request.GuestCreateRequest;
+import com.nhnacademy.bookstoreuserapi.guest.dto.response.ResponseGuest;
 
 public interface GuestService {
 
-    ResponseGuest getGuest(String guestEmail);
+    ResponseGuest getGuest(Long orderId);
 
     ResponseGuest addGuest(GuestCreateRequest guestCreateRequest);
 
-    void deleteGuest(String guestEmail);
+    void deleteGuest(Long orderId);
 
-    ResponseGuest updateGuest(String guestEmail, GuestUpdateRequest guestUpdateRequest);
+    String getGuestEncodedPassword(Long orderId);
 }

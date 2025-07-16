@@ -31,8 +31,8 @@ public class Point {
     @JoinColumn(name = "type_id", nullable = false)
     private PointType pointType;
 
-    @Column(name = "order_no")
-    private Long orderNo;
+    @Column(name = "order_id")
+    private Long orderId;
 
     @Column(name = "earned_and_used_at", nullable = false)
     private LocalDateTime earnedAndUsedAt;

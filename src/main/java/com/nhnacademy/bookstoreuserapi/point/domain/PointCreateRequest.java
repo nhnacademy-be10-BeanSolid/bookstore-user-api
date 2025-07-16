@@ -11,14 +11,14 @@ import java.time.LocalDateTime;
 
 public record PointCreateRequest (@NotBlank @Size(max = 20) String userId,
                                   @NotNull @Min(1) Long typeId,
-                                  Long orderNo,
+                                  Long orderId,
                                   @NotNull LocalDateTime earnedAndUsedAt,
                                   @NotBlank String earnedAndUsedPoint){
 
-    public PointCreateRequest(String userId, Long typeId, Long orderNo, LocalDateTime earnedAndUsedAt, String earnedAndUsedPoint) {
+    public PointCreateRequest(String userId, Long typeId, Long orderId, LocalDateTime earnedAndUsedAt, String earnedAndUsedPoint) {
         this.userId = userId;
         this.typeId = typeId;
-        this.orderNo = orderNo;
+        this.orderId = orderId;
         this.earnedAndUsedAt = earnedAndUsedAt;
         this.earnedAndUsedPoint = earnedAndUsedPoint;
     }

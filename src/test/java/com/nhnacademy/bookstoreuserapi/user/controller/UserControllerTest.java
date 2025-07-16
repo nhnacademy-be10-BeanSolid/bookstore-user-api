@@ -357,76 +357,60 @@ class UserControllerTest {
     @Test
     @DisplayName("포인트 증가")
     void plusPoint_success() throws Exception {
+
+        Long userNo = 1L;
         User user = new User("user123", "pw", "홍길동", "01012345678",
                 "hong@test.com", LocalDate.of(1990, 1, 1));
+        user.setUserNo(userNo);
         user.setUserPoint(2000);
         user.setUserStatus(User.Status.ACTIVE);
         UserGrade userGrade = new UserGrade(BASIC, 0L);
         user.setUserGrade(userGrade);
 
-        Mockito.when(userService.plusPoint(eq("user123"), any(Integer.class)))
+        Mockito.when(userService.plusPoint(eq(user.getUserNo()), any(Integer.class)))
                 .thenReturn(new ResponseUser(user));
 
-        mockMvc.perform(put("/users/me/plus-point")
-                        .param("point", "2000")
-                        .header("X-USER-ID", "user123"))
+        mockMvc.perform(put("/users/{userNo}/plus-point", userNo)
+                        .param("point", "2000"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userPoint").value(2000));
     }
 
     @Test
-    @DisplayName("포인트 증가 실패 - 빈 사용자 ID")
-    void plusPoint_fail_blank() throws Exception {
-        mockMvc.perform(put("/users/me/plus-point")
-                        .param("point", "1000")
-                        .header("X-USER-ID", ""))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @DisplayName("포인트 증가 실패 - 255자 초과 사용자 ID")
-    void plusPoint_fail_exceed255Letter() throws Exception {
-        mockMvc.perform(put("/users/me/plus-point")
-                        .param("point", "1000")
-                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm".repeat(20)))
+    @DisplayName("포인트 증가 실패 - 잘못된 사용자 ID (non-numeric)")
+    void plusPoint_fail_invalidUserNo() throws Exception {
+        mockMvc.perform(put("/users/non-numeric/plus-point")
+                        .param("point", "1000"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     @DisplayName("포인트 감소")
     void minusPoint_success() throws Exception {
+        Long userNo = 1L;
         User user = new User("user123", "pw", "홍길동", "01012345678",
                 "hong@test.com", LocalDate.of(1990, 1, 1));
+
+        user.setUserNo(userNo);
         user.setUserPoint(-500);
         user.setUserStatus(User.Status.ACTIVE);
         UserGrade userGrade = new UserGrade(BASIC, 0L);
         user.setUserGrade(userGrade);
 
-        Mockito.when(userService.minusPoint(eq("user123"), any(Integer.class)))
+        Mockito.when(userService.minusPoint(eq(user.getUserNo()), any(Integer.class)))
                 .thenReturn(new ResponseUser(user));
 
-        mockMvc.perform(put("/users/me/minus-point")
-                        .param("point", "-500")
-                        .header("X-USER-ID", "user123"))
+        mockMvc.perform(put("/users/{userNo}/minus-point",  userNo)
+                        .param("point", "500"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userPoint").value(-500));
     }
 
     @Test
-    @DisplayName("포인트 감소 실패 - 빈 사용자 ID")
-    void minusPoint_fail_blank() throws Exception {
+    @DisplayName("포인트 감소 실패 - 잘못된 사용자 ID (non-numeric)")
+    void minusPoint_fail_invalidUserNo() throws Exception {
         mockMvc.perform(put("/users/me/minus-point")
-                        .param("point", "-1000")
-                        .header("X-USER-ID", ""))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @DisplayName("포인트 감소 실패 - 255자 초과 사용자 ID")
-    void minusPoint_fail_exceed255Letter() throws Exception {
-        mockMvc.perform(put("/users/me/minus-point")
-                        .param("point", "-1000")
-                        .header("X-USER-ID", "asdfghjklqwertyuiopzxcvbnm".repeat(20)))
+                        .param("point", "500"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -449,7 +433,7 @@ class UserControllerTest {
         user.setUserStatus(User.Status.WITHDRAWN);
         UserGrade userGrade = new UserGrade(BASIC, 0L);
         user.setUserGrade(userGrade);
-        Mockito.when(userService.updateUserStatus(eq("user123"), any(User.Status.class))).thenReturn(new ResponseUser(user));
+        Mockito.when(userService.updateUserStatus(eq("user123"), any(String.class))).thenReturn(new ResponseUser(user));
 
         mockMvc.perform(put("/users/me/status")
                         .param("status", "WITHDRAWN")

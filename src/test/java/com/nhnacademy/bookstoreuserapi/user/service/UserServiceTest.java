@@ -302,7 +302,7 @@ class UserServiceTest {
         when(userRepository.existsByUserId(userId)).thenReturn(true);
         when(userRepository.findByUserId(userId)).thenReturn(user);
 
-        ResponseUser response = userService.updateUserStatus(userId, User.Status.WITHDRAWN);
+        ResponseUser response = userService.updateUserStatus(userId, "WITHDRAWN");
 
         verify(userRepository).updateStatusByUserId(userId, User.Status.WITHDRAWN);
         assertThat(response.getUserId()).isEqualTo(userId);
@@ -313,7 +313,7 @@ class UserServiceTest {
     void updateUserStatus_notFound() {
         when(userRepository.existsByUserId(userId)).thenReturn(false);
 
-        assertThatThrownBy(() -> userService.updateUserStatus(userId, User.Status.WITHDRAWN))
+        assertThatThrownBy(() -> userService.updateUserStatus(userId, "WITHDRAWN"))
                 .isInstanceOf(UserNotFoundException.class);
     }
 

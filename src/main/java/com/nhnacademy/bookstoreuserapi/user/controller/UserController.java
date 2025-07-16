@@ -110,7 +110,7 @@ public class UserController {
     }
 
     @PutMapping("/me/status")
-    public ResponseEntity<ResponseUser> updateStatus(@AuthenticatedUserId String userId, @RequestParam User.Status status){
+    public ResponseEntity<ResponseUser> updateStatus(@AuthenticatedUserId String userId, @RequestParam String status){
         return ResponseEntity.ok(userService.updateUserStatus(userId, status));
     }
 

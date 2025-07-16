@@ -1,17 +1,33 @@
-### 리뷰등록
+### 리뷰등록(사진x)
 
 POST http://localhost:10348/reviews/me
 Content-Type: application/json
-X-USER-ID: admin
+X-USER-ID: test
 
 {
   "evaluationScore": 5,
   "reviewContent": "정말 재밌어요!",
-  "reviewPhoto": "",
-  "userId": "admin",
-  "bookId": 103
+  "userId": "test",
+  "bookId": 120
 }
 
+
+### 리뷰등록(사진O)
+
+POST http://localhost:10348/reviews/me
+Content-Type: application/json
+X-USER-ID: test
+
+{
+  "evaluationScore": 5,
+  "reviewContent": "정말 재밌어요!",
+  "imageUrls": [
+    "https://example.com/image1.jpg",
+    "https://example.com/image2.jpg"
+  ],
+  "userId": "test",
+  "bookId": 149
+}
 
 ### 리뷰등록2
 
@@ -72,14 +88,17 @@ X-USER-ID: test1
 
 
 ### 리뷰수정
-PUT http://localhost:10348/reviews/me/1
+PUT http://localhost:10348/reviews/me/51
 Content-Type: application/json
 X-USER-ID: test
 
 {
   "evaluationScore": 4,
   "reviewContent": "조금 아쉬웠어요.",
-  "reviewPhoto": ""
+  "imageUrls": [
+    "https://example.com/image1.jpg",
+    "https://example.com/image2.jpg"
+  ]
 }
 
 ### 리뷰조회(단건)
@@ -93,3 +112,13 @@ Content-Type: application/json
 ### 리뷰조회(책별)
 GET http://localhost:10348/reviews/book/1
 Content-Type: application/json
+
+### 리뷰사진 bucket생성
+POST http://localhost:10348/minio/bucket
+
+
+### 책당 리뷰 수 조회
+GET http://localhost:10348/reviews/book/1/count
+
+### 책당 리뷰 평균 평점 조회
+GET http://localhost:10348/reviews/book/1/average-score

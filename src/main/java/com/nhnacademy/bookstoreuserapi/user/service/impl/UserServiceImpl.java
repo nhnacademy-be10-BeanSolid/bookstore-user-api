@@ -246,13 +246,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseUser updateUserStatus(String userId, User.Status status) {
+    public ResponseUser updateUserStatus(String userId, String status) {
+
+        User.Status status1 = User.Status.valueOf(status);
 
         if(!userRepository.existsByUserId(userId)){
             throw new UserNotFoundException(userId);
         }
 
-        userRepository.updateStatusByUserId(userId, status);
+        userRepository.updateStatusByUserId(userId, status1);
 
         return new ResponseUser(userRepository.findByUserId(userId));
     }
@@ -294,7 +296,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseUser deleteUser(String userId) {
-        return updateUserStatus(userId, User.Status.WITHDRAWN);
+        return updateUserStatus(userId, "WITHDRAWN");
     }
 
     @Override

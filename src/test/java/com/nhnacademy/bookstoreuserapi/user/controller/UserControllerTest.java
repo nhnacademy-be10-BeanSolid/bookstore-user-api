@@ -433,7 +433,7 @@ class UserControllerTest {
         user.setUserStatus(User.Status.WITHDRAWN);
         UserGrade userGrade = new UserGrade(BASIC, 0L);
         user.setUserGrade(userGrade);
-        Mockito.when(userService.updateUserStatus(eq("user123"), any(User.Status.class))).thenReturn(new ResponseUser(user));
+        Mockito.when(userService.updateUserStatus(eq("user123"), any(String.class))).thenReturn(new ResponseUser(user));
 
         mockMvc.perform(put("/users/me/status")
                         .param("status", "WITHDRAWN")

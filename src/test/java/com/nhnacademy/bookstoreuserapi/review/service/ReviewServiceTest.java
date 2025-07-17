@@ -1,5 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.review.service;
 
+import com.nhnacademy.bookstoreuserapi.adapter.BookAdapter;
+import com.nhnacademy.bookstoreuserapi.adapter.OrderAdapter;
 import com.nhnacademy.bookstoreuserapi.point.domain.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.point.service.PointService;
 import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
@@ -53,6 +55,12 @@ class ReviewServiceTest {
     @Mock
     private MinioService minioService;
 
+    @Mock
+    private OrderAdapter orderAdapter;
+
+    @Mock
+    private BookAdapter bookAdapter;
+
     @InjectMocks
     private ReviewServiceImpl reviewService;
 
@@ -86,6 +94,7 @@ class ReviewServiceTest {
     void addReview_NoImages_Success() {
         when(reviewRepository.findByUser_UserIdAndBookId("user123", 1L)).thenReturn(null);
         when(userRepository.findByUserId("user123")).thenReturn(user);
+        when(orderAdapter.validatePurchase(user.getUserNo(), 1L)).thenReturn(true);
         when(reviewRepository.save(any(Review.class))).thenReturn(review);
         when(pointTypeService.isActivePointType(anyString())).thenReturn(true);
         when(pointTypeService.getEarningPointByTypeName("리뷰")).thenReturn(100);
@@ -104,6 +113,7 @@ class ReviewServiceTest {
         reviewCreateRequest.imageUrls().add("http://example.com/image.jpg");
         when(reviewRepository.findByUser_UserIdAndBookId("user123", 1L)).thenReturn(null);
         when(userRepository.findByUserId("user123")).thenReturn(user);
+        when(orderAdapter.validatePurchase(user.getUserNo(), 1L)).thenReturn(true);
         when(reviewRepository.save(any(Review.class))).thenReturn(review);
         when(pointTypeService.isActivePointType(anyString())).thenReturn(true);
         when(pointTypeService.getEarningPointByTypeName("리뷰+사진")).thenReturn(200);
@@ -120,6 +130,8 @@ class ReviewServiceTest {
     @Test
     @DisplayName("리뷰 추가 실패 - 이미 존재하는 리뷰")
     void addReview_AlreadyExists_Fail() {
+        when(userRepository.findByUserId("user123")).thenReturn(user);
+        when(orderAdapter.validatePurchase(user.getUserNo(), 1L)).thenReturn(true);
         when(reviewRepository.findByUser_UserIdAndBookId("user123", 1L)).thenReturn(review);
 
         assertThrows(ReviewAlreadyExistsBookException.class,

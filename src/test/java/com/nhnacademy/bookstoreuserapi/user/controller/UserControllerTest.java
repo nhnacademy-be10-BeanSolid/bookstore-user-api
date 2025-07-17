@@ -438,7 +438,7 @@ class UserControllerTest {
         user.setUserStatus(User.Status.WITHDRAWN);
         UserGrade userGrade = new UserGrade(BASIC, 0L);
         user.setUserGrade(userGrade);
-        when(userService.updateUserStatus(eq("user123"), any(User.Status.class))).thenReturn(new ResponseUser(user));
+        when(userService.updateUserStatus(eq("user123"), any())).thenReturn(new ResponseUser(user));
 
         mockMvc.perform(put("/users/me/status")
                         .param("status", "WITHDRAWN")

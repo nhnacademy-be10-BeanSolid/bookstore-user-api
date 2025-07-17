@@ -1,6 +1,8 @@
 package com.nhnacademy.bookstoreuserapi.review.service.impl;
 
 
+import com.nhnacademy.bookstoreuserapi.adapter.BookAdapter;
+import com.nhnacademy.bookstoreuserapi.adapter.OrderAdapter;
 import com.nhnacademy.bookstoreuserapi.point.domain.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.point.service.PointService;
 import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
@@ -38,11 +40,26 @@ public class ReviewServiceImpl implements ReviewService {
     private final PointService pointService;
     private final PointTypeService pointTypeService;
     private final MinioService minioService;
+    private final OrderAdapter orderAdapter;
+    private final BookAdapter bookAdapter;
 
 
 
     @Override
     public ResponseReview addReview(String userId, ReviewCreateRequest review) {
+        User user = userRepository.findByUserId(review.userId());
+
+        if (user == null) {
+            throw new UserNotFoundException(review.userId());
+        }
+
+        Long userNo = user.getUserNo();
+
+        // 주문 내역 확인
+        if (!orderAdapter.validatePurchase(userNo, review.bookId())){
+            throw new IllegalArgumentException("해당 사용자는 이 책을 구매하지 않았습니다.");
+        }
+
         // 중복 리뷰 확인
         Review findReview = reviewRepository.findByUser_UserIdAndBookId(review.userId(), review.bookId());
         if (findReview != null) {
@@ -51,10 +68,6 @@ public class ReviewServiceImpl implements ReviewService {
 
         validate(userId, review.userId());
 
-        User user = userRepository.findByUserId(review.userId());
-        if (user == null) {
-            throw new UserNotFoundException(review.userId());
-        }
 
         // 리뷰 저장
         Review savedReview = reviewRepository.save(new Review(review, user));
@@ -77,6 +90,8 @@ public class ReviewServiceImpl implements ReviewService {
 
             pointService.savePoint(userId, pointCreateRequest);
         }
+
+        updateBookDocument(review.bookId());
 
         return ResponseReview.from(savedReview);
     }
@@ -107,6 +122,8 @@ public class ReviewServiceImpl implements ReviewService {
             handlePoint(userId, "리뷰사진삭제");
         }
         reviewRepository.save(findReview);
+
+        updateBookDocument(findReview.getBookId());
 
         return ResponseReview.from(findReview);
     }
@@ -196,6 +213,13 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public double getAverageEvaluationScoreByBookId(long bookId) {
         return reviewRepository.averageEvaluationScoreByBookId(bookId);
+    }
+
+    public void updateBookDocument(long bookId){
+        Double averageScore = getAverageEvaluationScoreByBookId(bookId);
+        Long reviewCount = countReviewsByBookId(bookId);
+
+        bookAdapter.updateBookDocument(bookId, reviewCount, averageScore);
     }
 
 }

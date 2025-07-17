@@ -1,13 +1,13 @@
 package com.nhnacademy.bookstoreuserapi.pointtype.service.impl;
 
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointType;
-import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointTypeUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
-import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointTypeCreateRequest;
+import com.nhnacademy.bookstoreuserapi.pointtype.domain.PointTypeUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.pointtype.domain.ResponsePointType;
 import com.nhnacademy.bookstoreuserapi.pointtype.exception.PointTypeNotFoundException;
 import com.nhnacademy.bookstoreuserapi.pointtype.repository.PointTypeRepository;
+import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
 import com.nhnacademy.bookstoreuserapi.usergrade.repository.UserGradeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

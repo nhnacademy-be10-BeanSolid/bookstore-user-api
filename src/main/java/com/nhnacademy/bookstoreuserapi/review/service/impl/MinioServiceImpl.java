@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -29,11 +30,13 @@ public class MinioServiceImpl implements MinioService {
     @Value("${minio.url}")
     private String minioEndpoint;
 
+
     @Override
     public void deleteImage(String imageUrl) {
         try {
             String path = new URL(imageUrl).getPath();
             String decodedPath = URLDecoder.decode(path, StandardCharsets.UTF_8);
+
             String objectName = decodedPath.replaceFirst("/" + bucketName + "/", "");
 
             minioClient.removeObject(

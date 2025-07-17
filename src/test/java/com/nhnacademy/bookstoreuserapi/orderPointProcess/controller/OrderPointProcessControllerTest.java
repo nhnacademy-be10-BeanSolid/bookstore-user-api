@@ -1,81 +1,83 @@
-//package com.nhnacademy.bookstoreuserapi.orderPointProcess.controller;
-//
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import com.nhnacademy.bookstoreuserapi.orderPointProcess.domain.request.OrderPointMinusProcessRequest;
-//import com.nhnacademy.bookstoreuserapi.orderPointProcess.domain.request.OrderPointPlusProcessRequest;
-//import com.nhnacademy.bookstoreuserapi.orderPointProcess.service.OrderPointProcessService;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.Mockito;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-//import org.springframework.boot.test.mock.mockito.MockBean;
-//import org.springframework.http.MediaType;
-//import org.springframework.test.web.servlet.MockMvc;
-//
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-//
-//@WebMvcTest(OrderPointProcessController.class)
-//class OrderPointProcessControllerTest {
-//
-//    @Autowired
-//    private MockMvc mockMvc;
-//
-//    @MockBean
-//    private OrderPointProcessService orderPointProcessService;
-//
-//    @Autowired
-//    private ObjectMapper objectMapper;
-//
-//    @DisplayName("포인트 적립 성공")
-//    @Test
-//    void orderPointPlus_success() throws Exception {
-//        OrderPointPlusProcessRequest request = new OrderPointPlusProcessRequest(1L, 100);
-//
-//        mockMvc.perform(post("/users/order-point/{userId}/plus", 1L)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(request)))
-//                .andExpect(status().isOk());
-//
-//        Mockito.verify(orderPointProcessService)
-//                .orderPointPlusProcess(Mockito.eq(1L), Mockito.any(OrderPointPlusProcessRequest.class));
-//    }
-//
-//    @DisplayName("포인트 차감 성공")
-//    @Test
-//    void orderPointMinus_success() throws Exception {
-//        OrderPointMinusProcessRequest request = new OrderPointMinusProcessRequest(1L, 100);
-//
-//        mockMvc.perform(post("/users/order-point/{userId}/minus", 1L)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(request)))
-//                .andExpect(status().isOk());
-//
-//        Mockito.verify(orderPointProcessService)
-//                .orderPointMinusProcess(Mockito.eq(1L), Mockito.any(OrderPointMinusProcessRequest.class));
-//    }
-//
-//    @DisplayName("포인트 적립 Validation 실패")
-//    @Test
-//    void orderPointPlus_validationFail() throws Exception {
-//        OrderPointPlusProcessRequest request = new OrderPointPlusProcessRequest(1L, -100);
-//
-//        mockMvc.perform(post("/users/order-point/{userId}/plus", 1L)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(request)))
-//                .andExpect(status().isBadRequest());
-//    }
-//
-//    @DisplayName("포인트 차감 Validation 실패")
-//    @Test
-//    void orderPointMinus_validationFail() throws Exception {
-//        OrderPointMinusProcessRequest request = new OrderPointMinusProcessRequest(1L, -100);
-//
-//        mockMvc.perform(post("/users/order-point/{userId}/minus", 1L)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(request)))
-//                .andExpect(status().isBadRequest());
-//    }
-//}
-//
+package com.nhnacademy.bookstoreuserapi.orderPointProcess.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nhnacademy.bookstoreuserapi.orderPointProcess.dto.PointType;
+import com.nhnacademy.bookstoreuserapi.orderPointProcess.dto.request.OrderPointMinusProcessRequest;
+import com.nhnacademy.bookstoreuserapi.orderPointProcess.dto.request.OrderPointPlusProcessRequest;
+import com.nhnacademy.bookstoreuserapi.orderPointProcess.service.OrderPointProcessService;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(OrderPointProcessController.class)
+class OrderPointProcessControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private OrderPointProcessService orderPointProcessService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Test
+    @DisplayName("주문 포인트 적립 성공")
+    void testOrderPointPlus() throws Exception {
+        Long userNo = 1L;
+        OrderPointPlusProcessRequest request = new OrderPointPlusProcessRequest(100L, 500, PointType.ORDER);
+
+        doNothing().when(orderPointProcessService).orderPointPlusProcess(userNo, request);
+
+        mockMvc.perform(post("/users/order-point/{userNo}/plus", userNo)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("주문 포인트 적립 실패 - 잘못된 요청")
+    void testOrderPointPlus_withInvalidRequest() throws Exception {
+        Long userNo = 1L;
+        OrderPointPlusProcessRequest request = new OrderPointPlusProcessRequest(null, 500, PointType.ORDER);
+
+        mockMvc.perform(post("/users/order-point/{userNo}/plus", userNo)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("주문 포인트 사용 성공")
+    void testOrderPointMinus() throws Exception {
+        Long userNo = 1L;
+        OrderPointMinusProcessRequest request = new OrderPointMinusProcessRequest(200L, 300, PointType.ORDER);
+
+        doNothing().when(orderPointProcessService).orderPointMinusProcess(userNo, request);
+
+        mockMvc.perform(post("/users/order-point/{userNo}/minus", userNo)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("주문 포인트 사용 실패 - 잘못된 요청")
+    void testOrderPointMinus_withInvalidRequest() throws Exception {
+        Long userNo = 1L;
+        OrderPointMinusProcessRequest request = new OrderPointMinusProcessRequest(null, 300, PointType.ORDER);
+
+        mockMvc.perform(post("/users/order-point/{userNo}/minus", userNo)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+}

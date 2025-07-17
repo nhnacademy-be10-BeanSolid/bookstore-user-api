@@ -315,5 +315,15 @@ public class UserServiceImpl implements UserService {
         return userRepository.findUserPointByUserId(userId);
     }
 
-    
+    @Override
+    public int getUserPointByUserNo(Long userNo) {
+        ResponseUser user = getUserByUserNo(userNo);
+        return getUserPoint(user.getUserId());
+    }
+
+    @Override
+    public UserGrade.Grade getUserGradeByUserNo(Long userNo) {
+        ResponseUser user = getUserByUserNo(userNo);
+        return UserGrade.Grade.valueOf(user.getUserGradeName());
+    }
 }

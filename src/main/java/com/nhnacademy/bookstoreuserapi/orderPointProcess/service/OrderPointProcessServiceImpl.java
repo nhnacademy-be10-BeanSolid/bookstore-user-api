@@ -1,8 +1,8 @@
 package com.nhnacademy.bookstoreuserapi.orderPointProcess.service;
 
-import com.nhnacademy.bookstoreuserapi.orderPointProcess.domain.PointType;
-import com.nhnacademy.bookstoreuserapi.orderPointProcess.domain.request.OrderPointMinusProcessRequest;
-import com.nhnacademy.bookstoreuserapi.orderPointProcess.domain.request.OrderPointPlusProcessRequest;
+import com.nhnacademy.bookstoreuserapi.orderPointProcess.dto.PointType;
+import com.nhnacademy.bookstoreuserapi.orderPointProcess.dto.request.OrderPointMinusProcessRequest;
+import com.nhnacademy.bookstoreuserapi.orderPointProcess.dto.request.OrderPointPlusProcessRequest;
 import com.nhnacademy.bookstoreuserapi.point.domain.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.point.service.PointService;
 import com.nhnacademy.bookstoreuserapi.user.domain.ResponseUser;

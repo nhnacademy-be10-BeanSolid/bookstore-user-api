@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.orderPointProcess.domain;
+package com.nhnacademy.bookstoreuserapi.orderPointProcess.dto;
 
 import lombok.Getter;
 

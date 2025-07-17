@@ -1,6 +1,6 @@
-package com.nhnacademy.bookstoreuserapi.orderPointProcess.domain.request;
+package com.nhnacademy.bookstoreuserapi.orderPointProcess.dto.request;
 
-import com.nhnacademy.bookstoreuserapi.orderPointProcess.domain.PointType;
+import com.nhnacademy.bookstoreuserapi.orderPointProcess.dto.PointType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 

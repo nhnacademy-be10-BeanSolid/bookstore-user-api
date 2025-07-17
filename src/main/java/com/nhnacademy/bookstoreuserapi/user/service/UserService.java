@@ -22,7 +22,7 @@ public interface UserService {
 
     ResponseUser minusPoint(Long userNo, int point);
 
-    ResponseUser updateUserStatus(String userId, User.Status status);
+    ResponseUser updateUserStatus(String userId, String status);
 
     void bulkUpdateUserGrades();
 

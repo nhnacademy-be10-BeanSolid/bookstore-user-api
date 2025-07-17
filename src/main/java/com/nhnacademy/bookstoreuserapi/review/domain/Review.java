@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -25,8 +27,8 @@ public class Review {
     @Column(nullable = false)
     private String reviewContent;
 
-    @Column
-    private String reviewPhoto;
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ReviewImage> reviewImages = new ArrayList<>();
 
     @Column(nullable = false)
     private LocalDateTime reviewedAt;
@@ -44,10 +46,27 @@ public class Review {
     public Review(ReviewCreateRequest review, User user) {
         this.evaluationScore = review.evaluationScore();
         this.reviewContent = review.reviewContent();
-        this.reviewPhoto = review.reviewPhoto();
+        this.reviewImages = convertToReviewImages(review.imageUrls());
+        this.reviewImages.forEach(img -> img.setReview(this));
         this.reviewedAt = LocalDateTime.now();
         this.updatedAt = null;
         this.user = user;
         this.bookId = review.bookId();
+    }
+
+    private List<ReviewImage> convertToReviewImages(List<String> imageUrls) {
+        List<ReviewImage> images = new ArrayList<>();
+        if (imageUrls == null || imageUrls.isEmpty()) {
+            return images;
+        }
+
+        for (String url : imageUrls) {
+            ReviewImage image = new ReviewImage();
+            image.setImageUrl(url);
+            image.setUploadedAt(LocalDateTime.now());
+            image.setReview(this); // 연관관계 설정
+            images.add(image);
+        }
+        return images;
     }
 }

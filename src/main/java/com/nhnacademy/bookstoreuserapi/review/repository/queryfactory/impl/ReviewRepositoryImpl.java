@@ -1,7 +1,8 @@
 package com.nhnacademy.bookstoreuserapi.review.repository.queryfactory.impl;
 
 import com.nhnacademy.bookstoreuserapi.review.domain.QReview;
-import com.nhnacademy.bookstoreuserapi.review.domain.ResponseReview;
+import com.nhnacademy.bookstoreuserapi.review.domain.ResponseSimpleReview;
+import com.nhnacademy.bookstoreuserapi.review.domain.ResponseSimpleReviewByUser;
 import com.nhnacademy.bookstoreuserapi.review.repository.queryfactory.ReviewRepositoryCustom;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -18,20 +19,20 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<ResponseReview> findAllByUserId(String userId, Pageable pageable) {
+    public Page<ResponseSimpleReviewByUser> findAllByUserId(String userId, Pageable pageable) {
         QReview review = QReview.review;
-        List<ResponseReview> content = queryFactory
-                .select(Projections.constructor(ResponseReview.class,
+        List<ResponseSimpleReviewByUser> content = queryFactory
+                .select(Projections.constructor(ResponseSimpleReviewByUser.class,
                         review.reviewId,
                         review.evaluationScore,
                         review.reviewContent,
-                        review.reviewPhoto,
                         review.reviewedAt,
                         review.updatedAt,
                         review.user.userId,
                         review.bookId))
                 .from(review)
                 .where(review.user.userId.eq(userId))
+                .orderBy(review.reviewedAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -44,20 +45,20 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
     }
 
     @Override
-    public Page<ResponseReview> findAllByBookId(long bookId, Pageable pageable) {
+    public Page<ResponseSimpleReview> findAllByBookId(long bookId, Pageable pageable) {
         QReview review = QReview.review;
-        List<ResponseReview> content = queryFactory
-                .select(Projections.constructor(ResponseReview.class,
+        List<ResponseSimpleReview> content = queryFactory
+                .select(Projections.constructor(ResponseSimpleReview.class,
                         review.reviewId,
                         review.evaluationScore,
                         review.reviewContent,
-                        review.reviewPhoto,
                         review.reviewedAt,
                         review.updatedAt,
                         review.user.userId,
                         review.bookId))
                 .from(review)
                 .where(review.bookId.eq(bookId))
+                .orderBy(review.reviewedAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -67,5 +68,16 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
                 .where(review.bookId.eq(bookId))
                 .fetchOne();
         return new PageImpl<>(content, pageable, total == null ? 0 : total);
+    }
+
+    @Override
+    public double averageEvaluationScoreByBookId(long bookId) {
+        QReview review = QReview.review;
+        Double averageScore = queryFactory
+                .select(review.evaluationScore.avg())
+                .from(review)
+                .where(review.bookId.eq(bookId))
+                .fetchOne();
+        return averageScore != null ? averageScore : 0.0;
     }
 }

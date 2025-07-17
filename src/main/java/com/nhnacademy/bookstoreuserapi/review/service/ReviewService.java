@@ -1,8 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.review.service;
 
-import com.nhnacademy.bookstoreuserapi.review.domain.ReviewUpdateRequest;
-import com.nhnacademy.bookstoreuserapi.review.domain.ReviewCreateRequest;
-import com.nhnacademy.bookstoreuserapi.review.domain.ResponseReview;
+import com.nhnacademy.bookstoreuserapi.review.domain.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,8 +13,12 @@ public interface ReviewService {
 
     ResponseReview getReview(long reviewId);
 
-    Page<ResponseReview> getReviewsByUserId(String userId, Pageable pageable);
+    Page<ResponseSimpleReviewByUser> getReviewsByUserId(String userId, Pageable pageable);
 
-    Page<ResponseReview> getReviewsByBookId(long bookId, Pageable pageable);
+    Page<ResponseSimpleReview> getReviewsByBookId(long bookId, Pageable pageable);
+
+    long countReviewsByBookId(long bookId);
+
+    double getAverageEvaluationScoreByBookId(long bookId);
 
 }

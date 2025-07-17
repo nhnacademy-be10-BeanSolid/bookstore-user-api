@@ -69,10 +69,6 @@ public class ReviewServiceImpl implements ReviewService {
         validate(userId, review.userId());
 
 
-        User user = userRepository.findByUserId(review.userId());
-        if (user == null) {
-            throw new UserNotFoundException(review.userId());
-        }
 
         // 리뷰 저장
         Review savedReview = reviewRepository.save(new Review(review, user));

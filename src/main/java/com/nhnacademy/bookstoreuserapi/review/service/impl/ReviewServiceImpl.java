@@ -47,10 +47,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ResponseReview addReview(String userId, ReviewCreateRequest review) {
-        User user = userRepository.findByUserId(review.userId());
+        User user = userRepository.findByUserId(userId);
 
         if (user == null) {
-            throw new UserNotFoundException(review.userId());
+            throw new UserNotFoundException(userId);
         }
 
         Long userNo = user.getUserNo();

@@ -2,6 +2,7 @@ package com.nhnacademy.bookstoreuserapi.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
+import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
 import com.nhnacademy.bookstoreuserapi.user.domain.*;
 import com.nhnacademy.bookstoreuserapi.user.exception.UserNotFoundException;
 import com.nhnacademy.bookstoreuserapi.user.service.UserService;
@@ -33,6 +34,9 @@ class UserControllerTest {
 
     @MockBean
     UserService userService;
+
+    @MockBean
+    PointTypeService pointTypeService;
 
     @Autowired
     ObjectMapper objectMapper;

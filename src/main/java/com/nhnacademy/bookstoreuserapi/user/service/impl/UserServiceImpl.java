@@ -282,7 +282,7 @@ public class UserServiceImpl implements UserService {
 
                 if (!userNosToUpdate.isEmpty()) {
                     long updated = userRepository.bulkUpdateUserGrade(grade, userNosToUpdate);
-                    System.out.println(updated + " users updated to " + grade.getGradeName());
+                    log.debug(updated + " users updated to " + grade.getGradeName());
                     userNosToUpdate.forEach(userNoToPureOrderAmount::remove);
                 } else {
                     userNosToCheck.forEach(userNoToPureOrderAmount::remove);

@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRepositoryCustom {
     Review findByUser_UserIdAndBookId(String userId, long bookId);
 
+    long countReviewsByBookId(long bookId);
+
 }

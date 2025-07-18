@@ -22,7 +22,7 @@ public interface UserService {
 
     ResponseUser minusPoint(Long userNo, int point);
 
-    ResponseUser updateUserStatus(String userId, User.Status status);
+    ResponseUser updateUserStatus(String userId, String status);
 
     void bulkUpdateUserGrades();
 
@@ -32,5 +32,7 @@ public interface UserService {
 
     int getUserPoint(String userId);
 
-    
+    int getUserPointByUserNo(Long userNo);
+
+    com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade getUserGradeByUserNo(Long userNo);
 }

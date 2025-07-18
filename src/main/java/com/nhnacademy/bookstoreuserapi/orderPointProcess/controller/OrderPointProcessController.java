@@ -1,8 +1,8 @@
 package com.nhnacademy.bookstoreuserapi.orderPointProcess.controller;
 
 import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
-import com.nhnacademy.bookstoreuserapi.orderPointProcess.domain.request.OrderPointMinusProcessRequest;
-import com.nhnacademy.bookstoreuserapi.orderPointProcess.domain.request.OrderPointPlusProcessRequest;
+import com.nhnacademy.bookstoreuserapi.orderPointProcess.dto.request.OrderPointMinusProcessRequest;
+import com.nhnacademy.bookstoreuserapi.orderPointProcess.dto.request.OrderPointPlusProcessRequest;
 import com.nhnacademy.bookstoreuserapi.orderPointProcess.service.OrderPointProcessService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

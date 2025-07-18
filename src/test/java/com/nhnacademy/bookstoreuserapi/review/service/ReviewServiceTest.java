@@ -1,14 +1,18 @@
 package com.nhnacademy.bookstoreuserapi.review.service;
 
+import com.nhnacademy.bookstoreuserapi.adapter.BookAdapter;
+import com.nhnacademy.bookstoreuserapi.adapter.OrderAdapter;
 import com.nhnacademy.bookstoreuserapi.point.domain.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.point.service.PointService;
 import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
 import com.nhnacademy.bookstoreuserapi.review.domain.*;
 import com.nhnacademy.bookstoreuserapi.review.exception.ReviewAlreadyExistsBookException;
+import com.nhnacademy.bookstoreuserapi.review.exception.ReviewNotAllowedException;
 import com.nhnacademy.bookstoreuserapi.review.exception.ReviewNotFoundException;
 import com.nhnacademy.bookstoreuserapi.review.repository.ReviewRepository;
 import com.nhnacademy.bookstoreuserapi.review.service.impl.ReviewServiceImpl;
 import com.nhnacademy.bookstoreuserapi.user.domain.User;
+import com.nhnacademy.bookstoreuserapi.user.exception.UserNotFoundException;
 import com.nhnacademy.bookstoreuserapi.user.repository.UserRepository;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,6 +57,12 @@ class ReviewServiceTest {
     @Mock
     private MinioService minioService;
 
+    @Mock
+    private OrderAdapter orderAdapter;
+
+    @Mock
+    private BookAdapter bookAdapter;
+
     @InjectMocks
     private ReviewServiceImpl reviewService;
 
@@ -86,6 +96,7 @@ class ReviewServiceTest {
     void addReview_NoImages_Success() {
         when(reviewRepository.findByUser_UserIdAndBookId("user123", 1L)).thenReturn(null);
         when(userRepository.findByUserId("user123")).thenReturn(user);
+        when(orderAdapter.validatePurchase(user.getUserNo(), 1L)).thenReturn(true);
         when(reviewRepository.save(any(Review.class))).thenReturn(review);
         when(pointTypeService.isActivePointType(anyString())).thenReturn(true);
         when(pointTypeService.getEarningPointByTypeName("리뷰")).thenReturn(100);
@@ -104,6 +115,7 @@ class ReviewServiceTest {
         reviewCreateRequest.imageUrls().add("http://example.com/image.jpg");
         when(reviewRepository.findByUser_UserIdAndBookId("user123", 1L)).thenReturn(null);
         when(userRepository.findByUserId("user123")).thenReturn(user);
+        when(orderAdapter.validatePurchase(user.getUserNo(), 1L)).thenReturn(true);
         when(reviewRepository.save(any(Review.class))).thenReturn(review);
         when(pointTypeService.isActivePointType(anyString())).thenReturn(true);
         when(pointTypeService.getEarningPointByTypeName("리뷰+사진")).thenReturn(200);
@@ -116,13 +128,34 @@ class ReviewServiceTest {
         verify(pointService).savePoint(eq("user123"), any(PointCreateRequest.class));
     }
 
+    @Test
+    @DisplayName("리뷰 추가 실패 - 존재하지 않는 사용자")
+    void addReview_UserNotFound_Fail() {
+        when(userRepository.findByUserId("user123")).thenReturn(null);
+
+        assertThrows(UserNotFoundException.class,
+                () -> reviewService.addReview("user123", reviewCreateRequest));
+    }
+
 
     @Test
     @DisplayName("리뷰 추가 실패 - 이미 존재하는 리뷰")
     void addReview_AlreadyExists_Fail() {
+        when(userRepository.findByUserId("user123")).thenReturn(user);
+        when(orderAdapter.validatePurchase(user.getUserNo(), 1L)).thenReturn(true);
         when(reviewRepository.findByUser_UserIdAndBookId("user123", 1L)).thenReturn(review);
 
         assertThrows(ReviewAlreadyExistsBookException.class,
+                () -> reviewService.addReview("user123", reviewCreateRequest));
+    }
+
+    @Test
+    @DisplayName("리뷰 추가 실패 - 구매하지 않은 책에 대한 리뷰")
+    void addReview_NotPurchasedBook_Fail() {
+        when(userRepository.findByUserId("user123")).thenReturn(user);
+        when(orderAdapter.validatePurchase(user.getUserNo(), 1L)).thenReturn(false);
+
+        assertThrows(ReviewNotAllowedException.class,
                 () -> reviewService.addReview("user123", reviewCreateRequest));
     }
 

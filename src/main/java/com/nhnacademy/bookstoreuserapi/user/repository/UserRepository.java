@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long>, UserRepositoryCustom {
 
@@ -40,4 +41,6 @@ public interface UserRepository extends JpaRepository<User, Long>, UserRepositor
     @Query("select u.userId from User u where u.userNo = :userNo")
     String findUserIdByUserNo(Long userNo);
 
+    @Query("SELECT u FROM User u WHERE FUNCTION('MONTH', u.userBirth) = :month AND FUNCTION('DAY', u.userBirth) = :day")
+    List<User> findByBirthMonthAndBirthDay(int month, int day);
 }

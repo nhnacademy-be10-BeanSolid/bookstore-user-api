@@ -43,7 +43,7 @@ class MinioServiceTest {
 
     @Test
     @DisplayName("minio 이미지 삭제 - 성공")
-    public void deleteImage() throws Exception {
+    void deleteImage() throws Exception {
         String imageUrl = "http://storage.example.com/test-bucket/images/my%20image.jpg";
         String expectedObjectName = "images/my image.jpg";
 
@@ -61,7 +61,7 @@ class MinioServiceTest {
 
     @Test
     @DisplayName("minio 이미지 삭제 - 실패")
-    public void deleteImageFailure() throws Exception {
+    void deleteImageFailure() throws Exception {
         String imageUrl = "http://storage.example.com/test-bucket/images/error.jpg";
 
         doThrow(new RuntimeException("삭제 실패"))
@@ -75,7 +75,7 @@ class MinioServiceTest {
 
     @Test
     @DisplayName("minio 이미지 URL 목록 가져오기 - 성공")
-    public void getAllImageUrls() throws Exception {
+    void getAllImageUrls() throws Exception {
         Item item1 = mock(Item.class);
         Item item2 = mock(Item.class);
         when(item1.objectName()).thenReturn("images/image1.jpg");

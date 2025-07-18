@@ -19,6 +19,7 @@ public class ReviewImageCleanupScheduler {
     private final ReviewImageRepository reviewImageRepository;
     private final MinioService minioService;
 
+    // DB에 저장된 리뷰 이미지와 MinIO에 저장된 이미지의 불일치 문제를 해결하기 위한 스케줄러
     // 매주 월요일 새벽 3시에 실행
     @Scheduled(cron = "0 0 3 ? * MON")
     public void cleanupOrphanedReviewImages() {
@@ -39,12 +40,12 @@ public class ReviewImageCleanupScheduler {
         // 2. MinIO에 저장된 모든 이미지 URL 가져오기
         List<String> minioImageUrls = minioService.getAllImageUrls();
 
-        // 3. MinIO에는 있지만 DB에는 없는 이미지 식별 (고아 이미지)
+        // 3. MinIO에는 있지만 DB에는 없는 이미지 식별 (이미지)
         List<String> orphanedMinioImages = minioImageUrls.stream()
                 .filter(minioUrl -> !dbImageUrls.contains(minioUrl))
-                .collect(Collectors.toList());
+                .toList();
 
-        // 4. 고아 이미지 삭제
+        // 4. 이미지 삭제
         if (orphanedMinioImages.isEmpty()) {
             log.info("삭제할 이미지가 없습니다.");
         } else {

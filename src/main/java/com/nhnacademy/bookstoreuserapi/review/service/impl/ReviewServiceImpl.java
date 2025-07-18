@@ -8,6 +8,7 @@ import com.nhnacademy.bookstoreuserapi.point.service.PointService;
 import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
 import com.nhnacademy.bookstoreuserapi.review.domain.*;
 import com.nhnacademy.bookstoreuserapi.review.exception.ReviewAlreadyExistsBookException;
+import com.nhnacademy.bookstoreuserapi.review.exception.ReviewNotAllowedException;
 import com.nhnacademy.bookstoreuserapi.review.exception.ReviewNotFoundException;
 import com.nhnacademy.bookstoreuserapi.review.repository.ReviewRepository;
 import com.nhnacademy.bookstoreuserapi.review.service.MinioService;
@@ -22,13 +23,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import static com.nhnacademy.bookstoreuserapi.common.exception.OwnerShipValidator.validate;
+import static java.time.LocalDateTime.now;
 
 @Service
 @Slf4j
@@ -57,7 +58,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         // 주문 내역 확인
         if (!orderAdapter.validatePurchase(userNo, review.bookId())){
-            throw new IllegalArgumentException("해당 사용자는 이 책을 구매하지 않았습니다.");
+            throw new ReviewNotAllowedException("해당 사용자는 이 책을 구매하지 않았습니다.");
         }
 
         // 중복 리뷰 확인
@@ -85,7 +86,7 @@ public class ReviewServiceImpl implements ReviewService {
                     userId,
                     typeId,
                     null,
-                    LocalDateTime.now(),
+                    now(),
                     reviewPoint + "p 적립"
             );
 
@@ -112,7 +113,7 @@ public class ReviewServiceImpl implements ReviewService {
         // 기타 정보 수정
         findReview.setEvaluationScore(review.evaluationScore());
         findReview.setReviewContent(review.reviewContent());
-        findReview.setUpdatedAt(LocalDateTime.now());
+        findReview.setUpdatedAt(now());
 
         boolean hasImageNow = !findReview.getReviewImages().isEmpty();
 
@@ -149,7 +150,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         // 추가할 새 이미지 URL 찾기
-        java.util.Set<String> keptImageUrlSet = new java.util.HashSet<>();
+        Set<String> keptImageUrlSet = new HashSet<>();
         for (ReviewImage img : imagesToKeep) {
             keptImageUrlSet.add(img.getImageUrl());
         }
@@ -158,7 +159,7 @@ public class ReviewServiceImpl implements ReviewService {
             if (!keptImageUrlSet.contains(newUrl)) {
                 ReviewImage newImage = new ReviewImage();
                 newImage.setImageUrl(newUrl);
-                newImage.setUploadedAt(LocalDateTime.now());
+                newImage.setUploadedAt(now());
                 newImage.setReview(review);
                 imagesToKeep.add(newImage);
             }
@@ -180,7 +181,7 @@ public class ReviewServiceImpl implements ReviewService {
                 userId,
                 typeId,
                 null,
-                LocalDateTime.now(),
+                now(),
                 rawPoint + "p " + (appliedPoint > 0 ? "적립" : "차감")
         );
 

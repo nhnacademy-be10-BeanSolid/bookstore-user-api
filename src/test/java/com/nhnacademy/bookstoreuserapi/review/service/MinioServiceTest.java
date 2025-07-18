@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class MinioServiceTest {
+class MinioServiceTest {
     @Mock
     private MinioClient minioClient;
 

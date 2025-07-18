@@ -45,6 +45,9 @@ public class ReviewServiceImpl implements ReviewService {
     private final BookAdapter bookAdapter;
 
 
+    String REVIEW_IMAGE_DELETE = "리뷰사진삭제";
+    String REVIEW_IMAGE_ADD = "리뷰사진추가";
+
 
     @Override
     public ResponseReview addReview(String userId, ReviewCreateRequest review) {
@@ -118,10 +121,10 @@ public class ReviewServiceImpl implements ReviewService {
         boolean hasImageNow = !findReview.getReviewImages().isEmpty();
 
         // 포인트 정책 반영
-        if (!hadImageInitially && hasImageNow && pointTypeService.isActivePointType("리뷰사진추가")) {
-            handlePoint(userId, "리뷰사진추가");
-        } else if (hadImageInitially && !hasImageNow && pointTypeService.isActivePointType("리뷰사진삭제")) {
-            handlePoint(userId, "리뷰사진삭제");
+        if (!hadImageInitially && hasImageNow && pointTypeService.isActivePointType(REVIEW_IMAGE_ADD)) {
+            handlePoint(userId, REVIEW_IMAGE_ADD);
+        } else if (hadImageInitially && !hasImageNow && pointTypeService.isActivePointType(REVIEW_IMAGE_DELETE)) {
+            handlePoint(userId, REVIEW_IMAGE_DELETE);
         }
         reviewRepository.save(findReview);
 
@@ -172,7 +175,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     private void handlePoint(String userId, String typeName) {
         int rawPoint = pointTypeService.getEarningPointByTypeName(typeName);
-        int appliedPoint = typeName.equals("리뷰사진삭제") ? -rawPoint : rawPoint;
+        int appliedPoint = typeName.equals(REVIEW_IMAGE_DELETE) ? -rawPoint : rawPoint;
         long typeId = pointTypeService.getTypeIdByName(typeName);
 
         userRepository.updatePointByUserId(userId, appliedPoint);

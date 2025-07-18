@@ -6,6 +6,7 @@ import com.nhnacademy.bookstoreuserapi.pointtype.domain.ResponsePointType;
 import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
 import com.nhnacademy.bookstoreuserapi.user.domain.*;
 import com.nhnacademy.bookstoreuserapi.user.exception.UserNotFoundException;
+import com.nhnacademy.bookstoreuserapi.user.scheduler.BirthdayEventPublisher;
 import com.nhnacademy.bookstoreuserapi.user.service.UserService;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
 import org.junit.jupiter.api.DisplayName;
@@ -36,6 +37,8 @@ class UserControllerTest {
     @MockBean
     UserService userService;
 
+    @MockBean
+    BirthdayEventPublisher birthdayEventPublisher;
     @MockBean
     PointTypeService pointTypeService;
 

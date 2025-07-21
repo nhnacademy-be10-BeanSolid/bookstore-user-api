@@ -278,7 +278,7 @@ public class UserServiceImpl implements UserService {
             List<Long> userNosToCheck = userNoToPureOrderAmount.entrySet().stream()
                     .filter(entry -> entry.getValue() >= grade.getRequiredMoney())
                     .map(Map.Entry::getKey)
-                    .collect(Collectors.toList());
+                    .toList();
 
             if (!userNosToCheck.isEmpty()) {
                 // 등급이 다른 사용자만 필터링

@@ -24,7 +24,7 @@ import java.util.List;
 public class Cart extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cart_id", columnDefinition = "BIGINT UNSIGNED")
+    @Column(name = "cart_id")
     private Long cartId;
 
     @Setter
@@ -51,7 +51,7 @@ public class Cart extends BaseTimeEntity {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<CartItem> items = new ArrayList<>();
+    private final List<CartItem> items = new ArrayList<>();
 
     public Cart(User user) {
         this.user = user;

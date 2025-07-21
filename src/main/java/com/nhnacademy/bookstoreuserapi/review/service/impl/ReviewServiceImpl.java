@@ -45,8 +45,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final BookAdapter bookAdapter;
 
 
-    private final static String REVIEW_IMAGE_DELETE = "리뷰사진삭제";
-    private final static String REVIEW_IMAGE_ADD = "리뷰사진추가";
+    private static final String REVIEW_IMAGE_DELETE = "리뷰사진삭제";
+    private static final String REVIEW_IMAGE_ADD = "리뷰사진추가";
 
 
     @Override

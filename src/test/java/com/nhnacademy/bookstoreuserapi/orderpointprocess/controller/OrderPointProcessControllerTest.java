@@ -1,10 +1,10 @@
-package com.nhnacademy.bookstoreuserapi.orderPointProcess.controller;
+package com.nhnacademy.bookstoreuserapi.orderpointprocess.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstoreuserapi.orderPointProcess.dto.PointType;
-import com.nhnacademy.bookstoreuserapi.orderPointProcess.dto.request.OrderPointMinusProcessRequest;
-import com.nhnacademy.bookstoreuserapi.orderPointProcess.dto.request.OrderPointPlusProcessRequest;
-import com.nhnacademy.bookstoreuserapi.orderPointProcess.service.OrderPointProcessService;
+import com.nhnacademy.bookstoreuserapi.orderpointprocess.dto.PointType;
+import com.nhnacademy.bookstoreuserapi.orderpointprocess.dto.request.OrderPointMinusProcessRequest;
+import com.nhnacademy.bookstoreuserapi.orderpointprocess.dto.request.OrderPointPlusProcessRequest;
+import com.nhnacademy.bookstoreuserapi.orderpointprocess.service.OrderPointProcessService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

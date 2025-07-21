@@ -426,7 +426,7 @@ class UserServiceTest {
         verify(userRepository, times(1))
                 .findUserNosWithDifferentGrade(anyList(), eq(UserGrade.Grade.ROYAL));
         verify(userRepository, times(1))
-                .bulkUpdateUserGrade(eq(royalGrade), eq(Collections.singletonList(user1.getUserNo())));
+                .bulkUpdateUserGrade(royalGrade, Collections.singletonList(user1.getUserNo()));
     }
 
     @Test

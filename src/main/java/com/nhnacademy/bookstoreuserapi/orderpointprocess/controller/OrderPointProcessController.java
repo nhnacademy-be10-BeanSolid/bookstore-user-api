@@ -1,9 +1,9 @@
-package com.nhnacademy.bookstoreuserapi.orderPointProcess.controller;
+package com.nhnacademy.bookstoreuserapi.orderpointprocess.controller;
 
 import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
-import com.nhnacademy.bookstoreuserapi.orderPointProcess.dto.request.OrderPointMinusProcessRequest;
-import com.nhnacademy.bookstoreuserapi.orderPointProcess.dto.request.OrderPointPlusProcessRequest;
-import com.nhnacademy.bookstoreuserapi.orderPointProcess.service.OrderPointProcessService;
+import com.nhnacademy.bookstoreuserapi.orderpointprocess.dto.request.OrderPointMinusProcessRequest;
+import com.nhnacademy.bookstoreuserapi.orderpointprocess.dto.request.OrderPointPlusProcessRequest;
+import com.nhnacademy.bookstoreuserapi.orderpointprocess.service.OrderPointProcessService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

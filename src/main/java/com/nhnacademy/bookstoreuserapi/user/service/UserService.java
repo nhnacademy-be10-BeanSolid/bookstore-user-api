@@ -1,6 +1,9 @@
 package com.nhnacademy.bookstoreuserapi.user.service;
 
 import com.nhnacademy.bookstoreuserapi.user.domain.*;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UserService {
 
@@ -34,5 +37,9 @@ public interface UserService {
 
     int getUserPointByUserNo(Long userNo);
 
-    com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade getUserGradeByUserNo(Long userNo);
+    UserGrade.Grade getUserGradeByUserNo(Long userNo);
+
+    void updateDormantUsers();
+
+    Page<ResponseUser> getAllUsers(Pageable pageable);
 }

@@ -18,6 +18,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.nhnacademy.bookstoreuserapi.user.domain.User.Status.ACTIVE;
 import static com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade.BASIC;
 
 @Slf4j
@@ -89,7 +93,7 @@ public class UserServiceImpl implements UserService {
 
         user.setCreatedAt(LocalDateTime.now());
         user.setUserGrade(basicGrade);
-        user.setUserStatus(User.Status.ACTIVE);
+        user.setUserStatus(ACTIVE);
 
         User savedUser = userRepository.save(user);
 
@@ -146,7 +150,7 @@ public class UserServiceImpl implements UserService {
 
         user.setCreatedAt(LocalDateTime.now());
         user.setUserGrade(basicGrade);
-        user.setUserStatus(User.Status.ACTIVE);
+        user.setUserStatus(ACTIVE);
 
         User savedUser = userRepository.save(user);
 
@@ -325,5 +329,28 @@ public class UserServiceImpl implements UserService {
     public UserGrade.Grade getUserGradeByUserNo(Long userNo) {
         ResponseUser user = getUserByUserNo(userNo);
         return UserGrade.Grade.valueOf(user.getUserGradeName());
+    }
+
+    @Override
+    public void updateDormantUsers() {
+        LocalDateTime threeMonthsAgo = LocalDateTime.now().minusMonths(3);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<User> userPage;
+
+        do {
+            userPage = userRepository.findByUserStatusAndLastLoginAtBefore(ACTIVE, threeMonthsAgo, pageable);
+            if (userPage.hasContent()) {
+                java.util.List<Long> userIds = userPage.getContent().stream()
+                        .map(User::getUserNo)
+                        .collect(java.util.stream.Collectors.toList());
+                userRepository.updateStatusForUsers(userIds);
+            }
+            pageable = userPage.nextPageable();
+        } while (userPage.hasNext());
+    }
+
+    @Override
+    public Page<ResponseUser> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable).map(ResponseUser::new);
     }
 }

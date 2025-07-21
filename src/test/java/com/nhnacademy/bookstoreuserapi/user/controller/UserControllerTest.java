@@ -14,10 +14,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade.BASIC;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,6 +45,7 @@ class UserControllerTest {
 
     @MockBean
     BirthdayEventPublisher birthdayEventPublisher;
+
     @MockBean
     PointTypeService pointTypeService;
 
@@ -493,4 +500,42 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    @DisplayName("휴면 계정 전환 API 테스트")
+    void bulkUpdateUserStatus_success() throws Exception {
+        mockMvc.perform(get("/users/bulk/status"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("전체 회원 조회 API 테스트")
+    void getAllUsers_success() throws Exception {
+        User user1 = new User("user1", "pw", "User One", "01011111111", "user1@test.com", LocalDate.now());
+        user1.setUserNo(1L);
+        user1.setUserStatus(User.Status.ACTIVE);
+        UserGrade userGrade1 = new UserGrade(UserGrade.Grade.BASIC, 0L);
+        user1.setUserGrade(userGrade1);
+
+        User user2 = new User("user2", "pw", "User Two", "01022222222", "user2@test.com", LocalDate.now());
+        user2.setUserNo(2L);
+        user2.setUserStatus(User.Status.ACTIVE);
+        UserGrade userGrade2 = new UserGrade(UserGrade.Grade.BASIC, 0L);
+        user2.setUserGrade(userGrade2);
+
+        List<ResponseUser> userList = Arrays.asList(new ResponseUser(user1), new ResponseUser(user2));
+        Pageable pageable = PageRequest.of(0, 20);
+        Page<ResponseUser> userPage = new PageImpl<>(userList, pageable, userList.size());
+
+        when(userService.getAllUsers(any(Pageable.class))).thenReturn(userPage);
+
+        mockMvc.perform(get("/users")
+                        .param("page", "0")
+                        .param("size", "20")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.content[0].userId").value("user1"))
+                .andExpect(jsonPath("$.content[1].userId").value("user2"));
+    }
 }

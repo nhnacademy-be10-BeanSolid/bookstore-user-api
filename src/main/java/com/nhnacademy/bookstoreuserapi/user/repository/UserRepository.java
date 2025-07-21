@@ -2,6 +2,8 @@ package com.nhnacademy.bookstoreuserapi.user.repository;
 
 import com.nhnacademy.bookstoreuserapi.user.domain.User;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -25,21 +27,21 @@ public interface UserRepository extends JpaRepository<User, Long>, UserRepositor
     @Query("update User u set u.userStatus = :status where u.userId = :userId")
     void updateStatusByUserId(String userId, User.Status status);
 
-    @Modifying(clearAutomatically = true)
-    @Query("update User u set u.userGrade = (select ug from UserGrade ug where ug.gradeName = :gradeName) where u.userId = :userId")
-    void updateUserGrade_gradeNameByUserId(String userId, UserGrade.Grade gradeName);
-
     boolean existsByUserId(String userId);
 
     User findByUserNameAndUserEmail(String userName, String userEmail);
-
-    User findByUserNo(Long userNo);
 
     @Query("select u.userPoint from User u where u.userId = :userId")
     int findUserPointByUserId(String userId);
 
     @Query("select u.userId from User u where u.userNo = :userNo")
     String findUserIdByUserNo(Long userNo);
+
+    Page<User> findByUserStatusAndLastLoginAtBefore(User.Status status, LocalDateTime threeMonthsAgo, Pageable pageable);
+
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE User u SET u.userStatus = 'DORMANT' WHERE u.userNo IN :userIds")
+    void updateStatusForUsers(List<Long> userIds);
 
     @Query("SELECT u FROM User u WHERE FUNCTION('MONTH', u.userBirth) = :month AND FUNCTION('DAY', u.userBirth) = :day")
     List<User> findByBirthMonthAndBirthDay(int month, int day);

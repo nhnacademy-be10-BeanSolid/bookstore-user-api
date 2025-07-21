@@ -11,6 +11,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -139,5 +141,16 @@ public class UserController {
     public ResponseEntity<ResponsePointType> getEarningRateByUserNo(@PathVariable Long userNo) {
         UserGrade.Grade userGrade = userService.getUserGradeByUserNo(userNo);
         return ResponseEntity.ok(pointTypeService.getEarningRateByGradeNameAndTypeName(userGrade));
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<ResponseUser>> getAllUsers(Pageable pageable) {
+        return ResponseEntity.ok(userService.getAllUsers(pageable));
+    }
+
+    @GetMapping("/bulk/status")
+    public ResponseEntity<Void> bulkUpdateUserStatus() {
+        userService.updateDormantUsers();
+        return ResponseEntity.ok().build();
     }
 }

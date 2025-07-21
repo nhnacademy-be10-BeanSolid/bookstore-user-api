@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.user.service;
 
+import com.nhnacademy.bookstoreuserapi.adapter.OrderAdapter;
 import com.nhnacademy.bookstoreuserapi.point.domain.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.point.service.PointService;
 import com.nhnacademy.bookstoreuserapi.pointtype.service.PointTypeService;
@@ -19,10 +20,18 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade.Grade.BASIC;
@@ -35,7 +44,6 @@ class UserServiceTest {
     @InjectMocks
     private UserServiceImpl userService;
 
-    @MockBean
     @Mock
     private UserRepository userRepository;
 
@@ -53,6 +61,9 @@ class UserServiceTest {
 
     @Mock
     private RabbitTemplate rabbitTemplate;
+
+    @Mock
+    private OrderAdapter orderAdapter;
 
     private final String userId = "test";
 
@@ -386,5 +397,84 @@ class UserServiceTest {
 
         assertThatThrownBy(() -> userService.getUserPoint(userId))
                 .isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("전체 회원 등급 일괄 업데이트: 최근 3개월 주문액 기준 등급 변경")
+    void bulkUpdateUserGrades() {
+        // Arrange (준비)
+        User user1 = createUser("user1");
+        User user2 = createUser("user2");
+
+        List<User> userList = Arrays.asList(user1, user2);
+
+        // userGrade: 주문액 10만원 채운 ROYAL 등급
+        UserGrade royalGrade = createUserGrade(UserGrade.Grade.ROYAL);
+        List<UserGrade> gradeList = Collections.singletonList(royalGrade);
+
+        // 최근 3개월 주문액 (user1만 100,000원 달성, user2는 미달)
+        UserOrderAmountResponse response = new UserOrderAmountResponse(
+                user1.getUserNo(),
+                100_000L   // user1만 등급 기준 충족
+        );
+        List<UserOrderAmountResponse> orderAmountList = Collections.singletonList(response);
+
+        when(userGradeRepository.findAll()).thenReturn(gradeList);
+        when(orderAdapter.getOrderAmountGroupByUserLastThreeMonth())
+                .thenReturn(ResponseEntity.ok(orderAmountList));
+
+        // userStatus 조건에 맞으면서 ROYAL이 아닌 사용자만 반환하도록
+        when(userRepository.findUserNosWithDifferentGrade(
+                anyList(), eq(UserGrade.Grade.ROYAL)
+        )).thenReturn(Collections.singletonList(user1.getUserNo()));
+
+        // bulk update 쿼리가 user1에게만 발생한다고 검증 (결과: 1명 변경)
+        when(userRepository.bulkUpdateUserGrade(royalGrade, Collections.singletonList(user1.getUserNo())))
+                .thenReturn(1L);
+
+        // Action (실행)
+        userService.bulkUpdateUserGrades();
+
+        // Assert (검증)
+        verify(userGradeRepository, times(1)).findAll();
+        verify(orderAdapter, times(1)).getOrderAmountGroupByUserLastThreeMonth();
+        verify(userRepository, times(1))
+                .findUserNosWithDifferentGrade(anyList(), eq(UserGrade.Grade.ROYAL));
+        verify(userRepository, times(1))
+                .bulkUpdateUserGrade(eq(royalGrade), eq(Collections.singletonList(user1.getUserNo())));
+    }
+
+
+    @Test
+    @DisplayName("휴면 계정 전환")
+    void updateDormantUsers() {
+        User user1 = createUser("user1");
+        user1.setLastLoginAt(LocalDateTime.now().minusMonths(4));
+        User user2 = createUser("user2");
+        user2.setLastLoginAt(LocalDateTime.now().minusMonths(2));
+        List<User> users = Collections.singletonList(user1);
+        Page<User> userPage = new PageImpl<>(users, PageRequest.of(0, 10), users.size());
+
+        when(userRepository.findByUserStatusAndLastLoginAtBefore(any(User.Status.class), any(LocalDateTime.class), any(Pageable.class))).thenReturn(userPage);
+
+        userService.updateDormantUsers();
+
+        verify(userRepository).updateStatusForUsers(anyList());
+    }
+
+    @Test
+    @DisplayName("전체 회원 조회")
+    void getAllUsers() {
+        User user1 = createUser("user1");
+        User user2 = createUser("user2");
+        List<User> users = Arrays.asList(user1, user2);
+        Page<User> userPage = new PageImpl<>(users, PageRequest.of(0, 10), users.size());
+
+        when(userRepository.findAll(any(Pageable.class))).thenReturn(userPage);
+
+        Page<ResponseUser> result = userService.getAllUsers(PageRequest.of(0, 10));
+
+        assertThat(result.getContent()).hasSize(2);
+        assertThat(result.getContent().get(0).getUserId()).isEqualTo("user1");
     }
 }

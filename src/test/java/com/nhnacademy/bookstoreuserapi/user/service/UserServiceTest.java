@@ -12,14 +12,14 @@ import com.nhnacademy.bookstoreuserapi.user.repository.UserRepository;
 import com.nhnacademy.bookstoreuserapi.user.service.impl.UserServiceImpl;
 import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
 import com.nhnacademy.bookstoreuserapi.usergrade.repository.UserGradeRepository;
-import org.junit.jupiter.api.BeforeEach;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -39,6 +39,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
     @InjectMocks
@@ -63,16 +64,12 @@ class UserServiceTest {
     private RabbitTemplate rabbitTemplate;
 
     @Mock
+    private EntityManager entityManager;
+
+    @Mock
     private OrderAdapter orderAdapter;
 
     private final String userId = "test";
-
-    @BeforeEach
-    void setup() {
-        MockitoAnnotations.openMocks(this);
-        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
-        doNothing().when(rabbitTemplate).convertAndSend(anyString(), anyString(), any(Object.class));
-    }
 
     private UserGrade createUserGrade(UserGrade.Grade grade) {
         UserGrade userGrade = new UserGrade();
@@ -97,6 +94,9 @@ class UserServiceTest {
     @Test
     @DisplayName("사용자 저장 성공 (회원가입 포인트 적립)")
     void saveUser_success_withWelcomePoint() {
+        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+        doNothing().when(rabbitTemplate).convertAndSend(anyString(), anyString(), any(Object.class));
+
         UserCreateRequest request = new UserCreateRequest("newUser", "plainPassword", "김철수", "01098765432", "kim@test.com", LocalDate.of(1995, 6, 15));
         UserGrade basicGrade = createUserGrade(BASIC);
         when(userRepository.existsByUserId("newUser")).thenReturn(false);
@@ -125,6 +125,8 @@ class UserServiceTest {
     @Test
     @DisplayName("Oauth2 사용자 저장 성공 (포인트 적립)")
     void saveOauth2User_success_withWelcomePoint() {
+        doNothing().when(rabbitTemplate).convertAndSend(anyString(), anyString(), any(Object.class));
+
         Oauth2UserCreateRequest request = new Oauth2UserCreateRequest("PAYCO", "pid", "홍길동", "01011112222", "hong@test.com", LocalDate.of(1990, 1, 1));
         UserGrade basicGrade = createUserGrade(BASIC);
         String oauthId = "PAYCOpid";
@@ -204,6 +206,8 @@ class UserServiceTest {
     @Test
     @DisplayName("개인정보 수정")
     void updatePersonalInformation() {
+        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+
         User user = createUser(userId);
         when(userRepository.existsByUserId(userId)).thenReturn(true);
         when(userRepository.findByUserId(userId)).thenReturn(user);
@@ -219,9 +223,8 @@ class UserServiceTest {
     @Test
     @DisplayName("개인정보 수정 실패 - 없는 사용자")
     void updatePersonalInformation_notFound() {
-        when(userRepository.existsByUserId(userId)).thenReturn(false);
-
         UserUpdateRequest request = new UserUpdateRequest("pw", "이름", "010", "email", LocalDate.now());
+        when(userRepository.existsByUserId(userId)).thenReturn(false);
 
         assertThatThrownBy(() -> userService.updatePersonalInformation(userId, request))
                 .isInstanceOf(UserNotFoundException.class);
@@ -402,40 +405,22 @@ class UserServiceTest {
     @Test
     @DisplayName("전체 회원 등급 일괄 업데이트: 최근 3개월 주문액 기준 등급 변경")
     void bulkUpdateUserGrades() {
-        // Arrange (준비)
         User user1 = createUser("user1");
-        User user2 = createUser("user2");
-
-        List<User> userList = Arrays.asList(user1, user2);
-
-        // userGrade: 주문액 10만원 채운 ROYAL 등급
         UserGrade royalGrade = createUserGrade(UserGrade.Grade.ROYAL);
         List<UserGrade> gradeList = Collections.singletonList(royalGrade);
-
-        // 최근 3개월 주문액 (user1만 100,000원 달성, user2는 미달)
-        UserOrderAmountResponse response = new UserOrderAmountResponse(
-                user1.getUserNo(),
-                100_000L   // user1만 등급 기준 충족
-        );
+        UserOrderAmountResponse response = new UserOrderAmountResponse(user1.getUserNo(), 100_000L);
         List<UserOrderAmountResponse> orderAmountList = Collections.singletonList(response);
 
         when(userGradeRepository.findAll()).thenReturn(gradeList);
         when(orderAdapter.getOrderAmountGroupByUserLastThreeMonth())
                 .thenReturn(ResponseEntity.ok(orderAmountList));
-
-        // userStatus 조건에 맞으면서 ROYAL이 아닌 사용자만 반환하도록
-        when(userRepository.findUserNosWithDifferentGrade(
-                anyList(), eq(UserGrade.Grade.ROYAL)
-        )).thenReturn(Collections.singletonList(user1.getUserNo()));
-
-        // bulk update 쿼리가 user1에게만 발생한다고 검증 (결과: 1명 변경)
+        when(userRepository.findUserNosWithDifferentGrade(anyList(), eq(UserGrade.Grade.ROYAL)))
+                .thenReturn(Collections.singletonList(user1.getUserNo()));
         when(userRepository.bulkUpdateUserGrade(royalGrade, Collections.singletonList(user1.getUserNo())))
                 .thenReturn(1L);
 
-        // Action (실행)
         userService.bulkUpdateUserGrades();
 
-        // Assert (검증)
         verify(userGradeRepository, times(1)).findAll();
         verify(orderAdapter, times(1)).getOrderAmountGroupByUserLastThreeMonth();
         verify(userRepository, times(1))
@@ -444,14 +429,11 @@ class UserServiceTest {
                 .bulkUpdateUserGrade(eq(royalGrade), eq(Collections.singletonList(user1.getUserNo())));
     }
 
-
     @Test
     @DisplayName("휴면 계정 전환")
     void updateDormantUsers() {
         User user1 = createUser("user1");
         user1.setLastLoginAt(LocalDateTime.now().minusMonths(4));
-        User user2 = createUser("user2");
-        user2.setLastLoginAt(LocalDateTime.now().minusMonths(2));
         List<User> users = Collections.singletonList(user1);
         Page<User> userPage = new PageImpl<>(users, PageRequest.of(0, 10), users.size());
 
@@ -475,6 +457,6 @@ class UserServiceTest {
         Page<ResponseUser> result = userService.getAllUsers(PageRequest.of(0, 10));
 
         assertThat(result.getContent()).hasSize(2);
-        assertThat(result.getContent().get(0).getUserId()).isEqualTo("user1");
+        assertThat(result.getContent().getFirst().getUserId()).isEqualTo("user1");
     }
 }

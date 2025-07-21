@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstoreuserapi.config;
+package com.nhnacademy.bookstoreuserapi.common.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;

@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstoreuserapi.point.controller;
 
 import com.nhnacademy.bookstoreuserapi.common.annotation.AuthenticatedUserId;
+import com.nhnacademy.bookstoreuserapi.common.controller.interfaces.PointControllerDoc;
 import com.nhnacademy.bookstoreuserapi.point.domain.PointCreateRequest;
 import com.nhnacademy.bookstoreuserapi.point.domain.ResponsePoint;
 import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
@@ -18,15 +19,17 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users/me/point")
-public class PointController {
+public class PointController implements PointControllerDoc {
 
     private final PointService pointService;
     @GetMapping
+    @Override
     public ResponseEntity<Page<ResponsePoint>> getPoint(@AuthenticatedUserId String userId, Pageable pageable) {
         return ResponseEntity.ok().body(pointService.findAll(userId, pageable));
     }
 
     @PostMapping
+    @Override
     public ResponseEntity<ResponsePoint> savePoint(@AuthenticatedUserId String userId, @Valid @RequestBody PointCreateRequest pointCreateRequest, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);

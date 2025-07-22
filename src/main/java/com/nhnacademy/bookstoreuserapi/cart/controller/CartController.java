@@ -7,6 +7,7 @@ import com.nhnacademy.bookstoreuserapi.cart.dto.request.CartUpdateRequest;
 import com.nhnacademy.bookstoreuserapi.cart.dto.response.CartCreateResponse;
 import com.nhnacademy.bookstoreuserapi.cart.dto.response.CartResponse;
 import com.nhnacademy.bookstoreuserapi.cart.service.CartService;
+import com.nhnacademy.bookstoreuserapi.common.controller.interfaces.CartControllerDoc;
 import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,20 +21,23 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/carts/me")
-public class CartController {
+public class CartController implements CartControllerDoc {
     private final CartService cartService;
 
     @PostMapping
+    @Override
     public ResponseEntity<CartCreateResponse> createCart(CartContext ctx) {
         return ResponseEntity.status(HttpStatus.CREATED).body(cartService.createCart(ctx));
     }
 
     @GetMapping
+    @Override
     public ResponseEntity<CartResponse> getCart(CartContext ctx) {
         return ResponseEntity.ok(cartService.getCart(ctx));
     }
 
     @PostMapping("/items")
+    @Override
     public ResponseEntity<CartResponse> addItemToCart(
             CartContext ctx,
             @Valid @RequestBody CartAddItemRequest request,
@@ -44,6 +48,7 @@ public class CartController {
     }
 
     @PutMapping("/items/{itemId}")
+    @Override
     public ResponseEntity<CartResponse> updateItemQuantity(
             CartContext ctx,
             @PathVariable("itemId") Long itemId,
@@ -55,6 +60,7 @@ public class CartController {
     }
 
     @DeleteMapping("/items/{itemId}")
+    @Override
     public ResponseEntity<CartResponse> deleteItemFromCart(
             CartContext ctx,
             @PathVariable("itemId") Long itemId
@@ -63,6 +69,7 @@ public class CartController {
     }
 
     @DeleteMapping("/items")
+    @Override
     public ResponseEntity<CartResponse> deleteItemsFromCart(
             CartContext ctx,
             @RequestBody List<Long> itemIds
@@ -71,6 +78,7 @@ public class CartController {
     }
 
     @PutMapping("/items")
+    @Override
     public ResponseEntity<CartResponse> updateItemsInCart(
             CartContext ctx,
             @Valid @RequestBody CartUpdateItemsRequest request,

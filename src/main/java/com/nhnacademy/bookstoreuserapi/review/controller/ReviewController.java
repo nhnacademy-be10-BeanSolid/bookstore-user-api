@@ -2,6 +2,7 @@ package com.nhnacademy.bookstoreuserapi.review.controller;
 
 
 import com.nhnacademy.bookstoreuserapi.common.annotation.AuthenticatedUserId;
+import com.nhnacademy.bookstoreuserapi.common.controller.interfaces.ReviewControllerDoc;
 import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.review.domain.*;
 import com.nhnacademy.bookstoreuserapi.review.service.ReviewService;
@@ -20,10 +21,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/reviews")
-public class ReviewController {
+public class ReviewController implements ReviewControllerDoc {
     private final ReviewService reviewService;
 
     @PostMapping("/me")
+    @Override
     public ResponseEntity<ResponseReview> addReview(@AuthenticatedUserId  String userId, @Valid @RequestBody ReviewCreateRequest review, BindingResult bindingResult){
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
@@ -32,6 +34,7 @@ public class ReviewController {
     }
 
     @PutMapping("/me/{reviewId}")
+    @Override
     public ResponseEntity<ResponseReview> updateReview(@AuthenticatedUserId String userId, @PathVariable @Min(1) long reviewId, @Valid @RequestBody ReviewUpdateRequest review, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
@@ -40,26 +43,31 @@ public class ReviewController {
     }
 
     @GetMapping("/{reviewId}")
+    @Override
     public ResponseEntity<ResponseReview> getReview(@PathVariable @Min(1) long reviewId) {
         return ResponseEntity.ok().body(reviewService.getReview(reviewId));
     }
 
     @GetMapping("/user/{userId}")
+    @Override
     public ResponseEntity<Page<ResponseSimpleReviewByUser>> getReviewByUserId(@PathVariable @NotBlank @Size(max = 20) String userId, Pageable pageable) {
         return ResponseEntity.ok().body(reviewService.getReviewsByUserId(userId, pageable));
     }
 
     @GetMapping("/book/{bookId}")
+    @Override
     public ResponseEntity<Page<ResponseSimpleReview>> getReviewByBookId(@PathVariable @Min(1) long bookId, Pageable pageable) {
         return ResponseEntity.ok().body(reviewService.getReviewsByBookId(bookId, pageable));
     }
 
     @GetMapping("/book/{bookId}/count")
+    @Override
     public ResponseEntity<Long> countReviewsByBookId(@PathVariable @Min(1) long bookId) {
         return ResponseEntity.ok().body(reviewService.countReviewsByBookId(bookId));
     }
 
     @GetMapping("/book/{bookId}/average-score")
+    @Override
     public ResponseEntity<Double> getAverageEvaluationScoreByBookId(@PathVariable @Min(1) long bookId) {
         return ResponseEntity.ok().body(reviewService.getAverageEvaluationScoreByBookId(bookId));
     }

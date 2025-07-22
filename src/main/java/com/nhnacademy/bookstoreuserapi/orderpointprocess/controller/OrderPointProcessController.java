@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstoreuserapi.orderpointprocess.controller;
 
+import com.nhnacademy.bookstoreuserapi.common.controller.interfaces.OrderPointProcessControllerDoc;
 import com.nhnacademy.bookstoreuserapi.common.exception.ValidationFailedException;
 import com.nhnacademy.bookstoreuserapi.orderpointprocess.dto.request.OrderPointMinusProcessRequest;
 import com.nhnacademy.bookstoreuserapi.orderpointprocess.dto.request.OrderPointPlusProcessRequest;
@@ -13,11 +14,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/users/order-point")
 @RequiredArgsConstructor
-public class OrderPointProcessController {
+public class OrderPointProcessController implements OrderPointProcessControllerDoc {
 
     private final OrderPointProcessService orderPointProcessService;
 
     @PostMapping("/{userNo}/plus")
+    @Override
     public ResponseEntity<Void> orderPointPlus(@PathVariable Long userNo,
                                                @Valid @RequestBody OrderPointPlusProcessRequest request,
                                                BindingResult bindingResult) {
@@ -32,6 +34,7 @@ public class OrderPointProcessController {
     }
 
     @PostMapping("/{userNo}/minus")
+    @Override
     public ResponseEntity<Void> orderPointMinus(@PathVariable Long userNo,
                                                 @Valid @RequestBody OrderPointMinusProcessRequest request,
                                                 BindingResult bindingResult) {

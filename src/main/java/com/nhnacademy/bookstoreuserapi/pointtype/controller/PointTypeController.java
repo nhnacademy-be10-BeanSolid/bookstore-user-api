@@ -58,18 +58,21 @@ public class PointTypeController implements PointTypeControllerDoc {
     }
 
     @PutMapping("/{typeId}/isActive")
+    @Override
     public void updateIsActive(@PathVariable @NotNull @Min(1) Long typeId) {
 
         pointTypeService.updatePointTypeisActive(typeId);
     }
 
     @GetMapping("/{typeId}/isActive")
+    @Override
     public boolean getIsActive(@PathVariable @NotNull @Min(1) Long typeId) {
 
         return pointTypeService.getPointTypeIsActive(typeId);
     }
 
     @PutMapping("/{typeId}/edit")
+    @Override
     public void updatePointType(@Valid @RequestBody PointTypeUpdateRequest request, BindingResult bindingResult, @PathVariable @NotNull @Min(1) Long typeId) {
 
         if(bindingResult.hasErrors()) {
@@ -80,6 +83,7 @@ public class PointTypeController implements PointTypeControllerDoc {
     }
 
     @GetMapping("/{typeId}")
+    @Override
     public ResponseEntity<ResponsePointType> getPointType(@PathVariable @NotNull @Min(1) Long typeId) {
 
         return ResponseEntity.ok().body(pointTypeService.getPointTypeInfo(typeId));

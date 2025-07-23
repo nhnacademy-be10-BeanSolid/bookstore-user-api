@@ -34,6 +34,7 @@ public interface AddressControllerDoc {
             @ApiResponse(responseCode = "201", description = "주소 추가 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseAddress.class))),
             @ApiResponse(responseCode = "400", description = "잘못된 요청(유효성 검증 실패, 주소 개수 10개 초과 등)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class), examples = {@ExampleObject(
                     name = "BadRequestExample",
+                    summary = "X-USER-ID 헤더 미존재 예시",
                     value = """
             {
               "timestamp": "2025-07-23 10:36:56",
@@ -46,6 +47,7 @@ public interface AddressControllerDoc {
             ),
                     @ExampleObject(
                             name = "AddressLimitExceededExample",
+                            summary = "주소 개수 초과 예시",
                             value = """
                             {
                                "timestamp": "2025-07-23 11:05:10",
@@ -59,6 +61,7 @@ public interface AddressControllerDoc {
             })),
             @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class), examples = @ExampleObject(
                     name = "NotFoundExample",
+                    summary = "사용자 ID가 잘못된 경우 예시",
                     value = """
                             {
                               "timestamp": "2025-07-23 10:44:58",
@@ -71,6 +74,7 @@ public interface AddressControllerDoc {
             ))),
             @ApiResponse(responseCode = "403", description = "권한이 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class), examples = @ExampleObject(
                     name = "ForbiddenExample",
+                    summary = "유저 ID 불일치 예시",
                     value = """
                             {
                               "timestamp": "2025-07-23 10:50:00",
@@ -94,6 +98,7 @@ public interface AddressControllerDoc {
             @ApiResponse(responseCode = "204", description = "주소 삭제 성공"),
             @ApiResponse(responseCode = "404", description = "주소를 찾을 수 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class), examples = @ExampleObject(
                     name = "NotFoundExample",
+                    summary = "주소 ID가 잘못된 경우 예시",
                     value = """
                             {
                                  "timestamp": "2025-07-23 13:30:48",
@@ -106,6 +111,7 @@ public interface AddressControllerDoc {
             ))),
             @ApiResponse(responseCode = "403", description = "권한이 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class), examples = @ExampleObject(
                     name = "ForbiddenExample",
+                    summary = "유저 ID 불일치 예시",
                     value = """
                             {
                               "timestamp": "2025-07-23 10:50:00",
@@ -127,6 +133,7 @@ public interface AddressControllerDoc {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "주소 조회 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseAddress.class), examples = @ExampleObject(
                     name = "GetAddressExample",
+                    summary = "주소 조회 성공 예시",
                     value = """
                             {
                               "addressId": 20,
@@ -138,6 +145,7 @@ public interface AddressControllerDoc {
             ))),
             @ApiResponse(responseCode = "404", description = "주소를 찾을 수 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class), examples = @ExampleObject(
                     name = "NotFoundExample",
+                    summary = "주소 ID가 잘못된 경우 예시",
                     value = """
                             {
                                  "timestamp": "2025-07-23 13:30:48",
@@ -150,6 +158,7 @@ public interface AddressControllerDoc {
             ))),
             @ApiResponse(responseCode = "403", description = "권한이 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class), examples = @ExampleObject(
                     name = "ForbiddenExample",
+                    summary = "유저 ID 불일치 예시",
                     value = """
                             {
                               "timestamp": "2025-07-23 10:50:00",
@@ -170,6 +179,7 @@ public interface AddressControllerDoc {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "모든 주소 조회 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseAddress.class), examples = @ExampleObject(
                     name = "GetAllAddressesExample",
+                    summary = "모든 주소 조회 성공 예시",
                     value = """
                             [
                               {
@@ -181,9 +191,9 @@ public interface AddressControllerDoc {
                             ]
                             """
             ))),
-            @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
             @ApiResponse(responseCode = "400", description = "잘못된 요청(유효성 검증 실패 - X-USER-ID 헤더 미존재)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class), examples = @ExampleObject(
                     name = "BadRequestExample",
+                    summary = "X-USER-ID 헤더 미존재 예시",
                     value = """
             {
               "timestamp": "2025-07-23 10:36:56",

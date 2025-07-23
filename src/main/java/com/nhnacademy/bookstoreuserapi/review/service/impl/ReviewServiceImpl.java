@@ -51,6 +51,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ResponseReview addReview(String userId, ReviewCreateRequest review) {
+        validate(userId, review.userId());
         User user = userRepository.findByUserId(review.userId());
 
         if (user == null) {
@@ -69,10 +70,6 @@ public class ReviewServiceImpl implements ReviewService {
         if (findReview != null) {
             throw new ReviewAlreadyExistsBookException(review.userId(), review.bookId());
         }
-
-        validate(userId, review.userId());
-
-
 
         // 리뷰 저장
         Review savedReview = reviewRepository.save(new Review(review, user));

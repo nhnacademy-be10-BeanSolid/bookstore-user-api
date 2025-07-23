@@ -1,23 +1,23 @@
 package com.nhnacademy.bookstoreuserapi.address.service;
 
 import com.nhnacademy.bookstoreuserapi.address.domain.Address;
-import com.nhnacademy.bookstoreuserapi.user.domain.User;
-import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
 import com.nhnacademy.bookstoreuserapi.address.domain.AddressCreateRequest;
 import com.nhnacademy.bookstoreuserapi.address.domain.ResponseAddress;
 import com.nhnacademy.bookstoreuserapi.address.exception.AddressAlreadyExistException;
 import com.nhnacademy.bookstoreuserapi.address.exception.AddressLimitExceededException;
 import com.nhnacademy.bookstoreuserapi.address.exception.AddressNotFoundException;
+import com.nhnacademy.bookstoreuserapi.address.exception.MismatchedUserIdException;
 import com.nhnacademy.bookstoreuserapi.address.repository.AddressRepository;
-import com.nhnacademy.bookstoreuserapi.user.repository.UserRepository;
 import com.nhnacademy.bookstoreuserapi.address.service.impl.AddressServiceImpl;
+import com.nhnacademy.bookstoreuserapi.user.domain.User;
+import com.nhnacademy.bookstoreuserapi.user.repository.UserRepository;
+import com.nhnacademy.bookstoreuserapi.usergrade.domain.UserGrade;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.access.AccessDeniedException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -63,7 +63,7 @@ class AddressServiceTest {
         Mockito.when(userRepository.findByUserId(addressCreateRequest.userId())).thenReturn(user);
 
         addressService.save("user123", addressCreateRequest);
-        assertAccessDenied(() -> addressService.save("anotherUser", addressCreateRequest));
+        assertMismatchedUserId(() -> addressService.save("anotherUser", addressCreateRequest));
         Mockito.verify(addressRepository, Mockito.times(1)).countByUser_UserId(addressCreateRequest.userId());
         Mockito.verify(addressRepository, Mockito.times(1)).existsByUser_UserIdAndAddressDetail(addressCreateRequest.userId(), addressCreateRequest.addressDetail());
         Mockito.verify(addressRepository, Mockito.times(1)).save(address);
@@ -205,7 +205,7 @@ class AddressServiceTest {
 
         Mockito.verify(addressRepository, Mockito.times(1)).findById(addressId);
     }
-    void assertAccessDenied(Runnable action) {
-        assertThrows(AccessDeniedException.class, action::run);
+    void assertMismatchedUserId(Runnable action) {
+        assertThrows(MismatchedUserIdException.class, action::run);
     }
 }

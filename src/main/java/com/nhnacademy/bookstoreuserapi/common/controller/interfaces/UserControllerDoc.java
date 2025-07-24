@@ -61,15 +61,15 @@ public interface UserControllerDoc {
             @ApiResponse(responseCode = "400", description = "유효성 검증 실패", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class),
             examples = @ExampleObject(
                             name = "ValidationErrorExample",
-                            value = """
-                                    {
-                                      "timestamp": "발생 시각",
-                                      "status": 400,
-                                      "error": "BAD_REQUEST",
-                                      "path": "users/register",
-                                      "message": "상세 오류 메시지",
-                                    }
-                                    """
+                    value = """
+                            {
+                              "timestamp": "2025-07-24 18:42:43",
+                              "status": 400,
+                              "error": "BAD_REQUEST",
+                              "path": "에러 발생 경로",
+                              "message": "상세 에러 메시지"
+                            }
+                            """
                     )))
     })
     ResponseEntity<ResponseUser> saveUser(
@@ -109,13 +109,13 @@ public interface UserControllerDoc {
                             name = "ValidationErrorExample",
                             value = """
                                     {
-                                      "timestamp": "발생 시각",
-                                      "status": 400,
-                                      "error": "BAD_REQUEST",
-                                      "path": "users/register/oauth2",
-                                      "message": "상세 오류 메시지",
-                                    }
-                                    """
+                              "timestamp": "2025-07-24 18:42:43",
+                              "status": 400,
+                              "error": "BAD_REQUEST",
+                              "path": "에러 발생 경로",
+                              "message": "상세 에러 메시지"
+                            }
+                            """
                     )))
     })
     ResponseEntity<ResponseUser> saveOauth2User(
@@ -305,13 +305,13 @@ public interface UserControllerDoc {
                             name = "ValidationErrorExample",
                             value = """
                                     {
-                                      "timestamp": "발생 시각",
-                                      "status": 400,
-                                      "error": "BAD_REQUEST",
-                                      "path": "users/me/personalinformation",
-                                      "message": "상세 오류 메시지",
-                                    }
-                                    """
+                              "timestamp": "2025-07-24 18:42:43",
+                              "status": 400,
+                              "error": "BAD_REQUEST",
+                              "path": "에러 발생 경로",
+                              "message": "상세 에러 메시지"
+                            }
+                            """
                     ))),
     })
     ResponseEntity<ResponseUser> updatePersonalInformation(
@@ -353,13 +353,13 @@ public interface UserControllerDoc {
                             name = "ValidationErrorExample",
                             value = """
                                     {
-                                      "timestamp": "발생 시각",
-                                      "status": 400,
-                                      "error": "BAD_REQUEST",
-                                      "path": "users/{userId}/personalinformation",
-                                      "message": "상세 오류 메시지",
-                                    }
-                                    """
+                              "timestamp": "2025-07-24 18:42:43",
+                              "status": 400,
+                              "error": "BAD_REQUEST",
+                              "path": "에러 발생 경로",
+                              "message": "상세 에러 메시지"
+                            }
+                            """
                     ))),
             @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class),
                     examples = @ExampleObject(

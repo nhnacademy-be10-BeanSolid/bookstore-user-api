@@ -116,12 +116,48 @@ public interface PointControllerDoc {
     @RequestBody(
             description = "포인트 생성 요청 정보",
             required = true,
-            content = @Content(schema = @Schema(implementation = PointCreateRequest.class))
+            content = @Content(schema = @Schema(implementation = PointCreateRequest.class),examples = @ExampleObject(
+                    name = "PointCreateRequestExample",
+                    summary = "포인트 생성 요청 예시",
+                    value = """
+                            {
+                              "userId": "test2",
+                              "typeId": 1,
+                              "orderId": null,
+                              "earnedAndUsedAt": "2025-07-24 05:27:56",
+                              "earnedAndUsedPoint": "500p 적립"
+                            }
+                            """
+            ))
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "포인트 생성 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponsePoint.class))),
-            @ApiResponse(responseCode = "400", description = "유효성 검증 실패", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
-            @ApiResponse(responseCode = "401", description = "인증 실패", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
+            @ApiResponse(responseCode = "201", description = "포인트 생성 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponsePoint.class), examples = @ExampleObject(
+                    name = "PointCreateExample",
+                    summary = "포인트 생성 예시",
+                    value = """
+                            {
+                              "pointId": 372,
+                              "userId": "test2",
+                              "typeId": 1,
+                              "orderId": null,
+                              "earnedAndUsedAt": "2025-07-24 05:07:56",
+                              "earnedAndUsedPoint": "500p 적립"
+                            }
+                            """
+            ))),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청(유효성 검증 실패 - X-USER-ID 헤더 미존재)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class), examples = @ExampleObject(
+                    name = "BadRequestExample",
+                    summary = "X-USER-ID 헤더 미존재 예시",
+                    value = """
+                            {
+                              "timestamp": "2025-07-24 14:31:05",
+                              "status": 400,
+                              "error": "BAD_REQUEST",
+                              "path": "/users/me/point",
+                              "message": "User ID must not be blank"
+                            }
+            """
+            ))),
             @ApiResponse(responseCode = "403", description = "권한이 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class), examples = @ExampleObject(
                     name = "ForbiddenExample",
                     summary = "유저 ID 불일치 예시",
@@ -132,6 +168,19 @@ public interface PointControllerDoc {
                                               "error": "FORBIDDEN",
                                               "path": "/users/me/point",
                                               "message": "요청한 유저 ID와 리소스의 유저 ID가 일치하지 않습니다."
+                            }
+            """
+            ))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 유저 ID", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class), examples = @ExampleObject(
+                    name = "NotFoundExample",
+                    summary = "존재하지 않는 유저 ID 예시",
+                    value = """
+                            {
+                                              "timestamp": "2025-07-24 14:32:15",
+                                              "status": 404,
+                                              "error": "NOT_FOUND",
+                                              "path": "/users/me/point",
+                                              "message": "User ID : qwerqwer not found"
                             }
             """
             ))),

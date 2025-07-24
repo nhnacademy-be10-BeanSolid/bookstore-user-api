@@ -6,10 +6,11 @@ import com.nhnacademy.bookstoreuserapi.guest.dto.response.ResponseGuest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,16 @@ public interface GuestControllerDoc {
     @Parameter(name = "orderId", description = "조회할 주문 ID", required = true, example = "1")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "비회원 주문 조회 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseGuest.class))),
-            @ApiResponse(responseCode = "404", description = "주문을 찾을 수 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+            @ApiResponse(responseCode = "404", description = "주문을 찾을 수 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class),
+            examples = @ExampleObject(value = """
+                    {
+                      "timestamp": "2025-07-24 15:28:39",
+                      "status": 404,
+                      "error": "NOT_FOUND",
+                      "path": "/guests/1111111",
+                      "message": "Guest not found with orderId: 1111111"
+                    }
+                    """)))
     })
     ResponseEntity<ResponseGuest> getGuest(
             @PathVariable Long orderId
@@ -48,7 +58,17 @@ public interface GuestControllerDoc {
     @Parameter(name = "orderId", description = "삭제할 주문 ID", required = true, example = "1")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "비회원 주문 삭제 성공"),
-            @ApiResponse(responseCode = "404", description = "주문을 찾을 수 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+            @ApiResponse(responseCode = "404", description = "주문을 찾을 수 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class), examples = @ExampleObject(
+                    value = """
+                            {
+                              "timestamp": "2025-07-24 15:30:45",
+                              "status": 404,
+                              "error": "NOT_FOUND",
+                              "path": "/guests/12345678",
+                              "message": "Guest not found with orderId: 12345678"
+                            }
+                    """
+            )))
     })
     ResponseEntity<Void> deleteGuest(
             @PathVariable Long orderId
@@ -58,7 +78,17 @@ public interface GuestControllerDoc {
     @Parameter(name = "orderId", description = "비밀번호를 조회할 주문 ID", required = true, example = "1")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "비밀번호 조회 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "404", description = "주문을 찾을 수 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+            @ApiResponse(responseCode = "404", description = "주문을 찾을 수 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class), examples = @ExampleObject(
+                    value = """
+                            {
+                              "timestamp": "2025-07-24 15:35:31",
+                              "status": 404,
+                              "error": "NOT_FOUND",
+                              "path": "/guests/12113213/password",
+                              "message": "Guest not found with orderId: 12113213"
+                            }
+                    """
+            )))
     })
     ResponseEntity<String> getGuestPassword(
             @PathVariable Long orderId

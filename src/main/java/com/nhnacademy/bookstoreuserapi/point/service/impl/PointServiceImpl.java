@@ -53,8 +53,8 @@ public class PointServiceImpl implements PointService {
         return new ResponsePoint(
                 savedPoint.getPointId(),
                 savedPoint.getUser().getUserId(),
-                savedPoint.getOrderId(),
                 savedPoint.getPointType().getTypeId(),
+                savedPoint.getOrderId(),
                 savedPoint.getEarnedAndUsedAt(),
                 savedPoint.getEarnedAndUsedPoint()
         );

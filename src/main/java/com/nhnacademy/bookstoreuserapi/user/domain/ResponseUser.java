@@ -21,7 +21,7 @@ public class ResponseUser {
     @Schema(description = "유저 이메일") private String userEmail;
     @Schema(description = "유저 생일") private LocalDate userBirth;
     @Schema(description = "유저 포인트") private int userPoint;
-    @Schema(description = "유저 권한") private boolean isAuth;
+    @Schema(description = "유저 권한", example = "false") private boolean isAuth;
     @Schema(description = "유저 상태") private String userStatus;
     @Schema(description = "유저 생성시각") private LocalDateTime createdAt;
     @Schema(description = "마지막 로그인 시각") private LocalDateTime lastLoginAt;

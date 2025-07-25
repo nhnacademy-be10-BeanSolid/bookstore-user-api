@@ -168,7 +168,7 @@ public class UserController implements UserControllerDoc {
         return ResponseEntity.ok(userService.getAllUsers(pageable));
     }
 
-    @GetMapping("/bulk/status")
+    @PutMapping("/bulk/status")
     @Override
     public ResponseEntity<Void> bulkUpdateUserStatus() {
         userService.updateDormantUsers();

@@ -54,7 +54,7 @@ public interface PointTypeControllerDoc {
     @Operation(summary = "포인트 타입 삭제", description = "기존 포인트 타입을 삭제합니다.")
     @Parameter(name = "typeId", description = "삭제할 포인트 타입 ID", required = true, example = "1")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "포인트 ��입 삭제 성공"),
+            @ApiResponse(responseCode = "204", description = "포인트 타입 삭제 성공"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 포인트 타입", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
     })
     @DeleteMapping("/{typeId}")

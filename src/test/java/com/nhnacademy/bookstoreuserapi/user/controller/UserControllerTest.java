@@ -503,7 +503,7 @@ class UserControllerTest {
     @Test
     @DisplayName("휴면 계정 전환 API 테스트")
     void bulkUpdateUserStatus_success() throws Exception {
-        mockMvc.perform(get("/users/bulk/status"))
+        mockMvc.perform(put("/users/bulk/status"))
                 .andExpect(status().isOk());
     }
 

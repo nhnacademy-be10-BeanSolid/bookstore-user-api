@@ -10,10 +10,11 @@ import com.nhnacademy.bookstoreuserapi.common.controller.advice.ErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -30,7 +31,37 @@ public interface CartControllerDoc {
 
     @Operation(summary = "장바구니 생성", description = "새로운 장바구니를 생성합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "장바구니 생성 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CartCreateResponse.class)))
+            @ApiResponse(responseCode = "201", description = "장바구니 생성 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CartCreateResponse.class),
+            examples = @ExampleObject(value = """
+                    {
+                      "cartId": 8,
+                      "userId": "test",
+                      "guestUUID": null,
+                      "ownerType": "USER",
+                      "createdAt": "2025-07-24 16:01:49"
+                    }
+                    """
+            ))),
+            @ApiResponse(responseCode = "400", description = "헤더 미존재", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class),
+                    examples = @ExampleObject(value = """
+                            {
+                              "timestamp": "2025-07-24 16:02:41",
+                              "status": 400,
+                              "error": "Bad Request",
+                              "path": "/carts/me",
+                              "message": "Required request header 'X-OWNER-TYPE' for method parameter type OwnerType is not present"
+                            }
+                    """))),
+            @ApiResponse(responseCode = "404", description = "유저 ID를 찾을 수 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class),
+                    examples = @ExampleObject(value = """
+                            {
+                                      "timestamp": "2025-07-24 16:03:37",
+                                      "status": 404,
+                                      "error": "NOT_FOUND",
+                                      "path": "/carts/me",
+                                      "message": "User ID : fasdkljf not found"
+                            }
+                    """)))
     })
     ResponseEntity<CartCreateResponse> createCart(
             @Parameter(hidden = true) CartContext ctx
@@ -39,7 +70,27 @@ public interface CartControllerDoc {
     @Operation(summary = "장바구니 조회", description = "현재 사용자의 장바구니 정보를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "장바구니 조회 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CartResponse.class))),
-            @ApiResponse(responseCode = "404", description = "장바구니를 찾을 수 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+            @ApiResponse(responseCode = "400", description = "헤더 미존재", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class),
+            examples = @ExampleObject(value = """
+                    {
+                      "timestamp": "2025-07-24 15:56:59",
+                      "status": 400,
+                      "error": "Bad Request",
+                      "path": "/carts/me",
+                      "message": "Required request header 'X-OWNER-TYPE' for method parameter type OwnerType is not present"
+                    }
+                    """))),
+            @ApiResponse(responseCode = "404", description = "장바구니를 찾을 수 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class),examples = @ExampleObject(
+                    value = """
+                            {
+                              "timestamp": "2025-07-24 15:59:44",
+                              "status": 404,
+                              "error": "NOT_FOUND",
+                              "path": "/carts/me",
+                              "message": "해당 사용자(userId: test)의 장바구니를 찾을 수 없습니다."
+                            }
+                    """
+            )))
     })
     ResponseEntity<CartResponse> getCart(
             @Parameter(hidden = true) CartContext ctx
@@ -53,7 +104,6 @@ public interface CartControllerDoc {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "상품 추가 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CartResponse.class))),
-            @ApiResponse(responseCode = "400", description = "유효성 검증 실패", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
     })
     ResponseEntity<CartResponse> addItemToCart(
             @Parameter(hidden = true) CartContext ctx,
@@ -70,8 +120,16 @@ public interface CartControllerDoc {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "상품 수량 업데이트 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CartResponse.class))),
-            @ApiResponse(responseCode = "400", description = "유효성 검증 실패", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
-            @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+            @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class),
+            examples = @ExampleObject(value = """
+                            {
+                              "timestamp": "2025-07-24 16:06:24",
+                              "status": 404,
+                              "error": "NOT_FOUND",
+                              "path": "/carts/me/items/144",
+                              "message": "장바구니 아이템(ID: 144)을 찾을 수 없습니다."
+                            }
+                    """)))
     })
     ResponseEntity<CartResponse> updateItemQuantity(
             @Parameter(hidden = true) CartContext ctx,
@@ -84,7 +142,16 @@ public interface CartControllerDoc {
     @Parameter(name = "itemId", description = "삭제할 상품 ID", required = true, example = "1")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "상품 삭제 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CartResponse.class))),
-            @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+            @ApiResponse(responseCode = "404", description = "장바구니를 찾을 수 없음(USERID이상)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class),
+                    examples = @ExampleObject(value = """
+                            {
+                                      "timestamp": "2025-07-24 16:06:24",
+                                      "status": 404,
+                                      "error": "NOT_FOUND",
+                                      "path": "/carts/me/items/144",
+                                      "message": "해당 사용자(userId: fadsfasdf)의 장바구니를 찾을 수 없습니다."
+                                    }
+                    """)))
     })
     ResponseEntity<CartResponse> deleteItemFromCart(
             @Parameter(hidden = true) CartContext ctx,
@@ -95,7 +162,11 @@ public interface CartControllerDoc {
     @RequestBody(
             description = "삭제할 상품 ID 목록",
             required = true,
-            content = @Content(schema = @Schema(implementation = List.class))
+            content = @Content(schema = @Schema(implementation = List.class), examples = @ExampleObject(
+                    value = """
+                            [1, 2, 3]
+                    """
+            ))
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "상품들 삭제 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CartResponse.class)))
@@ -113,7 +184,16 @@ public interface CartControllerDoc {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "상품들 일괄 업데이트 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CartResponse.class))),
-            @ApiResponse(responseCode = "400", description = "유효성 검증 실패", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+            @ApiResponse(responseCode = "404", description = "아이템을 찾을 수 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class),
+            examples = @ExampleObject(value = """
+                            {
+                              "timestamp": "2025-07-24 16:10:41",
+                              "status": 404,
+                              "error": "NOT_FOUND",
+                              "path": "/carts/me/items",
+                              "message": "장바구니 아이템(ID: 2)을 찾을 수 없습니다."
+                            }
+                    """)))
     })
     ResponseEntity<CartResponse> updateItemsInCart(
             @Parameter(hidden = true) CartContext ctx,
